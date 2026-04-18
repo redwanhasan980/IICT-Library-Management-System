@@ -2,7 +2,10 @@ import { Router } from 'express';
 import OutsideBookController from '../controllers/outsideBook.controller';
 import { protect, restrictTo } from '../middleware/auth.middleware';
 import { validate } from '../middleware/validate.middleware';
-import { createOutsideBookEntrySchema } from '../validators/outsideBook.validator';
+import {
+  createOutsideBookEntrySchema,
+  verifyOutsideBookEntrySchema,
+} from '../validators/outsideBook.validator';
 import { Role } from '@prisma/client';
 
 const router = Router();
@@ -27,12 +30,14 @@ router.get(
 router.patch(
   '/:id/verify-entry',
   restrictTo(Role.ADMIN),
+  validate(verifyOutsideBookEntrySchema),
   OutsideBookController.verifyEntry
 );
 
 router.patch(
   '/:id/verify-exit',
   restrictTo(Role.ADMIN),
+  validate(verifyOutsideBookEntrySchema),
   OutsideBookController.verifyExit
 );
 

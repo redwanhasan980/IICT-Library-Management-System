@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import type { SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useGenerateSpineLabelMutation } from '../../services/spineLabel.api';
-import { SpineLabel } from '../../types/spineLabel.types';
+import type { SpineLabel } from '../../types/spineLabel.types';
 import SpineLabelPreview from './SpineLabelPreview';
 
 const spineLabelSchema = z.object({
@@ -29,9 +30,8 @@ const SpineLabelGeneratorForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<SpineLabelFormValues> = async (data) => {
     try {
-      const response = await generateSpineLabel(data).unwrap();
-      // @ts-ignore
-      setGeneratedLabel(response.data.label);
+      const label = await generateSpineLabel(data).unwrap();
+      setGeneratedLabel(label);
     } catch (err) {
       console.error('Failed to generate spine label:', err);
       setGeneratedLabel(null);
@@ -105,8 +105,7 @@ const SpineLabelGeneratorForm: React.FC = () => {
         <div className="alert alert-error shadow-lg mb-6">
           <div>
             <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            {/* @ts-ignore */}
-            <span>Error: {error.data?.message || 'An unexpected error occurred.'}</span>
+            <span>Error: An unexpected error occurred.</span>
           </div>
         </div>
       )}

@@ -12,12 +12,65 @@ datasource db {
 
 // Basic User Model - to be expanded later
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String          @id @default(cuid())
+  email     String          @unique
   password  String
-  role      Role     @default(STUDENT)
+  role      Role            @default(STUDENT)
+  name      String
+  student   StudentProfile?
+  admin     AdminProfile?
+  teacher   TeacherProfile?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model StudentProfile {
+  id        String             @id @default(cuid())
+  userId    String             @unique
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entries   OutsideBookEntry[]
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+}
+
+model AdminProfile {
+  id              String             @id @default(cuid())
+  userId          String             @unique
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verifiedEntries OutsideBookEntry[] @relation("VerifiedEntryByAdmin")
+  verifiedExits   OutsideBookEntry[] @relation("VerifiedExitByAdmin")
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+model TeacherProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model OutsideBookEntry {
+  id                String         @id @default(cuid())
+  studentId         String
+  student           StudentProfile @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  title             String
+  author            String
+  entryTime         DateTime       @default(now())
+  exitTime          DateTime?
+  isVerifiedEntry   Boolean        @default(false)
+  isVerifiedExit    Boolean        @default(false)
+  verifiedByEntryId String?
+  verifiedByExitId  String?
+  verifiedByEntry   AdminProfile?  @relation("VerifiedEntryByAdmin", fields: [verifiedByEntryId], references: [id], onDelete: SetNull)
+  verifiedByExit    AdminProfile?  @relation("VerifiedExitByAdmin", fields: [verifiedByExitId], references: [id], onDelete: SetNull)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@index([studentId])
+  @@index([isVerifiedExit, entryTime])
+  @@index([isVerifiedEntry, isVerifiedExit])
 }
 
 enum Role {

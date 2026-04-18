@@ -1,12 +1,21 @@
 import OutsideBookRepository from '../repositories/outsideBook.repository';
 import AppError from '../utils/AppError';
+import { logAuditEvent } from '../utils/auditLog';
 
 class OutsideBookService {
   async createEntry(studentId: string, title: string, author: string) {
     if (!studentId) {
       throw new AppError('User profile not found', 404);
     }
-    return OutsideBookRepository.create(studentId, title, author);
+    const created = await OutsideBookRepository.create(studentId, title, author);
+    logAuditEvent({
+      action: 'outside_book.create',
+      actorId: studentId,
+      entity: 'OutsideBookEntry',
+      entityId: created.id,
+      details: { title, author },
+    });
+    return created;
   }
 
   async getMyEntries(studentId: string) {
@@ -28,7 +37,14 @@ class OutsideBookService {
     if (entry.isVerifiedEntry) {
       throw new AppError('Entry is already verified', 400);
     }
-    return OutsideBookRepository.verifyEntry(entryId, adminId);
+    const updated = await OutsideBookRepository.verifyEntry(entryId, adminId);
+    logAuditEvent({
+      action: 'outside_book.verify_entry',
+      actorId: adminId,
+      entity: 'OutsideBookEntry',
+      entityId: entryId,
+    });
+    return updated;
   }
 
   async verifyExit(entryId: string, adminId: string) {
@@ -42,7 +58,14 @@ class OutsideBookService {
     if (entry.isVerifiedExit) {
       throw new AppError('Exit is already verified', 400);
     }
-    return OutsideBookRepository.verifyExit(entryId, adminId);
+    const updated = await OutsideBookRepository.verifyExit(entryId, adminId);
+    logAuditEvent({
+      action: 'outside_book.verify_exit',
+      actorId: adminId,
+      entity: 'OutsideBookEntry',
+      entityId: entryId,
+    });
+    return updated;
   }
 }
 

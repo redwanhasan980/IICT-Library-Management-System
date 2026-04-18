@@ -1,5 +1,6 @@
 import { api } from '../config/api';
-import { SpineLabel, SpineLabelInput } from '../types/spineLabel.types';
+import type { SpineLabel, SpineLabelInput } from '../types/spineLabel.types';
+import type { ApiResponse } from '../types/api.types';
 
 export const spineLabelApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -9,6 +10,7 @@ export const spineLabelApi = api.injectEndpoints({
         method: 'POST',
         body: credentials,
       }),
+      transformResponse: (response: ApiResponse<SpineLabel>) => response.data,
     }),
   }),
 });

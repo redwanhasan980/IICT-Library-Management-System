@@ -1,12 +1,7 @@
 import prisma from '../config/database';
-import { OutsideBookEntry } from '@prisma/client';
 
 class OutsideBookRepository {
-  async create(
-    studentId: string,
-    title: string,
-    author: string
-  ): Promise<OutsideBookEntry> {
+  async create(studentId: string, title: string, author: string) {
     return prisma.outsideBookEntry.create({
       data: {
         studentId,
@@ -16,22 +11,13 @@ class OutsideBookRepository {
     });
   }
 
-  async findById(id: string): Promise<OutsideBookEntry | null> {
+  async findById(id: string) {
     return prisma.outsideBookEntry.findUnique({ where: { id } });
   }
 
-  async findByStudent(studentId: string): Promise<OutsideBookEntry[]> {
+  async findByStudent(studentId: string) {
     return prisma.outsideBookEntry.findMany({
       where: { studentId },
-      orderBy: { entryTime: 'desc' },
-    });
-  }
-
-  async findActive(): Promise<OutsideBookEntry[]> {
-    return prisma.outsideBookEntry.findMany({
-      where: {
-        exitTime: null,
-      },
       include: {
         student: {
           include: {
@@ -43,7 +29,33 @@ class OutsideBookRepository {
     });
   }
 
-  async verifyEntry(id: string, adminId: string): Promise<OutsideBookEntry> {
+  async findActive() {
+    return prisma.outsideBookEntry.findMany({
+      where: {
+        exitTime: null,
+      },
+      include: {
+        student: {
+          include: {
+            user: true,
+          },
+        },
+        verifiedByEntry: {
+          include: {
+            user: true,
+          },
+        },
+        verifiedByExit: {
+          include: {
+            user: true,
+          },
+        },
+      },
+      orderBy: { entryTime: 'desc' },
+    });
+  }
+
+  async verifyEntry(id: string, adminId: string) {
     return prisma.outsideBookEntry.update({
       where: { id },
       data: {
@@ -53,7 +65,7 @@ class OutsideBookRepository {
     });
   }
 
-  async verifyExit(id: string, adminId: string): Promise<OutsideBookEntry> {
+  async verifyExit(id: string, adminId: string) {
     return prisma.outsideBookEntry.update({
       where: { id },
       data: {

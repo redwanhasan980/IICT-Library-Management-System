@@ -1,5 +1,5 @@
 import React from 'react';
-import { SpineLabel } from '../../types/spineLabel.types';
+import type { SpineLabel } from '../../types/spineLabel.types';
 
 interface SpineLabelPreviewProps {
   label: SpineLabel;

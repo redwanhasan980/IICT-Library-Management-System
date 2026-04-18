@@ -6,15 +6,19 @@ import {
 import { Card } from '../../components/shared/Card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../../components/shared/Table';
 import { Button } from '../../components/shared/Button';
+import { EmptyState, ErrorState, LoadingState } from '../../components/shared/FeedbackState';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 
 const ActiveOutsideBookLogPage = () => {
-  const { data: entries, isLoading, isError } = useGetActiveOutsideBookEntriesQuery();
+  const { data: entries, isLoading, isError, refetch } = useGetActiveOutsideBookEntriesQuery();
   const [verifyEntry, { isLoading: isVerifyingEntry }] = useVerifyOutsideBookEntryMutation();
   const [verifyExit, { isLoading: isVerifyingExit }] = useVerifyOutsideBookExitMutation();
 
   const handleVerifyEntry = async (id: string) => {
+    if (isVerifyingEntry) {
+      return;
+    }
     try {
       await verifyEntry(id).unwrap();
       toast.success('Entry verified!');
@@ -24,6 +28,9 @@ const ActiveOutsideBookLogPage = () => {
   };
 
   const handleVerifyExit = async (id: string) => {
+    if (isVerifyingExit) {
+      return;
+    }
     try {
       await verifyExit(id).unwrap();
       toast.success('Exit verified!');
@@ -36,8 +43,8 @@ const ActiveOutsideBookLogPage = () => {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-dark-brown">Active Outside Book Log</h1>
       <Card>
-        {isLoading && <p>Loading...</p>}
-        {isError && <p className="text-red-500">Failed to load active log.</p>}
+        {isLoading && <LoadingState message="Loading active outside-book log..." />}
+        {isError && <ErrorState message="Failed to load active log." onRetry={refetch} />}
         {entries && (
           <Table>
             <TableHeader>
@@ -52,7 +59,7 @@ const ActiveOutsideBookLogPage = () => {
             <TableBody>
               {entries.map((entry) => (
                 <TableRow key={entry.id}>
-                  <TableCell>{entry.student?.user?.name || 'N/A'}</TableCell>
+                  <TableCell>{entry.student?.user?.name || entry.student?.id || 'N/A'}</TableCell>
                   <TableCell>{entry.title}</TableCell>
                   <TableCell>{entry.author}</TableCell>
                   <TableCell>{format(new Date(entry.entryTime), 'PPpp')}</TableCell>
@@ -83,7 +90,7 @@ const ActiveOutsideBookLogPage = () => {
           </Table>
         )}
         {!isLoading && !isError && entries?.length === 0 && (
-          <p className="text-center text-warm-taupe py-8">No active outside book entries.</p>
+          <EmptyState message="No active outside book entries." />
         )}
       </Card>
     </div>

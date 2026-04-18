@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router-dom';
-import { useAppSelector } from '../hooks/store';
-import { selectCurrentUser } from '../services/auth.api';
+import { useAppDispatch, useAppSelector } from '../store';
+import { logOut, selectCurrentUser } from '../services/auth.slice';
 import { Role } from '../types/user.types';
+import { Button } from '../components/shared/Button';
 
 const commonLinks = [
   { to: '/dashboard', label: 'Dashboard' },
@@ -24,6 +25,7 @@ const teacherLinks = [
 ];
 
 const Sidebar = () => {
+  const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
 
   const getLinksForRole = (role: Role | undefined) => {
@@ -64,6 +66,19 @@ const Sidebar = () => {
           ))}
         </ul>
       </nav>
+
+      {user ? (
+        <div className="mt-6 border-t border-sandy-beige pt-4">
+          <p className="mb-3 text-xs text-warm-taupe">Signed in as {user.email}</p>
+          <Button
+            variant="ghost"
+            className="w-full"
+            onClick={() => dispatch(logOut())}
+          >
+            Sign out
+          </Button>
+        </div>
+      ) : null}
     </aside>
   );
 };

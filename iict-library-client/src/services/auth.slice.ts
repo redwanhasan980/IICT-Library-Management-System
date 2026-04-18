@@ -1,16 +1,41 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../store';
-import { User } from '../types/user.types';
+import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { RootState } from '../store';
+import type { User } from '../types/user.types';
 
 interface AuthState {
   user: User | null;
   token: string | null;
 }
 
-const initialState: AuthState = {
-  user: null,
-  token: null,
+const AUTH_STORAGE_KEY = 'iict_library_auth';
+
+const readPersistedAuth = (): AuthState => {
+  try {
+    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!raw) {
+      return { user: null, token: null };
+    }
+
+    const parsed = JSON.parse(raw) as AuthState;
+    return {
+      user: parsed.user ?? null,
+      token: parsed.token ?? null,
+    };
+  } catch {
+    return { user: null, token: null };
+  }
 };
+
+const persistAuth = (state: AuthState) => {
+  try {
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // ignore storage failures
+  }
+};
+
+const initialState: AuthState = readPersistedAuth();
 
 const authSlice = createSlice({
   name: 'auth',
@@ -22,10 +47,12 @@ const authSlice = createSlice({
     ) => {
       state.user = user;
       state.token = token;
+      persistAuth(state);
     },
     logOut: (state) => {
       state.user = null;
       state.token = null;
+      persistAuth(state);
     },
   },
 });

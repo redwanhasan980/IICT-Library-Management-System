@@ -1,85 +1,166 @@
 # IICT Library Management System
 
-This is a monorepo for the IICT Library Management System, containing the client and server applications.
+IICT Library Management System is a full-stack monorepo with a React client and an Express + Prisma server targeting MariaDB.
 
 ## Project Structure
 
-- `iict-library-client`: Frontend application built with React, TypeScript, and Vite.
-- `iict-library-server`: Backend application built with Node.js, Express, and Prisma.
-- `Requirements Documents`: Contains the requirements for the project.
+- iict-library-client: Frontend (React, TypeScript, Vite, RTK Query, Tailwind CSS)
+- iict-library-server: Backend (Node.js, Express, Prisma, MariaDB)
+- Requirements Documents: Requirement and use-case artifacts
 
 ## Tech Stack
 
 ### Backend
 
-- Node.js
+- Node.js + TypeScript
 - Express
-- Prisma
-- MariaDB
+- Prisma ORM
+- MariaDB (Prisma datasource provider is mysql)
+- Zod validation
 
 ### Frontend
 
-- React
-- TypeScript
+- React + TypeScript
 - Vite
-- Redux Toolkit (RTK Query)
+- Redux Toolkit + RTK Query
+- React Router
 - Tailwind CSS
 
-## Getting Started
+## Setup
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- npm
-- Docker (for MariaDB)
+- Node.js 18+
+- npm 9+
+- MariaDB 10.6+
 
-### Setup
+### 1. Clone and install
 
-1.  **Clone the repository:**
+```bash
+git clone <repository-url>
+cd IICT-Library-Management-System
 
-    ```bash
-    git clone <repository-url>
-    cd iict-library-management-system
-    ```
+cd iict-library-server
+npm install
 
-2.  **Install dependencies for the server:**
+cd ../iict-library-client
+npm install
+```
 
-    ```bash
-    cd iict-library-server
-    npm install
-    ```
+### 2. Environment variables
 
-3.  **Install dependencies for the client:**
+Copy env examples and adjust values:
 
-    ```bash
-    cd ../iict-library-client
-    npm install
-    ```
+- Server: iict-library-server/.env.example -> iict-library-server/.env
+- Client: iict-library-client/.env.example -> iict-library-client/.env
 
-4.  **Setup the database:**
-    - Create a `.env` file in the `iict-library-server` directory.
-    - Add the `DATABASE_URL` environment variable:
-      ```
-      DATABASE_URL="mysql://user:password@localhost:3306/iict_library"
-      ```
-    - Run the Prisma migrations:
-      ```bash
-      npx prisma migrate dev
-      ```
+Required server variables:
 
-### Running the Application
+- NODE_ENV: development or production
+- PORT: API port (default 5000)
+- CORS_ORIGIN: frontend origin, example http://localhost:5173
+- DATABASE_URL: MariaDB Prisma URL, example mysql://root:password@localhost:3306/iict_library
 
-1.  **Start the server:**
+Required client variables:
 
-    ```bash
-    cd iict-library-server
-    npm run dev
-    ```
+- VITE_API_BASE_URL: backend API base URL, example http://localhost:5000/api
 
-2.  **Start the client:**
-    ```bash
-    cd ../iict-library-client
-    npm run dev
-    ```
+## Database Migration and Seed
 
-The client will be available at `http://localhost:5173` and the server at `http://localhost:5000`.
+### Migration steps
+
+```bash
+cd iict-library-server
+npm run prisma:generate
+npm run prisma:migrate
+```
+
+### Seed steps
+
+There is currently no seed script in package.json. If seed data is required, add a Prisma seed script in a later phase.
+
+## Run (Development)
+
+Start server:
+
+```bash
+cd iict-library-server
+npm run dev
+```
+
+Start client (separate terminal):
+
+```bash
+cd iict-library-client
+npm run dev
+```
+
+Default URLs:
+
+- API: http://localhost:5000
+- Health: http://localhost:5000/api/health
+- Client: http://localhost:5173 (Vite may auto-increment if occupied)
+
+## Temporary Auth Mode (Current)
+
+The backend currently uses a development auth bridge in middleware. Protected API routes expect request headers:
+
+- x-user-id
+- x-user-role: ADMIN, STUDENT, or TEACHER
+
+The frontend login page currently sets a local development session and injects these headers automatically through RTK Query.
+
+Unauthorized access is now routed to a dedicated `/unauthorized` page for clearer UX.
+
+## Build and Test Steps
+
+### Build checks
+
+```bash
+cd iict-library-server
+npm run build
+
+cd ../iict-library-client
+npm run build
+```
+
+### Manual test checklist
+
+1. Open client and log in with a selected role.
+2. Verify unauthorized routing:
+   - sign in as `STUDENT`
+   - open `/dashboard/outside-book-log`
+   - confirm redirect to `/unauthorized`
+3. For Student role:
+   - open Add Outside Book
+   - submit title + author
+   - confirm success toast and table update in My Outside Books
+4. For Admin role:
+   - open Outside Book Log
+   - verify entry and then verify exit
+5. For Admin role:
+   - open Spine Label Generator
+   - generate label preview and print
+6. Trigger retry UI:
+   - temporarily stop backend
+   - open My Outside Books or Outside Book Log
+   - confirm error state with Retry button appears
+7. Verify API health endpoint returns success envelope.
+
+## Deployment Notes
+
+- Build both apps before deployment.
+- Set NODE_ENV=production on server.
+- Set CORS_ORIGIN to the deployed frontend origin.
+- Ensure MariaDB is reachable from backend runtime environment.
+- Run prisma generate and prisma migrate deploy in deployment pipeline.
+- Frontend is a static Vite build from iict-library-client/dist.
+
+## Demo Credentials
+
+There are no hardcoded backend credentials currently.
+
+For demo in current development mode:
+
+- Use any email + password on the login page
+- Select the role needed for the flow (Student/Admin/Teacher)

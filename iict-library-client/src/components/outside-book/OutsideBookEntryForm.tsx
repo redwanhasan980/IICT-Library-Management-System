@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useCreateOutsideBookEntryMutation } from '../services/outsideBook.api';
-import { Button } from '../components/shared/Button';
-import { Card } from '../components/shared/Card';
-import { Input } from '../components/shared/Input';
+import { useCreateOutsideBookEntryMutation } from '../../services/outsideBook.api';
+import { Button } from '../shared/Button';
+import { Card } from '../shared/Card';
+import { Input } from '../shared/Input';
 import { toast } from 'react-hot-toast';
 
 const OutsideBookEntryForm = () => {
@@ -12,6 +12,9 @@ const OutsideBookEntryForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) {
+      return;
+    }
     if (!title || !author) {
       toast.error('Title and Author are required');
       return;
