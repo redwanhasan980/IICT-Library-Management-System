@@ -186,6 +186,17 @@ npm run build
 - add single and bulk accession scans
 - verify summary cards and result-table status filters
 - close the session and confirm historical session remains listable
+15. For Admin role:
+
+- open `/dashboard/admin/fines`
+- search unpaid/partial fine rows by borrower or role
+- select a loan transaction and record partial payment
+- verify remaining balance decreases and payment history updates
+- record final payment and verify transaction status becomes `PAID`
+16. For Student/Teacher role:
+
+- open `/dashboard/student/fines` or `/dashboard/teacher/fines`
+- verify outstanding summary, transaction fine status, and payment history are visible
 
 ## Newly Added Modules (Current)
 
@@ -195,10 +206,11 @@ npm run build
 - Bulk import/export tools (CSV-first)
 - Advanced analytics dashboard (descriptive summaries)
 - Inventory audit and stock verification workflow
+- Manual fine payment tracking (no online gateway)
 
 ## Database Notes for This Phase
 
-Prisma schema now includes `Book`, `Loan`, `Reservation`, `SystemSetting`, `InventoryAuditSession`, and `InventoryAuditScan` models.
+Prisma schema now includes `Book`, `Loan`, `Reservation`, `SystemSetting`, `InventoryAuditSession`, `InventoryAuditScan`, and `FinePayment` models.
 
 After pulling latest code, run:
 

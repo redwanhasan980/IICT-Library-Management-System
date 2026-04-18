@@ -3,6 +3,9 @@ import type { ApiResponse } from '../types/api.types';
 import type {
   AnalyticsDashboard,
   Book,
+  FinePayment,
+  FineTransactionSummary,
+  FineUserSummary,
   InventoryAuditResultsPayload,
   InventoryAuditResultStatus,
   InventoryAuditSession,
@@ -34,6 +37,11 @@ interface BookLookupResponse {
 
 interface BulkAuditScanResult {
   added: number;
+}
+
+interface RecordFinePaymentResponse {
+  payment: FinePayment;
+  updatedTransaction: FineTransactionSummary;
 }
 
 export const libraryApi = api.injectEndpoints({
@@ -236,6 +244,47 @@ export const libraryApi = api.injectEndpoints({
         providesTags: (_result, _error, arg) => [{ type: 'InventoryAudit', id: arg.sessionId }, 'InventoryAudit'],
       }
     ),
+
+    getMyFineSummary: builder.query<FineUserSummary, void>({
+      query: () => '/fines/me/summary',
+      transformResponse: (response: ApiResponse<FineUserSummary>) => response.data,
+      providesTags: ['Fines'],
+    }),
+    getFineSummaryForUser: builder.query<FineUserSummary, string>({
+      query: (userId) => `/fines/users/${userId}/summary`,
+      transformResponse: (response: ApiResponse<FineUserSummary>) => response.data,
+      providesTags: (_result, _error, userId) => [{ type: 'Fines', id: userId }],
+    }),
+    getFineDetailsForTransaction: builder.query<FineTransactionSummary, string>({
+      query: (loanId) => `/fines/transactions/${loanId}`,
+      transformResponse: (response: ApiResponse<FineTransactionSummary>) => response.data,
+      providesTags: (_result, _error, loanId) => [{ type: 'Fines', id: loanId }],
+    }),
+    listUnpaidFines: builder.query<FineTransactionSummary[], { q?: string; role?: 'STUDENT' | 'TEACHER' } | undefined>({
+      query: (params) => ({
+        url: '/fines/unpaid',
+        params: params ?? {},
+      }),
+      transformResponse: (response: ApiResponse<FineTransactionSummary[]>) => response.data,
+      providesTags: ['Fines'],
+    }),
+    recordFinePayment: builder.mutation<RecordFinePaymentResponse, { loanId: string; amount: number; paymentDate?: string; note?: string }>({
+      query: (body) => ({
+        url: '/fines/payments',
+        method: 'POST',
+        body,
+      }),
+      transformResponse: (response: ApiResponse<RecordFinePaymentResponse>) => response.data,
+      invalidatesTags: ['Fines'],
+    }),
+    getFinePaymentHistory: builder.query<FinePayment[], { userId?: string; loanId?: string } | undefined>({
+      query: (params) => ({
+        url: '/fines/payments/history',
+        params: params ?? {},
+      }),
+      transformResponse: (response: ApiResponse<FinePayment[]>) => response.data,
+      providesTags: ['Fines'],
+    }),
   }),
 });
 
@@ -266,4 +315,10 @@ export const {
   useBulkAddInventoryAuditScansMutation,
   useCloseInventoryAuditSessionMutation,
   useListInventoryAuditResultsQuery,
+  useGetMyFineSummaryQuery,
+  useGetFineSummaryForUserQuery,
+  useGetFineDetailsForTransactionQuery,
+  useListUnpaidFinesQuery,
+  useRecordFinePaymentMutation,
+  useGetFinePaymentHistoryQuery,
 } = libraryApi;

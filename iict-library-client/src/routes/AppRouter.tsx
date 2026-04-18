@@ -20,6 +20,7 @@ import AdminCirculationPage from '../pages/admin/AdminCirculationPage';
 import AdminBulkToolsPage from '../pages/admin/AdminBulkToolsPage';
 import AdminAnalyticsPage from '../pages/admin/AdminAnalyticsPage';
 import AdminInventoryAuditPage from '../pages/admin/AdminInventoryAuditPage';
+import AdminFineManagementPage from '../pages/admin/AdminFineManagementPage';
 
 // Student Pages
 import StudentDashboard from '../pages/student/StudentDashboard';
@@ -28,6 +29,7 @@ import OutsideBookEntryForm from '../components/outside-book/OutsideBookEntryFor
 import BookCatalogPage from '../pages/books/BookCatalogPage';
 import BookDetailsPage from '../pages/books/BookDetailsPage';
 import MyReservationsPage from '../pages/shared/MyReservationsPage';
+import MyFinesPage from '../pages/shared/MyFinesPage';
 
 // Teacher Pages
 import TeacherDashboard from '../pages/teacher/TeacherDashboard';
@@ -90,6 +92,10 @@ const AppRouter = () => {
             path="admin/inventory-audit"
             element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminInventoryAuditPage /></ProtectedRoute>}
           />
+          <Route
+            path="admin/fines"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminFineManagementPage /></ProtectedRoute>}
+          />
 
           {/* Student Routes */}
           <Route
@@ -109,6 +115,10 @@ const AppRouter = () => {
             element={<ProtectedRoute allowedRoles={[Role.STUDENT]}><MyReservationsPage /></ProtectedRoute>}
           />
           <Route
+            path="student/fines"
+            element={<ProtectedRoute allowedRoles={[Role.STUDENT]}><MyFinesPage /></ProtectedRoute>}
+          />
+          <Route
             path="books"
             element={<ProtectedRoute allowedRoles={[Role.STUDENT, Role.TEACHER, Role.ADMIN]}><BookCatalogPage /></ProtectedRoute>}
           />
@@ -125,6 +135,10 @@ const AppRouter = () => {
           <Route
             path="teacher/reservations"
             element={<ProtectedRoute allowedRoles={[Role.TEACHER]}><MyReservationsPage /></ProtectedRoute>}
+          />
+          <Route
+            path="teacher/fines"
+            element={<ProtectedRoute allowedRoles={[Role.TEACHER]}><MyFinesPage /></ProtectedRoute>}
           />
 
         </Route>

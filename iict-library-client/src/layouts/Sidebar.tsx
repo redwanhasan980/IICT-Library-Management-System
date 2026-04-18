@@ -16,6 +16,7 @@ const adminLinks = [
   { to: '/dashboard/admin/settings', label: 'System Settings' },
   { to: '/dashboard/admin/bulk-tools', label: 'Bulk Tools' },
   { to: '/dashboard/admin/inventory-audit', label: 'Inventory Audit' },
+  { to: '/dashboard/admin/fines', label: 'Fine Management' },
   { to: '/dashboard/admin/analytics', label: 'Analytics' },
   { to: '/dashboard/spine-label-generator', label: 'Spine Label Generator' },
   // Add other admin links here
@@ -24,6 +25,7 @@ const adminLinks = [
 const studentLinks = [
   { to: '/dashboard/books', label: 'Book Catalog' },
   { to: '/dashboard/student/reservations', label: 'My Reservations' },
+  { to: '/dashboard/student/fines', label: 'My Fines' },
   { to: '/dashboard/my-outside-books', label: 'My Outside Books' },
   { to: '/dashboard/add-outside-book', label: 'Add Outside Book' },
   // Add other student links here
@@ -32,6 +34,7 @@ const studentLinks = [
 const teacherLinks = [
   { to: '/dashboard/books', label: 'Book Catalog' },
   { to: '/dashboard/teacher/reservations', label: 'My Reservations' },
+  { to: '/dashboard/teacher/fines', label: 'My Fines' },
 ];
 
 const Sidebar = () => {

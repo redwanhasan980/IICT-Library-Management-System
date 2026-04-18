@@ -300,3 +300,48 @@ This document tracks the development process of the IICT Library Management Syst
   - Add targeted integration tests for inventory audit status classification and close-session behavior.
   - Add optional duplicate-scan detection/flagging rules if stricter physical-count reconciliation is needed.
   - Resolve Windows file-lock issue for Prisma engine rename during `prisma generate` on some environments, if it appears outside local development.
+
+## Phase 8: Fine Payment Tracking Without Online Gateway
+
+- **What Was Built**:
+  - Added a centralized fine tracking foundation using existing loan due dates and policy-driven `finePerDay` settings.
+  - Added immutable manual payment records (`FinePayment`) with payment date, amount, optional note, borrower, loan transaction, and admin recorder.
+  - Implemented partial and full payment support with strict overpayment prevention.
+  - Added admin APIs for:
+    - fine summary by user
+    - transaction-level fine details
+    - unpaid/partially paid transaction list
+    - manual payment recording
+    - payment history retrieval
+  - Added borrower informational APIs/pages so student and teacher users can view only their own fine summary, transaction-level status, and payment history.
+  - Kept fine calculations centralized in service layer and added audit logs for payment recording.
+
+- **What Files Were Created or Updated**:
+  - `iict-library-server/prisma/schema.prisma` (updated)
+  - `iict-library-server/prisma/migrations/20260418213035_fine_payment_tracking_manual/migration.sql` (created)
+  - `iict-library-server/src/index.ts` (updated)
+  - `iict-library-server/src/validators/fine.validator.ts` (created)
+  - `iict-library-server/src/repositories/fine.repository.ts` (created)
+  - `iict-library-server/src/services/fine.service.ts` (created)
+  - `iict-library-server/src/controllers/fine.controller.ts` (created)
+  - `iict-library-server/src/routes/fine.routes.ts` (created)
+  - `iict-library-client/src/types/book.types.ts` (updated)
+  - `iict-library-client/src/config/api.ts` (updated)
+  - `iict-library-client/src/services/library.api.ts` (updated)
+  - `iict-library-client/src/pages/admin/AdminFineManagementPage.tsx` (created)
+  - `iict-library-client/src/pages/shared/MyFinesPage.tsx` (created)
+  - `iict-library-client/src/routes/AppRouter.tsx` (updated)
+  - `iict-library-client/src/layouts/Sidebar.tsx` (updated)
+  - `README.md` (updated)
+  - `DEVELOPMENT_PROCESS.md` (updated)
+
+- **What Commands Were Used**:
+  - `npm run prisma:migrate -- --name fine_payment_tracking_manual` (server)
+  - `npm run prisma:generate` (server)
+  - `npm run build` (server)
+  - `npm run build` (client)
+
+- **What Remains Next**:
+  - Add integration tests for overpayment prevention, partial/full payment transitions, and borrower data-access constraints.
+  - Optionally expose payment receipt export/print in admin fine workflow.
+  - Replace development auth bridge with production auth and claims-based checks.

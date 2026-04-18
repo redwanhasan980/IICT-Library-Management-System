@@ -27,6 +27,8 @@ model User {
   updatedPolicies SystemSetting[]    @relation("PolicyUpdatedBy")
   createdAudits   InventoryAuditSession[] @relation("AuditCreatedBy")
   closedAudits    InventoryAuditSession[] @relation("AuditClosedBy")
+  finePayments    FinePayment[]      @relation("FinePaymentForBorrower")
+  recordedFinePayments FinePayment[] @relation("FinePaymentRecordedByAdmin")
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
 }
@@ -148,12 +150,31 @@ model Loan {
   user         User       @relation("BorrowerLoans", fields: [userId], references: [id], onDelete: Restrict)
   issuedBy     User?      @relation("IssuedByAdmin", fields: [issuedById], references: [id], onDelete: SetNull)
   returnedBy   User?      @relation("ReturnedByAdmin", fields: [returnedById], references: [id], onDelete: SetNull)
+  finePayments FinePayment[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
   @@index([bookId, status])
   @@index([userId, status])
   @@index([dueAt, status])
+}
+
+model FinePayment {
+  id           String   @id @default(cuid())
+  loanId       String
+  userId       String
+  recordedById String
+  amount       Decimal  @db.Decimal(10, 2)
+  paymentDate  DateTime
+  note         String?
+  createdAt    DateTime @default(now())
+  loan         Loan     @relation(fields: [loanId], references: [id], onDelete: Restrict)
+  user         User     @relation("FinePaymentForBorrower", fields: [userId], references: [id], onDelete: Restrict)
+  recordedBy   User     @relation("FinePaymentRecordedByAdmin", fields: [recordedById], references: [id], onDelete: Restrict)
+
+  @@index([loanId, paymentDate])
+  @@index([userId, paymentDate])
+  @@index([recordedById, paymentDate])
 }
 
 model Reservation {

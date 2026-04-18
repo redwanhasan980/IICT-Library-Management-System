@@ -11,6 +11,7 @@ import policyRouter from './routes/policy.routes';
 import bulkRouter from './routes/bulk.routes';
 import analyticsRouter from './routes/analytics.routes';
 import inventoryAuditRouter from './routes/inventoryAudit.routes';
+import fineRouter from './routes/fine.routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import { successResponse } from './utils/apiResponse';
 
@@ -44,6 +45,7 @@ app.use('/api/policies', policyRouter);
 app.use('/api/admin/tools', bulkRouter);
 app.use('/api/analytics', analyticsRouter);
 app.use('/api/inventory-audits', inventoryAuditRouter);
+app.use('/api/fines', fineRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

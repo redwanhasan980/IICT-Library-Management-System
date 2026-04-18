@@ -142,3 +142,45 @@ export interface InventoryAuditResultsPayload {
   summary: InventoryAuditResultSummary;
   items: InventoryAuditResultItem[];
 }
+
+export type FinePaymentStatus = 'UNPAID' | 'PARTIALLY_PAID' | 'PAID';
+
+export interface FinePayment {
+  id: string;
+  loanId: string;
+  userId: string;
+  recordedById: string;
+  amount: number | string;
+  paymentDate: string;
+  note?: string;
+  createdAt: string;
+  loan?: Loan & { book?: Book };
+  user?: User;
+  recordedBy?: User;
+}
+
+export interface FineTransactionSummary {
+  loanId: string;
+  borrower: User;
+  book: Book;
+  issuedAt: string;
+  dueAt: string;
+  returnedAt?: string;
+  loanStatus: LoanStatus;
+  overdueDays: number;
+  finePerDay: number;
+  calculatedFine: number;
+  paidAmount: number;
+  outstanding: number;
+  paymentStatus: FinePaymentStatus;
+  payments: FinePayment[];
+}
+
+export interface FineUserSummary {
+  userId: string;
+  finePerDay: number;
+  totalCalculatedFine: number;
+  totalPaid: number;
+  totalOutstanding: number;
+  transactions: FineTransactionSummary[];
+}
