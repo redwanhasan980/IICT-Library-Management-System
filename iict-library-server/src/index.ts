@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import outsideBookRouter from './routes/outsideBook.routes';
+import spineLabelRouter from './routes/spineLabel.routes';
 
 dotenv.config();
 
@@ -15,9 +17,13 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.send('IICT Library Management Server is running!');
 });
+
+// API Routes
+app.use('/api/outside-books', outsideBookRouter);
+app.use('/api/spine-labels', spineLabelRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

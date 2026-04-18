@@ -1,73 +1,85 @@
-# React + TypeScript + Vite
+# IICT Library Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a monorepo for the IICT Library Management System, containing the client and server applications.
 
-Currently, two official plugins are available:
+## Project Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `iict-library-client`: Frontend application built with React, TypeScript, and Vite.
+- `iict-library-server`: Backend application built with Node.js, Express, and Prisma.
+- `Requirements Documents`: Contains the requirements for the project.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Backend
 
-## Expanding the ESLint configuration
+- Node.js
+- Express
+- Prisma
+- MariaDB
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Frontend
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React
+- TypeScript
+- Vite
+- Redux Toolkit (RTK Query)
+- Tailwind CSS
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Prerequisites
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Node.js (v18 or higher)
+- npm
+- Docker (for MariaDB)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Setup
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1.  **Clone the repository:**
+
+    ```bash
+    git clone <repository-url>
+    cd iict-library-management-system
+    ```
+
+2.  **Install dependencies for the server:**
+
+    ```bash
+    cd iict-library-server
+    npm install
+    ```
+
+3.  **Install dependencies for the client:**
+
+    ```bash
+    cd ../iict-library-client
+    npm install
+    ```
+
+4.  **Setup the database:**
+    - Create a `.env` file in the `iict-library-server` directory.
+    - Add the `DATABASE_URL` environment variable:
+      ```
+      DATABASE_URL="mysql://user:password@localhost:3306/iict_library"
+      ```
+    - Run the Prisma migrations:
+      ```bash
+      npx prisma migrate dev
+      ```
+
+### Running the Application
+
+1.  **Start the server:**
+
+    ```bash
+    cd iict-library-server
+    npm run dev
+    ```
+
+2.  **Start the client:**
+    ```bash
+    cd ../iict-library-client
+    npm run dev
+    ```
+
+The client will be available at `http://localhost:5173` and the server at `http://localhost:5000`.
