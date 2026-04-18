@@ -146,6 +146,47 @@ npm run build
    - open My Outside Books or Outside Book Log
    - confirm error state with Retry button appears
 7. Verify API health endpoint returns success envelope.
+8. For Student or Teacher role:
+   - open `/dashboard/books`
+   - open a book with `availableCopies = 0`
+   - place a reservation and verify it appears in My Reservations
+9. For Admin role:
+   - open `/dashboard/admin/reservations`
+   - mark pending reservation as fulfilled/cancelled/expired
+10. For Admin role:
+   - open `/dashboard/admin/settings`
+   - update policy values and save
+11. For Admin role:
+   - open `/dashboard/admin/circulation`
+   - scan/type accession, then issue and return a loan
+12. For Admin role:
+   - open `/dashboard/admin/bulk-tools`
+   - import books from CSV text and export datasets
+13. For Admin role:
+   - open `/dashboard/admin/analytics`
+   - verify summary cards and trend/table sections load
+
+## Newly Added Modules (Current)
+
+- Book reservation and waitlist workflow
+- Library policy and system settings management
+- Scanner-friendly circulation flow (barcode/QR accession handling)
+- Bulk import/export tools (CSV-first)
+- Advanced analytics dashboard (descriptive summaries)
+
+## Database Notes for This Phase
+
+Prisma schema now includes `Book`, `Loan`, `Reservation`, and `SystemSetting` models.
+
+After pulling latest code, run:
+
+```bash
+cd iict-library-server
+npm run prisma:generate
+npm run prisma:migrate
+```
+
+These are required before starting the backend for the new modules.
 
 ## Deployment Notes
 

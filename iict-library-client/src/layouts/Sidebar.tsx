@@ -9,19 +9,28 @@ const commonLinks = [
 ];
 
 const adminLinks = [
+  { to: '/dashboard/books', label: 'Book Catalog' },
   { to: '/dashboard/outside-book-log', label: 'Outside Book Log' },
+  { to: '/dashboard/admin/circulation', label: 'Circulation Desk' },
+  { to: '/dashboard/admin/reservations', label: 'Reservations' },
+  { to: '/dashboard/admin/settings', label: 'System Settings' },
+  { to: '/dashboard/admin/bulk-tools', label: 'Bulk Tools' },
+  { to: '/dashboard/admin/analytics', label: 'Analytics' },
   { to: '/dashboard/spine-label-generator', label: 'Spine Label Generator' },
   // Add other admin links here
 ];
 
 const studentLinks = [
+  { to: '/dashboard/books', label: 'Book Catalog' },
+  { to: '/dashboard/student/reservations', label: 'My Reservations' },
   { to: '/dashboard/my-outside-books', label: 'My Outside Books' },
   { to: '/dashboard/add-outside-book', label: 'Add Outside Book' },
   // Add other student links here
 ];
 
 const teacherLinks = [
-    // Add teacher links here
+  { to: '/dashboard/books', label: 'Book Catalog' },
+  { to: '/dashboard/teacher/reservations', label: 'My Reservations' },
 ];
 
 const Sidebar = () => {

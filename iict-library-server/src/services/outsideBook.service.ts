@@ -1,12 +1,19 @@
 import OutsideBookRepository from '../repositories/outsideBook.repository';
 import AppError from '../utils/AppError';
 import { logAuditEvent } from '../utils/auditLog';
+import policyService from './policy.service';
 
 class OutsideBookService {
   async createEntry(studentId: string, title: string, author: string) {
     if (!studentId) {
       throw new AppError('User profile not found', 404);
     }
+
+    const outsideBookEnabled = await policyService.isOutsideBookEnabled();
+    if (!outsideBookEnabled) {
+      throw new AppError('Outside book entries are disabled by current library policy', 400);
+    }
+
     const created = await OutsideBookRepository.create(studentId, title, author);
     logAuditEvent({
       action: 'outside_book.create',

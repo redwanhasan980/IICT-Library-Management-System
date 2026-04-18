@@ -12,16 +12,21 @@ datasource db {
 
 // Basic User Model - to be expanded later
 model User {
-  id        String          @id @default(cuid())
-  email     String          @unique
-  password  String
-  role      Role            @default(STUDENT)
-  name      String
-  student   StudentProfile?
-  admin     AdminProfile?
-  teacher   TeacherProfile?
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id              String             @id @default(cuid())
+  email           String             @unique
+  password        String
+  role            Role               @default(STUDENT)
+  name            String
+  student         StudentProfile?
+  admin           AdminProfile?
+  teacher         TeacherProfile?
+  loans           Loan[]             @relation("BorrowerLoans")
+  reservations    Reservation[]
+  issuedLoans     Loan[]             @relation("IssuedByAdmin")
+  receivedReturns Loan[]             @relation("ReturnedByAdmin")
+  updatedPolicies SystemSetting[]    @relation("PolicyUpdatedBy")
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 }
 
 model StudentProfile {
@@ -73,8 +78,97 @@ model OutsideBookEntry {
   @@index([isVerifiedEntry, isVerifiedExit])
 }
 
+model Book {
+  id             String        @id @default(cuid())
+  title          String
+  author         String
+  isbn           String?
+  accessionNumber String       @unique
+  department     String?
+  totalCopies    Int           @default(1)
+  availableCopies Int          @default(1)
+  isArchived     Boolean       @default(false)
+  loans          Loan[]
+  reservations   Reservation[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([isArchived])
+  @@index([title])
+  @@index([accessionNumber])
+}
+
+model Loan {
+  id           String     @id @default(cuid())
+  bookId       String
+  userId       String
+  issuedById   String?
+  returnedById String?
+  issuedAt     DateTime   @default(now())
+  dueAt        DateTime
+  returnedAt   DateTime?
+  status       LoanStatus @default(ACTIVE)
+  book         Book       @relation(fields: [bookId], references: [id], onDelete: Restrict)
+  user         User       @relation("BorrowerLoans", fields: [userId], references: [id], onDelete: Restrict)
+  issuedBy     User?      @relation("IssuedByAdmin", fields: [issuedById], references: [id], onDelete: SetNull)
+  returnedBy   User?      @relation("ReturnedByAdmin", fields: [returnedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([bookId, status])
+  @@index([userId, status])
+  @@index([dueAt, status])
+}
+
+model Reservation {
+  id          String            @id @default(cuid())
+  bookId       String
+  userId       String
+  queueNumber Int
+  status      ReservationStatus @default(PENDING)
+  expiresAt   DateTime?
+  fulfilledAt DateTime?
+  cancelledAt DateTime?
+  expiredAt   DateTime?
+  book        Book              @relation(fields: [bookId], references: [id], onDelete: Restrict)
+  user        User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([bookId, status, queueNumber])
+  @@index([userId, status])
+}
+
+model SystemSetting {
+  id                        Int      @id @default(1)
+  studentBorrowDurationDays Int      @default(14)
+  teacherBorrowDurationDays Int      @default(30)
+  maxActiveLoansStudent     Int      @default(3)
+  maxActiveLoansTeacher     Int      @default(5)
+  finePerDay                Decimal  @default(0) @db.Decimal(10, 2)
+  reservationExpiryHours    Int      @default(48)
+  outsideBookEnabled        Boolean  @default(true)
+  updatedById               String?
+  updatedBy                 User?    @relation("PolicyUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+}
+
 enum Role {
   ADMIN
   STUDENT
   TEACHER
+}
+
+enum LoanStatus {
+  ACTIVE
+  RETURNED
+  OVERDUE
+}
+
+enum ReservationStatus {
+  PENDING
+  FULFILLED
+  CANCELLED
+  EXPIRED
 }

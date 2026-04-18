@@ -14,11 +14,19 @@ import { Role } from '../types/user.types';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import ActiveOutsideBookLogPage from '../pages/admin/ActiveOutsideBookLogPage';
 import SpineLabelGeneratorPage from '../pages/admin/SpineLabelGeneratorPage';
+import AdminReservationsPage from '../pages/admin/AdminReservationsPage';
+import AdminSettingsPage from '../pages/admin/AdminSettingsPage';
+import AdminCirculationPage from '../pages/admin/AdminCirculationPage';
+import AdminBulkToolsPage from '../pages/admin/AdminBulkToolsPage';
+import AdminAnalyticsPage from '../pages/admin/AdminAnalyticsPage';
 
 // Student Pages
 import StudentDashboard from '../pages/student/StudentDashboard';
 import MyOutsideBooksPage from '../pages/student/MyOutsideBooksPage';
 import OutsideBookEntryForm from '../components/outside-book/OutsideBookEntryForm';
+import BookCatalogPage from '../pages/books/BookCatalogPage';
+import BookDetailsPage from '../pages/books/BookDetailsPage';
+import MyReservationsPage from '../pages/shared/MyReservationsPage';
 
 // Teacher Pages
 import TeacherDashboard from '../pages/teacher/TeacherDashboard';
@@ -57,6 +65,26 @@ const AppRouter = () => {
             path="spine-label-generator"
             element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><SpineLabelGeneratorPage /></ProtectedRoute>}
           />
+          <Route
+            path="admin/reservations"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminReservationsPage /></ProtectedRoute>}
+          />
+          <Route
+            path="admin/settings"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminSettingsPage /></ProtectedRoute>}
+          />
+          <Route
+            path="admin/circulation"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminCirculationPage /></ProtectedRoute>}
+          />
+          <Route
+            path="admin/bulk-tools"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminBulkToolsPage /></ProtectedRoute>}
+          />
+          <Route
+            path="admin/analytics"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminAnalyticsPage /></ProtectedRoute>}
+          />
 
           {/* Student Routes */}
           <Route
@@ -71,11 +99,27 @@ const AppRouter = () => {
             path="add-outside-book"
             element={<ProtectedRoute allowedRoles={[Role.STUDENT]}><OutsideBookEntryForm /></ProtectedRoute>}
           />
+          <Route
+            path="student/reservations"
+            element={<ProtectedRoute allowedRoles={[Role.STUDENT]}><MyReservationsPage /></ProtectedRoute>}
+          />
+          <Route
+            path="books"
+            element={<ProtectedRoute allowedRoles={[Role.STUDENT, Role.TEACHER, Role.ADMIN]}><BookCatalogPage /></ProtectedRoute>}
+          />
+          <Route
+            path="books/:id"
+            element={<ProtectedRoute allowedRoles={[Role.STUDENT, Role.TEACHER, Role.ADMIN]}><BookDetailsPage /></ProtectedRoute>}
+          />
 
           {/* Teacher Routes */}
           <Route
             path="teacher"
             element={<ProtectedRoute allowedRoles={[Role.TEACHER]}><TeacherDashboard /></ProtectedRoute>}
+          />
+          <Route
+            path="teacher/reservations"
+            element={<ProtectedRoute allowedRoles={[Role.TEACHER]}><MyReservationsPage /></ProtectedRoute>}
           />
 
         </Route>

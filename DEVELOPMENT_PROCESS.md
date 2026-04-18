@@ -178,3 +178,69 @@ This document tracks the development process of the IICT Library Management Syst
   - Persist audit events to database instead of console output.
   - Add dedicated unauthorized unit/integration test coverage.
   - Add pagination/filtering utilities for future large outside-book datasets.
+
+## Phase 6: Reservation, Policy, Circulation, Bulk Tools, and Analytics
+
+- **What Was Built**:
+  - Added a full Book Reservation and Waitlist feature with queue ordering, duplicate active reservation prevention, and admin status actions (`FULFILLED`, `CANCELLED`, `EXPIRED`).
+  - Added centralized Library Policy/System Settings with admin-only read/update APIs and service-level consumption by circulation/reservation/outside-book workflows.
+  - Added scanner-friendly circulation endpoints and UI for accession-based issue/return lookup, including simple barcode/QR label preview and print support.
+  - Added Bulk Import/Export tools for admins with CSV-first book import validation and CSV exports for books, loans, outside-book logs, and members.
+  - Added Advanced Analytics dashboard APIs and admin page for operational summaries: most borrowed books, active borrowers, monthly borrowing trend, overdue trend, outside-book usage summary, and department-wise borrowing summary.
+  - Preserved existing outside-book and spine-label flows while integrating policy toggles and shared UI patterns.
+
+- **What Files Were Created or Updated**:
+  - `iict-library-server/prisma/schema.prisma` (updated)
+  - `iict-library-server/src/index.ts` (updated)
+  - `iict-library-server/src/services/outsideBook.service.ts` (updated)
+  - `iict-library-server/src/utils/csv.ts` (created)
+  - `iict-library-server/src/services/policy.service.ts` (created)
+  - `iict-library-server/src/services/book.service.ts` (created)
+  - `iict-library-server/src/services/reservation.service.ts` (created)
+  - `iict-library-server/src/services/loan.service.ts` (created)
+  - `iict-library-server/src/services/bulk.service.ts` (created)
+  - `iict-library-server/src/services/analytics.service.ts` (created)
+  - `iict-library-server/src/controllers/book.controller.ts` (created)
+  - `iict-library-server/src/controllers/reservation.controller.ts` (created)
+  - `iict-library-server/src/controllers/loan.controller.ts` (created)
+  - `iict-library-server/src/controllers/policy.controller.ts` (created)
+  - `iict-library-server/src/controllers/bulk.controller.ts` (created)
+  - `iict-library-server/src/controllers/analytics.controller.ts` (created)
+  - `iict-library-server/src/routes/book.routes.ts` (created)
+  - `iict-library-server/src/routes/reservation.routes.ts` (created)
+  - `iict-library-server/src/routes/loan.routes.ts` (created)
+  - `iict-library-server/src/routes/policy.routes.ts` (created)
+  - `iict-library-server/src/routes/bulk.routes.ts` (created)
+  - `iict-library-server/src/routes/analytics.routes.ts` (created)
+  - `iict-library-server/src/validators/book.validator.ts` (created)
+  - `iict-library-server/src/validators/reservation.validator.ts` (created)
+  - `iict-library-server/src/validators/loan.validator.ts` (created)
+  - `iict-library-server/src/validators/policy.validator.ts` (created)
+  - `iict-library-server/src/validators/bulk.validator.ts` (created)
+  - `iict-library-server/src/validators/analytics.validator.ts` (created)
+  - `iict-library-client/src/config/api.ts` (updated)
+  - `iict-library-client/src/types/book.types.ts` (updated)
+  - `iict-library-client/src/components/shared/Badge.tsx` (updated)
+  - `iict-library-client/src/services/library.api.ts` (created)
+  - `iict-library-client/src/layouts/Sidebar.tsx` (updated)
+  - `iict-library-client/src/routes/AppRouter.tsx` (updated)
+  - `iict-library-client/src/pages/books/BookCatalogPage.tsx` (created)
+  - `iict-library-client/src/pages/books/BookDetailsPage.tsx` (created)
+  - `iict-library-client/src/pages/shared/MyReservationsPage.tsx` (created)
+  - `iict-library-client/src/pages/admin/AdminReservationsPage.tsx` (created)
+  - `iict-library-client/src/pages/admin/AdminSettingsPage.tsx` (created)
+  - `iict-library-client/src/pages/admin/AdminCirculationPage.tsx` (created)
+  - `iict-library-client/src/pages/admin/AdminBulkToolsPage.tsx` (created)
+  - `iict-library-client/src/pages/admin/AdminAnalyticsPage.tsx` (created)
+  - `README.md` (updated)
+  - `DEVELOPMENT_PROCESS.md` (updated)
+
+- **What Commands Were Used**:
+  - `npm run prisma:generate` (server)
+  - `npm run build` (server)
+  - `npm run build` (client)
+
+- **What Remains Next**:
+  - Add database migration file execution in all environments (`npm run prisma:migrate`).
+  - Add focused API/integration tests for reservation queue behavior, policy updates, and bulk import validation.
+  - Add optional robust multipart file-upload import path in addition to current CSV-text import endpoint.

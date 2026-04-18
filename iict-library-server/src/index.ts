@@ -4,6 +4,12 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import outsideBookRouter from './routes/outsideBook.routes';
 import spineLabelRouter from './routes/spineLabel.routes';
+import bookRouter from './routes/book.routes';
+import reservationRouter from './routes/reservation.routes';
+import loanRouter from './routes/loan.routes';
+import policyRouter from './routes/policy.routes';
+import bulkRouter from './routes/bulk.routes';
+import analyticsRouter from './routes/analytics.routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import { successResponse } from './utils/apiResponse';
 
@@ -30,6 +36,12 @@ app.get('/api/health', (req, res) => {
 // API Routes
 app.use('/api/outside-books', outsideBookRouter);
 app.use('/api/spine-labels', spineLabelRouter);
+app.use('/api/books', bookRouter);
+app.use('/api/reservations', reservationRouter);
+app.use('/api/loans', loanRouter);
+app.use('/api/policies', policyRouter);
+app.use('/api/admin/tools', bulkRouter);
+app.use('/api/analytics', analyticsRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
