@@ -15,6 +15,7 @@ const adminLinks = [
   { to: '/dashboard/admin/reservations', label: 'Reservations' },
   { to: '/dashboard/admin/settings', label: 'System Settings' },
   { to: '/dashboard/admin/bulk-tools', label: 'Bulk Tools' },
+  { to: '/dashboard/admin/inventory-audit', label: 'Inventory Audit' },
   { to: '/dashboard/admin/analytics', label: 'Analytics' },
   { to: '/dashboard/spine-label-generator', label: 'Spine Label Generator' },
   // Add other admin links here

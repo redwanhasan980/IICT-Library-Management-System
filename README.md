@@ -7,6 +7,13 @@ IICT Library Management System is a full-stack monorepo with a React client and 
 - iict-library-client: Frontend (React, TypeScript, Vite, RTK Query, Tailwind CSS)
 - iict-library-server: Backend (Node.js, Express, Prisma, MariaDB)
 - Requirements Documents: Requirement and use-case artifacts
+- Development Process: Phase-by-phase delivery notes
+
+## Development Phases
+
+- [Development Process/Phase-1-Project-Setup.md](Development%20Process/Phase-1-Project-Setup.md)
+- [Development Process/Phase-2-Outside-Book-Module.md](Development%20Process/Phase-2-Outside-Book-Module.md)
+- [Development Process/Phase-3-Core-Expansion-and-Admin-Operations.md](Development%20Process/Phase-3-Core-Expansion-and-Admin-Operations.md)
 
 ## Tech Stack
 
@@ -154,17 +161,31 @@ npm run build
    - open `/dashboard/admin/reservations`
    - mark pending reservation as fulfilled/cancelled/expired
 10. For Admin role:
-   - open `/dashboard/admin/settings`
-   - update policy values and save
+
+- open `/dashboard/admin/settings`
+- update policy values and save
+
 11. For Admin role:
-   - open `/dashboard/admin/circulation`
-   - scan/type accession, then issue and return a loan
+
+- open `/dashboard/admin/circulation`
+- scan/type accession, then issue and return a loan
+
 12. For Admin role:
-   - open `/dashboard/admin/bulk-tools`
-   - import books from CSV text and export datasets
+
+- open `/dashboard/admin/bulk-tools`
+- import books from CSV text and export datasets
+
 13. For Admin role:
-   - open `/dashboard/admin/analytics`
-   - verify summary cards and trend/table sections load
+
+- open `/dashboard/admin/analytics`
+- verify summary cards and trend/table sections load
+14. For Admin role:
+
+- open `/dashboard/admin/inventory-audit`
+- create a new audit session
+- add single and bulk accession scans
+- verify summary cards and result-table status filters
+- close the session and confirm historical session remains listable
 
 ## Newly Added Modules (Current)
 
@@ -173,10 +194,11 @@ npm run build
 - Scanner-friendly circulation flow (barcode/QR accession handling)
 - Bulk import/export tools (CSV-first)
 - Advanced analytics dashboard (descriptive summaries)
+- Inventory audit and stock verification workflow
 
 ## Database Notes for This Phase
 
-Prisma schema now includes `Book`, `Loan`, `Reservation`, and `SystemSetting` models.
+Prisma schema now includes `Book`, `Loan`, `Reservation`, `SystemSetting`, `InventoryAuditSession`, and `InventoryAuditScan` models.
 
 After pulling latest code, run:
 

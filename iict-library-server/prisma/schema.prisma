@@ -25,6 +25,8 @@ model User {
   issuedLoans     Loan[]             @relation("IssuedByAdmin")
   receivedReturns Loan[]             @relation("ReturnedByAdmin")
   updatedPolicies SystemSetting[]    @relation("PolicyUpdatedBy")
+  createdAudits   InventoryAuditSession[] @relation("AuditCreatedBy")
+  closedAudits    InventoryAuditSession[] @relation("AuditClosedBy")
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
 }
@@ -90,12 +92,46 @@ model Book {
   isArchived     Boolean       @default(false)
   loans          Loan[]
   reservations   Reservation[]
+  inventoryScans InventoryAuditScan[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
   @@index([isArchived])
   @@index([title])
   @@index([accessionNumber])
+}
+
+model InventoryAuditSession {
+  id           String                @id @default(cuid())
+  title        String
+  notes        String?
+  status       InventoryAuditStatus  @default(OPEN)
+  createdById  String
+  closedById   String?
+  startedAt    DateTime              @default(now())
+  closedAt     DateTime?
+  createdBy    User                  @relation("AuditCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  closedBy     User?                 @relation("AuditClosedBy", fields: [closedById], references: [id], onDelete: SetNull)
+  scans        InventoryAuditScan[]
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  @@index([status, startedAt])
+}
+
+model InventoryAuditScan {
+  id             String               @id @default(cuid())
+  sessionId      String
+  accessionNumber String
+  scannedById    String
+  matchedBookId  String?
+  matched        Boolean              @default(false)
+  scannedAt      DateTime             @default(now())
+  session        InventoryAuditSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  matchedBook    Book?                @relation(fields: [matchedBookId], references: [id], onDelete: SetNull)
+
+  @@index([sessionId, accessionNumber])
+  @@index([sessionId, matched])
 }
 
 model Loan {
@@ -171,4 +207,17 @@ enum ReservationStatus {
   FULFILLED
   CANCELLED
   EXPIRED
+}
+
+enum InventoryAuditStatus {
+  OPEN
+  CLOSED
+}
+
+enum InventoryAuditResultStatus {
+  FOUND
+  MISSING
+  EXTRA_OR_UNMATCHED
+  ISSUED_DURING_AUDIT
+  INACTIVE_OR_ARCHIVED
 }

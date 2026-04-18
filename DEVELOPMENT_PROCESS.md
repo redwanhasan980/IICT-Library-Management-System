@@ -30,7 +30,7 @@ This document tracks the development process of the IICT Library Management Syst
   - `iict-library-client/src/services/outsideBook.api.ts`
 - **Commands Used**:
   - `npx prisma migrate dev --name init_schema`
-- **Next Steps**: Cleanup and refactor the project.
+- **Next Steps**: Continue with Phase 3 expansion modules (see `Development Process/Phase-3-Core-Expansion-and-Admin-Operations.md`).
 
 ## Phase 3: Spine Label Generator
 
@@ -49,6 +49,20 @@ This document tracks the development process of the IICT Library Management Syst
   - `iict-library-client/src/layouts/Sidebar.tsx` (updated)
 - **Commands Used**: None
 - **Next Steps**: Prepare the project for production deployment.
+
+## Phase 3 (Continuation from Phase 2): Core Expansion and Admin Operations
+
+- **Description**: This continuation phase completes what followed after Phase 2 by expanding core modules for practical day-to-day library operations.
+- **Detailed Document**:
+  - `Development Process/Phase-3-Core-Expansion-and-Admin-Operations.md`
+- **Coverage**:
+  - Spine label generator
+  - Reservation and waitlist flow
+  - Policy and system settings
+  - Circulation support
+  - Bulk tools (import/export)
+  - Analytics dashboard
+  - Inventory audit and stock verification
 
 ## Phase 4: Full-System Polish and Stabilization
 
@@ -244,3 +258,45 @@ This document tracks the development process of the IICT Library Management Syst
   - Add database migration file execution in all environments (`npm run prisma:migrate`).
   - Add focused API/integration tests for reservation queue behavior, policy updates, and bulk import validation.
   - Add optional robust multipart file-upload import path in addition to current CSV-text import endpoint.
+
+## Phase 7: Inventory Audit and Stock Verification
+
+- **What Was Built**:
+  - Added a dedicated Inventory Audit module for admins with support for creating audit sessions, listing sessions, viewing session details, adding scans (single and bulk), listing computed audit results, and closing sessions.
+  - Implemented result classification for practical stock verification statuses:
+    - `FOUND`
+    - `MISSING`
+    - `EXTRA_OR_UNMATCHED`
+    - `ISSUED_DURING_AUDIT`
+    - `INACTIVE_OR_ARCHIVED`
+  - Kept inventory-audit logic isolated from borrowing/return workflows and used accession number as the core physical identifier.
+  - Added admin UI workflow for creating and operating audit sessions with scanner-friendly fast entry, summary cards, filterable result table, and close-session action.
+  - Added audit logging for major inventory-audit actions (session create, scan add, session close).
+
+- **What Files Were Created or Updated**:
+  - `iict-library-server/prisma/schema.prisma` (updated)
+  - `iict-library-server/prisma/migrations/20260418211814_inventory_audit_and_stock_verification/migration.sql` (created)
+  - `iict-library-server/src/index.ts` (updated)
+  - `iict-library-server/src/validators/inventoryAudit.validator.ts` (created)
+  - `iict-library-server/src/services/inventoryAudit.service.ts` (created)
+  - `iict-library-server/src/controllers/inventoryAudit.controller.ts` (created)
+  - `iict-library-server/src/routes/inventoryAudit.routes.ts` (created)
+  - `iict-library-client/src/types/book.types.ts` (updated)
+  - `iict-library-client/src/config/api.ts` (updated)
+  - `iict-library-client/src/services/library.api.ts` (updated)
+  - `iict-library-client/src/pages/admin/AdminInventoryAuditPage.tsx` (created)
+  - `iict-library-client/src/routes/AppRouter.tsx` (updated)
+  - `iict-library-client/src/layouts/Sidebar.tsx` (updated)
+  - `README.md` (updated)
+  - `DEVELOPMENT_PROCESS.md` (updated)
+
+- **What Commands Were Used**:
+  - `npm run prisma:generate` (server)
+  - `npm run prisma:migrate -- --name inventory_audit_and_stock_verification` (server)
+  - `npm run build` (server)
+  - `npm run build` (client)
+
+- **What Remains Next**:
+  - Add targeted integration tests for inventory audit status classification and close-session behavior.
+  - Add optional duplicate-scan detection/flagging rules if stricter physical-count reconciliation is needed.
+  - Resolve Windows file-lock issue for Prisma engine rename during `prisma generate` on some environments, if it appears outside local development.

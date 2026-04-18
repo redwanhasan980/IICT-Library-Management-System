@@ -92,3 +92,53 @@ export interface AnalyticsDashboard {
   };
   departmentWiseBorrowingSummary: Array<{ department: string; count: number }>;
 }
+
+export type InventoryAuditSessionStatus = 'OPEN' | 'CLOSED';
+export type InventoryAuditResultStatus =
+  | 'FOUND'
+  | 'MISSING'
+  | 'EXTRA_OR_UNMATCHED'
+  | 'ISSUED_DURING_AUDIT'
+  | 'INACTIVE_OR_ARCHIVED';
+
+export interface InventoryAuditSession {
+  id: string;
+  title: string;
+  notes?: string;
+  status: InventoryAuditSessionStatus;
+  createdById: string;
+  closedById?: string;
+  startedAt: string;
+  closedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  _count?: { scans: number };
+}
+
+export interface InventoryAuditResultItem {
+  type: 'BOOK' | 'UNMATCHED_SCAN';
+  status: InventoryAuditResultStatus;
+  accessionNumber: string;
+  title?: string;
+  author?: string;
+  department?: string;
+  bookId?: string;
+  isArchived?: boolean;
+  scannedCount?: number;
+}
+
+export interface InventoryAuditResultSummary {
+  totalExpected: number;
+  found: number;
+  missing: number;
+  unmatched: number;
+  issuedDuringAudit: number;
+  inactiveOrArchived: number;
+  scannedTotal: number;
+}
+
+export interface InventoryAuditResultsPayload {
+  session: InventoryAuditSession;
+  summary: InventoryAuditResultSummary;
+  items: InventoryAuditResultItem[];
+}

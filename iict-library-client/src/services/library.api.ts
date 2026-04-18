@@ -3,6 +3,9 @@ import type { ApiResponse } from '../types/api.types';
 import type {
   AnalyticsDashboard,
   Book,
+  InventoryAuditResultsPayload,
+  InventoryAuditResultStatus,
+  InventoryAuditSession,
   Loan,
   Reservation,
   ReservationStatus,
@@ -27,6 +30,10 @@ interface ImportSummary {
 interface BookLookupResponse {
   book: Book;
   activeLoan?: Loan;
+}
+
+interface BulkAuditScanResult {
+  added: number;
 }
 
 export const libraryApi = api.injectEndpoints({
@@ -174,6 +181,61 @@ export const libraryApi = api.injectEndpoints({
       transformResponse: (response: ApiResponse<AnalyticsDashboard>) => response.data,
       providesTags: ['Analytics'],
     }),
+
+    createInventoryAuditSession: builder.mutation<InventoryAuditSession, { title: string; notes?: string }>({
+      query: (body) => ({
+        url: '/inventory-audits/sessions',
+        method: 'POST',
+        body,
+      }),
+      transformResponse: (response: ApiResponse<InventoryAuditSession>) => response.data,
+      invalidatesTags: ['InventoryAudit'],
+    }),
+    listInventoryAuditSessions: builder.query<InventoryAuditSession[], void>({
+      query: () => '/inventory-audits/sessions',
+      transformResponse: (response: ApiResponse<InventoryAuditSession[]>) => response.data,
+      providesTags: ['InventoryAudit'],
+    }),
+    getInventoryAuditSession: builder.query<InventoryAuditSession, string>({
+      query: (id) => `/inventory-audits/sessions/${id}`,
+      transformResponse: (response: ApiResponse<InventoryAuditSession>) => response.data,
+      providesTags: (_result, _error, id) => [{ type: 'InventoryAudit', id }],
+    }),
+    addInventoryAuditScan: builder.mutation<unknown, { sessionId: string; accessionNumber: string }>({
+      query: ({ sessionId, accessionNumber }) => ({
+        url: `/inventory-audits/sessions/${sessionId}/scans`,
+        method: 'POST',
+        body: { accessionNumber },
+      }),
+      invalidatesTags: (_result, _error, arg) => [{ type: 'InventoryAudit', id: arg.sessionId }, 'InventoryAudit'],
+    }),
+    bulkAddInventoryAuditScans: builder.mutation<BulkAuditScanResult, { sessionId: string; accessionNumbers: string[] }>({
+      query: ({ sessionId, accessionNumbers }) => ({
+        url: `/inventory-audits/sessions/${sessionId}/scans/bulk`,
+        method: 'POST',
+        body: { accessionNumbers },
+      }),
+      transformResponse: (response: ApiResponse<BulkAuditScanResult>) => response.data,
+      invalidatesTags: (_result, _error, arg) => [{ type: 'InventoryAudit', id: arg.sessionId }, 'InventoryAudit'],
+    }),
+    closeInventoryAuditSession: builder.mutation<InventoryAuditSession, string>({
+      query: (id) => ({
+        url: `/inventory-audits/sessions/${id}/close`,
+        method: 'PATCH',
+      }),
+      transformResponse: (response: ApiResponse<InventoryAuditSession>) => response.data,
+      invalidatesTags: (_result, _error, id) => [{ type: 'InventoryAudit', id }, 'InventoryAudit'],
+    }),
+    listInventoryAuditResults: builder.query<InventoryAuditResultsPayload, { sessionId: string; status?: InventoryAuditResultStatus }>(
+      {
+        query: ({ sessionId, status }) => ({
+          url: `/inventory-audits/sessions/${sessionId}/results`,
+          params: status ? { status } : {},
+        }),
+        transformResponse: (response: ApiResponse<InventoryAuditResultsPayload>) => response.data,
+        providesTags: (_result, _error, arg) => [{ type: 'InventoryAudit', id: arg.sessionId }, 'InventoryAudit'],
+      }
+    ),
   }),
 });
 
@@ -197,4 +259,11 @@ export const {
   useImportBooksCsvMutation,
   useExportResourceCsvMutation,
   useGetAnalyticsDashboardQuery,
+  useCreateInventoryAuditSessionMutation,
+  useListInventoryAuditSessionsQuery,
+  useGetInventoryAuditSessionQuery,
+  useAddInventoryAuditScanMutation,
+  useBulkAddInventoryAuditScansMutation,
+  useCloseInventoryAuditSessionMutation,
+  useListInventoryAuditResultsQuery,
 } = libraryApi;
