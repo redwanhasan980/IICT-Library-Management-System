@@ -6,8 +6,28 @@ interface CreateBookInput {
   title: string;
   author: string;
   accessionNumber: string;
+  authorEditor?: string;
+  edition?: string;
+  volume?: string;
+  placeOfPublication?: string;
+  publisher?: string;
+  dateOfPublication?: string;
+  source?: 'PURCHASE' | 'DONATION' | 'GIFT';
+  binding?: 'PB' | 'HB';
+  pagination?: number;
+  billNumber?: string;
+  billDate?: string;
   isbn?: string;
-  department?: string;
+  department?: 'CSE' | 'SWE' | 'EEE';
+  subjectCategory?: string;
+  deweyDecimalNumber?: number;
+  cutterCode?: string;
+  callNumber?: string;
+  locationCode?: string;
+  catalogEntryDate?: string;
+  catalogedById?: string;
+  barcode?: string;
+  procurementId?: string;
   totalCopies?: number;
 }
 
@@ -36,8 +56,28 @@ class BookService {
         title: payload.title,
         author: payload.author,
         accessionNumber: payload.accessionNumber,
+        authorEditor: payload.authorEditor ?? payload.author,
+        edition: payload.edition,
+        volume: payload.volume,
+        placeOfPublication: payload.placeOfPublication,
+        publisher: payload.publisher,
+        dateOfPublication: payload.dateOfPublication ? new Date(payload.dateOfPublication) : undefined,
+        source: payload.source,
+        binding: payload.binding,
+        pagination: payload.pagination,
+        billNumber: payload.billNumber,
+        billDate: payload.billDate ? new Date(payload.billDate) : undefined,
         isbn: payload.isbn,
         department: payload.department,
+        subjectCategory: payload.subjectCategory,
+        deweyDecimalNumber: payload.deweyDecimalNumber,
+        cutterCode: payload.cutterCode,
+        callNumber: payload.callNumber,
+        locationCode: payload.locationCode,
+        catalogEntryDate: payload.catalogEntryDate ? new Date(payload.catalogEntryDate) : undefined,
+        catalogedById: payload.catalogedById,
+        barcode: payload.barcode,
+        procurementId: payload.procurementId,
         totalCopies,
         availableCopies: totalCopies,
       },
@@ -66,6 +106,8 @@ class BookService {
             { title: { contains: query.q } },
             { author: { contains: query.q } },
             { accessionNumber: { contains: query.q } },
+            { callNumber: { contains: query.q } },
+            { barcode: { contains: query.q } },
           ]
         : undefined,
     };

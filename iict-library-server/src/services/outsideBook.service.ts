@@ -1,35 +1,63 @@
 import OutsideBookRepository from '../repositories/outsideBook.repository';
+import prisma from '../config/database';
 import AppError from '../utils/AppError';
 import { logAuditEvent } from '../utils/auditLog';
 import policyService from './policy.service';
 
 class OutsideBookService {
-  async createEntry(studentId: string, title: string, author: string) {
-    if (!studentId) {
-      throw new AppError('User profile not found', 404);
+  private async resolveStudentProfile(profileOrUserId: string) {
+    const profile = await prisma.studentProfile.findFirst({
+      where: {
+        OR: [
+          { id: profileOrUserId },
+          { userId: profileOrUserId },
+        ],
+      },
+      include: {
+        user: {
+          select: { id: true },
+        },
+      },
+    });
+
+    if (!profile) {
+      throw new AppError('Student profile not found', 404);
     }
+
+    if (!profile.department) {
+      throw new AppError('Student department is required for outside-book entry', 400);
+    }
+
+    return profile;
+  }
+
+  async createEntry(profileOrUserId: string, title: string, author: string) {
+    const studentProfile = await this.resolveStudentProfile(profileOrUserId);
 
     const outsideBookEnabled = await policyService.isOutsideBookEnabled();
     if (!outsideBookEnabled) {
       throw new AppError('Outside book entries are disabled by current library policy', 400);
     }
 
-    const created = await OutsideBookRepository.create(studentId, title, author);
+    const created = await OutsideBookRepository.create(studentProfile.id, title, author, {
+      studentRegNumber: studentProfile.studentRegNumber ?? undefined,
+      studentDepartment: studentProfile.department ?? undefined,
+    });
+
     logAuditEvent({
       action: 'outside_book.create',
-      actorId: studentId,
+      actorId: studentProfile.user.id,
       entity: 'OutsideBookEntry',
       entityId: created.id,
       details: { title, author },
     });
+
     return created;
   }
 
-  async getMyEntries(studentId: string) {
-    if (!studentId) {
-      throw new AppError('User profile not found', 404);
-    }
-    return OutsideBookRepository.findByStudent(studentId);
+  async getMyEntries(profileOrUserId: string) {
+    const studentProfile = await this.resolveStudentProfile(profileOrUserId);
+    return OutsideBookRepository.findByStudent(studentProfile.id);
   }
 
   async getActiveEntries() {

@@ -2,6 +2,8 @@ import prisma from '../config/database';
 import { logAuditEvent } from '../utils/auditLog';
 import { parseCsv, toCsv } from '../utils/csv';
 
+const ALLOWED_DEPARTMENTS = new Set(['CSE', 'SWE', 'EEE']);
+
 interface ImportError {
   row: number;
   message: string;
@@ -24,6 +26,7 @@ class BulkService {
       const author = row.author?.trim();
       const isbn = row.isbn?.trim() || undefined;
       const department = row.department?.trim() || undefined;
+      const normalizedDepartment = department ? department.toUpperCase() : undefined;
       const copiesRaw = row.totalCopies?.trim();
 
       if (!accessionNumber || !title || !author) {
@@ -40,6 +43,11 @@ class BulkService {
         continue;
       }
 
+      if (normalizedDepartment && !ALLOWED_DEPARTMENTS.has(normalizedDepartment)) {
+        errors.push({ row: rowNo, message: 'department must be one of CSE, SWE, EEE' });
+        continue;
+      }
+
       const existing = await prisma.book.findUnique({ where: { accessionNumber } });
 
       if (existing) {
@@ -49,7 +57,7 @@ class BulkService {
             title,
             author,
             isbn,
-            department,
+            department: normalizedDepartment as 'CSE' | 'SWE' | 'EEE' | undefined,
             totalCopies,
             availableCopies: Math.max(existing.availableCopies, 0),
           },
@@ -62,7 +70,7 @@ class BulkService {
             title,
             author,
             isbn,
-            department,
+            department: normalizedDepartment as 'CSE' | 'SWE' | 'EEE' | undefined,
             totalCopies,
             availableCopies: totalCopies,
           },

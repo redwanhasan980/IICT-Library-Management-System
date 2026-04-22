@@ -1,12 +1,22 @@
 import prisma from '../config/database';
 
 class OutsideBookRepository {
-  async create(studentId: string, title: string, author: string) {
+  async create(
+    studentId: string,
+    title: string,
+    author: string,
+    snapshot?: {
+      studentRegNumber?: string;
+      studentDepartment?: 'CSE' | 'SWE' | 'EEE';
+    }
+  ) {
     return prisma.outsideBookEntry.create({
       data: {
         studentId,
         title,
         author,
+        studentRegNumberSnapshot: snapshot?.studentRegNumber,
+        studentDepartmentSnapshot: snapshot?.studentDepartment,
       },
     });
   }
@@ -32,7 +42,7 @@ class OutsideBookRepository {
   async findActive() {
     return prisma.outsideBookEntry.findMany({
       where: {
-        exitTime: null,
+        entryStatus: 'ENTERED',
       },
       include: {
         student: {
@@ -66,12 +76,17 @@ class OutsideBookRepository {
   }
 
   async verifyExit(id: string, adminId: string) {
+    const now = new Date();
+
     return prisma.outsideBookEntry.update({
       where: { id },
       data: {
+        entryStatus: 'EXITED',
         isVerifiedExit: true,
         verifiedByExitId: adminId,
-        exitTime: new Date(),
+        studentStrikeMarkedAt: now,
+        exitVerifiedAt: now,
+        exitTime: now,
       },
     });
   }

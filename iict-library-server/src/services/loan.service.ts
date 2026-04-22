@@ -10,13 +10,30 @@ interface IssueLoanInput {
   userId: string;
   issuedById: string;
   dueAt?: string;
+  facultySignatureText?: string;
 }
 
 class LoanService {
   async issueLoan(payload: IssueLoanInput) {
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
-      select: { id: true, role: true },
+      include: {
+        student: {
+          select: {
+            id: true,
+            department: true,
+            studentRegNumber: true,
+          },
+        },
+        teacher: {
+          select: {
+            id: true,
+            department: true,
+            teacherId: true,
+            signatureData: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -25,6 +42,24 @@ class LoanService {
 
     if (user.role === 'ADMIN') {
       throw new AppError('Admin users cannot borrow books', 400);
+    }
+
+    if (user.role === 'STUDENT') {
+      if (!user.student) {
+        throw new AppError('Student profile is required for borrowing', 400);
+      }
+      if (!user.student.department) {
+        throw new AppError('Student department is required for borrowing', 400);
+      }
+    }
+
+    if (user.role === 'TEACHER') {
+      if (!user.teacher) {
+        throw new AppError('Teacher profile is required for borrowing', 400);
+      }
+      if (!user.teacher.department) {
+        throw new AppError('Teacher department is required for borrowing', 400);
+      }
     }
 
     const [book, activeLoansCount, maxActiveLoans, roleDurationDays] = await Promise.all([
@@ -56,11 +91,21 @@ class LoanService {
       ? new Date(payload.dueAt)
       : new Date(issueDate.getTime() + roleDurationDays * 24 * 60 * 60 * 1000);
 
+    const facultySignatureText =
+      user.role === 'TEACHER' ? payload.facultySignatureText ?? user.teacher?.signatureData ?? undefined : undefined;
+
+    if (user.role === 'TEACHER' && !facultySignatureText) {
+      throw new AppError('Faculty borrowing requires signature information', 400);
+    }
+
     const loan = await prisma.$transaction(async (tx) => {
       const created = await tx.loan.create({
         data: {
           bookId: payload.bookId,
           userId: payload.userId,
+          borrowerRole: user.role,
+          facultySignatureText,
+          facultySignatureRecordedAt: facultySignatureText ? issueDate : undefined,
           issuedById: payload.issuedById,
           dueAt: dueDate,
           status: LoanStatus.ACTIVE,

@@ -5,6 +5,7 @@ export const issueLoanSchema = z.object({
     bookId: z.string().min(1, 'Book ID is required'),
     userId: z.string().min(1, 'User ID is required'),
     dueAt: z.string().datetime().optional(),
+    facultySignatureText: z.string().min(1).optional(),
   }),
 });
 

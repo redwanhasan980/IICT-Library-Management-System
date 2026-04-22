@@ -24,6 +24,7 @@ model User {
   reservations    Reservation[]
   issuedLoans     Loan[]             @relation("IssuedByAdmin")
   receivedReturns Loan[]             @relation("ReturnedByAdmin")
+  catalogedBooks  Book[]             @relation("BookCatalogedByUser")
   updatedPolicies SystemSetting[]    @relation("PolicyUpdatedBy")
   createdAudits   InventoryAuditSession[] @relation("AuditCreatedBy")
   closedAudits    InventoryAuditSession[] @relation("AuditClosedBy")
@@ -36,10 +37,15 @@ model User {
 model StudentProfile {
   id        String             @id @default(cuid())
   userId    String             @unique
+  studentRegNumber String?     @unique
+  department Department?
+  currentSemester Int?
   user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   entries   OutsideBookEntry[]
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
+
+  @@index([department])
 }
 
 model AdminProfile {
@@ -55,19 +61,30 @@ model AdminProfile {
 model TeacherProfile {
   id        String   @id @default(cuid())
   userId    String   @unique
+  teacherId String?  @unique
+  department Department?
+  designation String?
+  signatureData String?
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([department])
 }
 
 model OutsideBookEntry {
   id                String         @id @default(cuid())
   studentId         String
+  studentRegNumberSnapshot String?
+  studentDepartmentSnapshot Department?
   student           StudentProfile @relation(fields: [studentId], references: [id], onDelete: Restrict)
   title             String
   author            String
+  entryStatus       OutsideBookEntryStatus @default(ENTERED)
   entryTime         DateTime       @default(now())
   exitTime          DateTime?
+  studentStrikeMarkedAt DateTime?
+  exitVerifiedAt    DateTime?
   isVerifiedEntry   Boolean        @default(false)
   isVerifiedExit    Boolean        @default(false)
   verifiedByEntryId String?
@@ -80,15 +97,39 @@ model OutsideBookEntry {
   @@index([studentId])
   @@index([isVerifiedExit, entryTime])
   @@index([isVerifiedEntry, isVerifiedExit])
+  @@index([entryStatus, entryTime])
+  @@index([studentDepartmentSnapshot, entryStatus])
 }
 
 model Book {
   id             String        @id @default(cuid())
   title          String
   author         String
+  authorEditor   String?
+  edition        String?
+  volume         String?
+  placeOfPublication String?
+  publisher      String?
+  dateOfPublication DateTime?  @db.Date
+  source         BookSource?
+  binding        BindingType?
+  pagination     Int?
+  billNumber     String?
+  billDate       DateTime?     @db.Date
   isbn           String?
   accessionNumber String       @unique
-  department     String?
+  department     Department?
+  subjectCategory String?
+  deweyDecimalNumber Decimal?  @db.Decimal(8, 3)
+  cutterCode     String?
+  callNumber     String?
+  locationCode   String?
+  catalogEntryDate DateTime?   @db.Date
+  catalogedById  String?
+  catalogedBy    User?         @relation("BookCatalogedByUser", fields: [catalogedById], references: [id], onDelete: SetNull)
+  barcode        String?       @unique
+  procurementId  String?
+  procurement    Procurement?  @relation(fields: [procurementId], references: [id], onDelete: SetNull)
   totalCopies    Int           @default(1)
   availableCopies Int          @default(1)
   isArchived     Boolean       @default(false)
@@ -101,6 +142,80 @@ model Book {
   @@index([isArchived])
   @@index([title])
   @@index([accessionNumber])
+  @@index([department])
+  @@index([deweyDecimalNumber])
+  @@index([callNumber])
+  @@index([barcode])
+  @@index([procurementId])
+}
+
+model ProcurementApplication {
+  id              String            @id @default(cuid())
+  applicationCode String            @unique
+  budgetYear      Int
+  allocatedBudget Decimal           @db.Decimal(12, 2)
+  department      Department
+  requisitions    BookRequisition[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([budgetYear, department])
+}
+
+model BookRequisition {
+  id              String                 @id @default(cuid())
+  requisitionCode String                 @unique
+  applicationId   String
+  application     ProcurementApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  bookTitle       String
+  authorName      String
+  publisher       String?
+  edition         String?
+  isbn            String?
+  quantity        Int
+  pricePerUnit    Decimal?               @db.Decimal(12, 2)
+  totalPrice      Decimal?               @db.Decimal(12, 2)
+  procurements    Procurement[]
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  @@index([applicationId])
+  @@index([isbn])
+}
+
+model Vendor {
+  id               String         @id @default(cuid())
+  vendorCode       String         @unique
+  vendorName       String
+  quotationDetails String?
+  procurements     Procurement[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([vendorName])
+}
+
+model Procurement {
+  id                      String            @id @default(cuid())
+  procurementCode         String            @unique
+  requisitionId           String
+  vendorId                String
+  procurementApprovalDate DateTime?         @db.Date
+  deliveryDate            DateTime?         @db.Date
+  handoverDateToIICT      DateTime?         @db.Date
+  bookReceivingRecord     String?
+  shelvingStatus          ShelvingStatus    @default(PENDING)
+  procurementStatus       ProcurementStatus @default(NOT_STARTED)
+  requisition             BookRequisition   @relation(fields: [requisitionId], references: [id], onDelete: Restrict)
+  vendor                  Vendor            @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  books                   Book[]
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+
+  @@index([requisitionId])
+  @@index([vendorId])
+  @@index([procurementStatus, shelvingStatus])
+  @@index([handoverDateToIICT])
 }
 
 model InventoryAuditSession {
@@ -140,6 +255,9 @@ model Loan {
   id           String     @id @default(cuid())
   bookId       String
   userId       String
+  borrowerRole Role?
+  facultySignatureText String?
+  facultySignatureRecordedAt DateTime?
   issuedById   String?
   returnedById String?
   issuedAt     DateTime   @default(now())
@@ -157,6 +275,7 @@ model Loan {
   @@index([bookId, status])
   @@index([userId, status])
   @@index([dueAt, status])
+  @@index([borrowerRole, status])
 }
 
 model FinePayment {
@@ -215,6 +334,41 @@ enum Role {
   ADMIN
   STUDENT
   TEACHER
+}
+
+enum Department {
+  CSE
+  SWE
+  EEE
+}
+
+enum BookSource {
+  PURCHASE
+  DONATION
+  GIFT
+}
+
+enum BindingType {
+  PB
+  HB
+}
+
+enum OutsideBookEntryStatus {
+  ENTERED
+  EXITED
+}
+
+enum ShelvingStatus {
+  PENDING
+  IN_PROGRESS
+  SHELVED
+}
+
+enum ProcurementStatus {
+  NOT_STARTED
+  ONGOING
+  COMPLETED
+  CANCELLED
 }
 
 enum LoanStatus {
