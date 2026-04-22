@@ -10,6 +10,7 @@ const AdminCirculationPage = () => {
   const [accessionInput, setAccessionInput] = useState('');
   const [activeAccession, setActiveAccession] = useState('');
   const [borrowerId, setBorrowerId] = useState('');
+  const [facultySignature, setFacultySignature] = useState('');
 
   const { data: lookupData, isFetching } = useLookupByAccessionQuery(activeAccession, {
     skip: !activeAccession,
@@ -38,9 +39,14 @@ const AdminCirculationPage = () => {
     }
 
     try {
-      await issueLoan({ bookId: lookupData.book.id, userId: borrowerId.trim() }).unwrap();
+      await issueLoan({ 
+        bookId: lookupData.book.id, 
+        userId: borrowerId.trim(),
+        facultySignatureText: facultySignature.trim() || undefined
+      }).unwrap();
       toast.success('Loan issued successfully');
       setBorrowerId('');
+      setFacultySignature('');
     } catch {
       toast.error('Failed to issue loan');
     }
@@ -87,6 +93,15 @@ const AdminCirculationPage = () => {
               placeholder="Paste borrower ID"
             />
           </div>
+        </div>
+
+        <div>
+           <label className="text-sm text-warm-taupe">Faculty Signature Text (Required for Teachers)</label>
+           <Input
+              value={facultySignature}
+              onChange={(e) => setFacultySignature(e.target.value)}
+              placeholder="Faculty Signature or initial"
+           />
         </div>
 
         {isFetching && <p className="text-sm text-warm-taupe">Looking up accession...</p>}

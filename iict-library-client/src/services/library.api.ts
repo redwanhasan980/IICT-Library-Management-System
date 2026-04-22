@@ -120,7 +120,7 @@ export const libraryApi = api.injectEndpoints({
       invalidatesTags: ['Reservations', 'Books'],
     }),
 
-    issueLoan: builder.mutation<Loan, { bookId: string; userId: string; dueAt?: string }>({
+    issueLoan: builder.mutation<Loan, { bookId: string; userId: string; dueAt?: string; facultySignatureText?: string }>({
       query: (body) => ({
         url: '/loans/issue',
         method: 'POST',
