@@ -532,3 +532,46 @@ This document tracks the development process of the IICT Library Management Syst
   - Procurement records are linked to catalog books through the existing optional `Book.procurementId`, but this phase does not auto-create catalog accessions from completed procurement orders.
   - Procurement deletion is intentionally not exposed; use status updates such as `CANCELLED` to preserve audit history.
   - End-to-end browser automation and deployment pipeline automation remain future hardening work.
+
+## Phase 15: Administrative Issued-Book Reports
+
+- **What Was Improved**:
+  - Implemented LMS-FR15 report generation through a real issued-book report API and admin UI.
+  - Added date range, status, borrower role, search, pagination, summary totals, computed overdue status, and overdue-day calculations.
+  - Added CSV download for visible issued-book report rows from the admin reports page.
+  - Kept analytics and bulk exports intact while adding a dedicated report-generation workflow.
+
+- **Files Created or Updated**:
+  - `iict-library-server/src/validators/report.validator.ts`
+  - `iict-library-server/src/services/report.service.ts`
+  - `iict-library-server/src/controllers/report.controller.ts`
+  - `iict-library-server/src/routes/report.routes.ts`
+  - `iict-library-server/src/services/report.service.test.ts`
+  - `iict-library-server/src/index.ts`
+  - `iict-library-client/src/types/report.types.ts`
+  - `iict-library-client/src/services/report.api.ts`
+  - `iict-library-client/src/pages/admin/AdminReportsPage.tsx`
+  - `iict-library-client/src/pages/admin/AdminReportsPage.test.tsx`
+  - `iict-library-client/src/config/api.ts`
+  - `iict-library-client/src/routes/AppRouter.tsx`
+  - `iict-library-client/src/layouts/Sidebar.tsx`
+  - `README.md`
+  - `API_OVERVIEW.md`
+  - `REQUIREMENT_TRACEABILITY.md`
+  - `REPORTS_IMPLEMENTATION_REPORT.md`
+
+- **Commands Used**:
+  - `npm run build` (server)
+  - `npm test` (server)
+  - `npm run build` (client)
+  - `npm test` (client)
+
+- **What Was Tested**:
+  - Backend TypeScript build passed.
+  - Backend Vitest passed, including report service tests for computed overdue output and overdue filtering.
+  - Frontend TypeScript + Vite production build passed.
+  - Frontend Vitest passed, including admin report page rendering.
+
+- **Remaining Limitations**:
+  - CSV download exports the currently visible report page. A streaming all-pages export can be added later if the deployed dataset becomes large.
+  - The report is focused on issued-book records because that is the SRS scenario for LMS-FR15. More specialized report templates can be layered on top of the same route pattern.

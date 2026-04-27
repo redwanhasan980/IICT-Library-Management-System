@@ -382,6 +382,32 @@ Behavior:
 
 - Updates procurement status, shelving status, dates, receiving record, requisition, or vendor. Date ordering validation is preserved.
 
+## Report Routes
+
+Base path: /api/reports
+
+Auth requirement:
+
+- Bearer token or auth cookie
+- Role: ADMIN
+
+### GET /api/reports/issued-books
+
+Query:
+
+- from: optional date string
+- to: optional date string
+- status: ALL | ACTIVE | RETURNED | OVERDUE
+- borrowerRole: STUDENT | TEACHER
+- q: string
+- page, pageSize
+
+Behavior:
+
+- Generates the LMS-FR15 issued-book administrative report.
+- Returns summary totals for total issued, active, returned, overdue, and unique borrowers.
+- Returns paginated rows with accession number, book title, author, borrower identity, issue/due/return dates, persisted status, computed effective status, overdue days, issuing admin, and returning admin.
+
 ## Standard Response Contract
 
 Success:

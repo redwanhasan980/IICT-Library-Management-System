@@ -23,6 +23,7 @@ const adminLinks = [
   { to: '/dashboard/admin/inventory-audit', label: 'Inventory Audit' },
   { to: '/dashboard/admin/fines', label: 'Fine Management' },
   { to: '/dashboard/admin/analytics', label: 'Analytics' },
+  { to: '/dashboard/admin/reports', label: 'Reports' },
   { to: '/dashboard/spine-label-generator', label: 'Spine Label Generator' },
   // Add other admin links here
 ];

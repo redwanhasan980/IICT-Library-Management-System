@@ -236,6 +236,13 @@ npm run build
 - update the order to ongoing/completed and mark shelving as shelved
 - verify the summary cards and procurement order table update
 
+20. For Admin role:
+
+- open `/dashboard/admin/reports`
+- generate an issued-book report with date, status, borrower role, or search filters
+- verify summary cards and issued-book table rows
+- download the visible report rows as CSV
+
 ## Newly Added Modules (Current)
 
 - Book reservation and waitlist workflow
@@ -246,6 +253,7 @@ npm run build
 - Inventory audit and stock verification workflow
 - Manual fine payment tracking (no online gateway)
 - Procurement application, requisition, vendor, delivery, handover, and shelving workflow
+- Administrative issued-book report generation
 
 ## Circulation Workflow (Hardened)
 
@@ -285,6 +293,14 @@ Key API routes:
 - `GET /api/procurements/orders` - Admin only; paginated procurement order list with status, shelving, requisition, vendor, and search filters.
 - `POST /api/procurements/orders` - Admin only; creates a procurement order.
 - `PUT /api/procurements/orders/:id` - Admin only; updates procurement status, shelving status, dates, receiving record, requisition, or vendor.
+
+## Administrative Reports
+
+The SRS LMS-FR15 report-generation requirement is covered by an admin issued-book report. The report supports date range, loan status, borrower role, and search filters, plus summary totals and CSV export from the admin UI.
+
+Key API route:
+
+- `GET /api/reports/issued-books` - Admin only; returns report filters, summary totals, paginated issued-book rows, computed overdue status, and borrower/book identifiers.
 
 ## Database Notes for This Phase
 
@@ -336,3 +352,4 @@ An extensive audit was performed on the codebase, comparing the implemented feat
 - **Faculty Borrowing Fix:** Added `facultySignatureText` input in the Admin Circulation Page to satisfy backend constraints.
 - **Documentation Update:** Created `GAP_CLOSURE_REPORT.md` and `REQUIREMENT_TRACEABILITY.md` to properly document the system's relationship to original specifications.
 - **Procurement Workflow:** Added procurement applications, requisitions, vendors, orders, summary cards, status updates, and documentation.
+- **Report Generation:** Added LMS-FR15 issued-book reporting with filters, summary, table output, and CSV download.

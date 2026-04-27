@@ -15,6 +15,7 @@ import analyticsRouter from './routes/analytics.routes';
 import inventoryAuditRouter from './routes/inventoryAudit.routes';
 import fineRouter from './routes/fine.routes';
 import procurementRouter from './routes/procurement.routes';
+import reportRouter from './routes/report.routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import { successResponse } from './utils/apiResponse';
 
@@ -52,6 +53,7 @@ app.use('/api/analytics', analyticsRouter);
 app.use('/api/inventory-audits', inventoryAuditRouter);
 app.use('/api/fines', fineRouter);
 app.use('/api/procurements', procurementRouter);
+app.use('/api/reports', reportRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
