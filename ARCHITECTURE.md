@@ -23,11 +23,22 @@ The server follows a controller -> service -> repository pattern:
 
 ### Current Modules
 
-- Outside Book module
-  - Student creates outside book entry.
-  - Admin verifies entry and exit transitions.
-- Spine Label module
-  - Admin generates single-book spine label preview data.
+- Authentication and member management
+  - JWT login, bcrypt password hashing, registration, first-admin bootstrap, `/me`, logout, and admin member management.
+- Book catalog and classification
+  - Admin single-book create/edit/archive, catalog search/viewing, accession metadata, Dewey/Cutter classification, and spine-label generation.
+- Circulation
+  - Admin issue/return, accession lookup, duplicate-return protection, active/overdue filtering, borrower history, and book circulation history.
+- Reservation, fines, and policies
+  - Queue management, policy-driven borrowing limits/durations, fine summaries, and manual fine payment recording.
+- Outside book monitoring
+  - Student outside-book entry and admin entry/exit verification.
+- Inventory audit
+  - Audit sessions, accession scans, computed stock status, and close-session flow.
+- Procurement
+  - Central library applications, book requisitions, vendors, procurement orders, delivery/handover tracking, and shelving status.
+- Reporting and analytics
+  - Admin dashboard analytics, role dashboards, CSV bulk exports, and issued-book reports.
 
 ## Frontend Architecture
 
@@ -61,14 +72,14 @@ API responses are standardized using a common envelope:
 
 ## Security Notes
 
-- Current backend auth middleware is a temporary bridge based on request headers:
-  - x-user-id
-  - x-user-role
+- Production authentication uses JWT bearer tokens or the auth cookie returned by the login flow.
+- Passwords are hashed with bcrypt.
 - RBAC checks are active for route-level authorization.
-- Production hardening should replace the temporary bridge with JWT/cookie-based auth.
+- Optional development header auth (`x-user-id`, `x-user-role`) exists only when `ENABLE_DEV_AUTH=true` and `NODE_ENV` is not `production`.
+- Production deployments must set `JWT_SECRET`, `CORS_ORIGIN`, `DATABASE_URL`, and `ADMIN_SETUP_TOKEN`.
 
 ## Extension Points
 
-- Add full auth module and token/cookie lifecycle.
-- Add borrowing/return/reporting modules when implemented.
-- Add integration tests and CI deployment pipeline.
+- Add password reset/email verification if the deployment needs self-service account recovery.
+- Add persistent audit-log storage if console audit events are not enough for institutional policy.
+- Add browser end-to-end tests and CI deployment automation.

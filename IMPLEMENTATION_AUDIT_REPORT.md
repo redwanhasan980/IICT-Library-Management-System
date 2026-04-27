@@ -1,72 +1,45 @@
 # Implementation Audit Report
 
-**Date:** April 22, 2026
+**Date:** April 28, 2026
 **Project:** IICT Library Management System
 
 ## 1. Audit Summary
 
-An extensive implementation audit was conducted on the IICT Library Management System against the intended SRS, ER diagrams, and roadmap phases. The audit evaluated both the frontend (React/Vite) and backend (Express/Prisma/MariaDB) codebase to determine the actual completion status of all required modules.
+The earlier April audit identified missing production authentication, individual book CRUD, dashboard data, procurement, and automated tests. Those core gaps have now been closed through the subsequent hardening phases.
 
-While the foundation and several advanced workflow features (Spine Labels, Bulk Import, Inventory Audit) have been successfully built, critical core features—such as actual User Authentication, individual Book Management (Add/Edit/Delete), and Procurement—are fundamentally missing or only exist in the database schema without functional UI or API routes.
+The current system is a deployable full-stack library management application with React/Vite frontend, Express/Prisma backend, MariaDB compatibility, JWT authentication, role-based access control, catalog management, circulation, reservations, outside-book monitoring, inventory audit, fines, procurement, dashboards, issued-book reports, and focused automated tests.
 
-## 2. What is Fully Done
+## 2. Fully Implemented Areas
 
-- **Project Foundation:** Client and server structure is robust, environments are configured, and Prisma connects cleanly with MariaDB.
-- **Classification and Physical Identification:** Spine Label generation, Call Numbers, Dewey/Cutter codes, and print-friendly previews are fully functional.
-- **Outside Book Entry Workflow:** Student entries, admin verifications (entry & exit), and status tracking work flawlessly.
-- **Borrowing Policy and Settings:** Admin settings API and UI successfully control borrow durations, max limits, and fine rates.
-- **Reservation Workflow:** Booking, waitlist ordering, and admin fulfillment/cancellation are complete.
-- **Inventory Audit and Stock Verification:** Robust session management, scanning (single/bulk), and mismatch reporting is implemented.
-- **Fines Tracking (Manual):** Manual fine payment tracking for overdue loans is functional.
-- **Bulk Tools:** CSV import for books and CSV exports for various datasets are active.
+- **Authentication and RBAC:** JWT login, bcrypt password hashing, logout, `/me`, first-admin bootstrap, Student/Teacher registration, admin member management, active/inactive user status, and route-level role protection.
+- **Book Catalog and Classification:** Single-book create/edit/archive, catalog search/viewing, accession uniqueness, DDC/Cutter metadata, call numbers, spine-label generation, and bulk CSV import/export.
+- **Circulation:** Issue by accession/book ID, borrower lookup by user ID/student registration/teacher ID, return handling, availability updates, duplicate-return protection, overdue computation, borrower history, and book circulation history.
+- **Student and Faculty Borrowing Records:** Student and teacher profile validation, borrowing limits, faculty signature capture, current loans, and full borrowing history.
+- **Reservations:** Reservation queue, borrower reservation view, admin status management, and return-time auto-fulfillment.
+- **Outside Book Monitoring:** Student outside-book entry and admin entry/exit verification with process-document fields.
+- **Inventory Audit:** Audit sessions, accession scans, computed stock statuses, filters, and close-session flow.
+- **Fines:** Manual fine calculation summaries, unpaid/partial lists, payment recording, borrower fine pages, and payment history.
+- **Procurement:** Applications, requisitions, vendors, procurement orders, delivery/handover dates, receiving record, statuses, and admin UI.
+- **Dashboards and Reports:** Role dashboards use real API data. Admin analytics and issued-book reports are available.
+- **Testing:** Focused Vitest coverage exists for circulation, procurement, reports, borrowing page rendering, admin page rendering, and sidebar RBAC visibility.
 
-## 3. What is Partially Done
+## 3. Deployment Readiness Notes
 
-- **Role-Based Access Control (RBAC):** The frontend layout, protected routes, and backend middleware strictly enforce roles. However, because actual authentication is faked, this system acts strictly on trust (client-provided headers) rather than verified identity.
-- **Book Catalog and Metadata:** Listing, viewing details, and bulk importing work. However, the system lacks UI for adding a single book manually, and both API and UI are missing for **Editing** and **Deleting/(Archiving)** books individually from the catalog dashboard. Search and advanced filtering are missing from the UI, despite some backend support.
-- **Borrowing and Return Workflow (Circulation):** Books can be issued and returned via accession numbers. However, the UI does not allow inputting the `facultySignatureText` required by the backend for Teacher roles, making it impossible for Teachers to borrow books through the standard interface.
-- **Dashboard Data:** The scaffolding for Admin, Student, and Teacher dashboards exists, but they currently show static placeholder text rather than actual widgets or summarized stats (outside of the dedicated Analytics page).
+- Server builds with `npm run build`.
+- Client builds with `npm run build`.
+- Backend tests run with `npm test`.
+- Frontend tests run with `npm test`.
+- Production deployments must configure `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN`, and `ADMIN_SETUP_TOKEN`.
+- Optional header-based development auth remains guarded by `ENABLE_DEV_AUTH=true` and is disabled in production.
 
-## 4. What is Missing
+## 4. Remaining Non-Blocking Enhancements
 
-- **Authentication and User Management:**
-  - No secure login/logout mechanism (currently uses a mock header bypass).
-  - No JWT or session cookie implementation.
-  - No password hashing.
-  - Missing student, teacher, and admin registration/seeding flows.
-  - Department constraints are not enforced on users during onboarding since onboarding doesn't exist.
-- **Individual Book Management:** No "Add Book" form, "Edit Book" form, or "Delete Book" action anywhere in the UI.
-- **Procurement Module:** Present in the Prisma schema (`Procurement`, `BookRequisition`, `Vendor`), but 100% missing from the backend controllers/routes and frontend UI.
-- **Notifications:** Neither email, SMS, nor in-app notifications are implemented for reservations, overdues, or inventory events.
-- **Automated Testing:** Zero test coverage. Neither backend nor frontend contain unit, integration, or E2E tests (only standard library tests inside `node_modules` were found).
+- Add password reset and email verification if required by institutional policy.
+- Add persistent audit-log database storage if console audit events are insufficient.
+- Add browser end-to-end tests and CI deployment automation.
+- Add streaming all-pages CSV export for very large report datasets.
+- Add automatic catalog accession creation from completed procurement orders if the library wants procurement-to-catalog automation.
 
-## 5. What is Inconsistent with Requirements
+## 5. Final Verdict
 
-- **Faculty Borrowing Logic:** The backend strictly expects a `facultySignatureText` when a Teacher borrows a book, but the `/dashboard/admin/circulation` UI form only captures the accession number and user ID. Consequently, issuing books to faculty is broken.
-- **Book Deletion:** Requirements cite deleting books, but the backend only implemented a `setArchiveStatus` mechanism which is completely omitted from the frontend UI.
-- **Search Capabilities:** API supports a `q` search parameter for books, but the frontend catalog component hardcodes `{ page: 1, pageSize: 50 }` without any search or filter inputs.
-
-## 6. Technical Risks
-
-- **Security By-pass:** Exposing the APIs with `x-user-role` and `x-user-id` headers in a live environment is extremely dangerous. Real Authentication must be prioritized.
-- **Data Integrity:** Without a UI to create or correct Users natively, testing loan features requires manually injecting exact User IDs (CUIDs) generated directly in the database.
-- **Test Fragility:** A total lack of automated tests means that fixing the Faculty Borrowing issue or adding Authentication introduces high regression risks to Circulation and Reservation logic.
-
-## 7. Documentation Gaps
-
-- `README.md` and `DEVELOPMENT_PROCESS.md` implied the project was ready for "Full-System Polish and Stabilization" when fundamental CRUD functionality for Books and Users was entirely absent.
-- The docs advertise "tests passed" (`npm run build`), conflating compilation with actual logical test coverage.
-
-## 8. Recommended Next Priority Order
-
-1. **Authentication:** Implement real JWT auth, password hashing, and user registration/onboarding routes. Remove the header-based mock.
-2. **Book Management CRUD:** Build missing UI and endpoints for Add, Edit, Delete/Archive single books.
-3. **Fix Circulation for Teachers:** Add signature input on the Issue Loan UI to unblock faculty borrowing.
-4. **Dashboards & Catalog UI:** Wire up real data endpoints to the Student/Teacher/Admin dashboards, and add a search/filter bar to the Book Catalog.
-5. **Procurement Workflow:** Build APIs and UI for Requisitions, Applications, and Vendors.
-6. **Testing:** Write basic integration tests mapping to the defined Use Cases.
-
-## 9. Final Verdict on Overall Project Completion Percentage
-
-**Estimated Completion:** ~ 60%
-While complex workflows (Inventory, Spine Labels, Reservations, Bulk Import) are beautifully built, the absolute foundations (Auth, User Management, Book editing/CRUD) were skipped, making the system currently un-deployable for real-world usage.
+**Estimated SRS completion:** high. The source-of-truth functional requirements LMS-FR1 through LMS-FR15 are represented in the application layer, with the remaining work mainly around operational hardening, automated deployment, and optional institutional enhancements.

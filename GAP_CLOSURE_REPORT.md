@@ -1,26 +1,45 @@
-# Gap Closure implementation Report
+# Gap Closure Implementation Report
 
-**Date**: April 22, 2026
-**Project**: IICT Library Management System
+**Date:** April 28, 2026
+**Project:** IICT Library Management System
 
-This document captures the efforts made during the Gap Closure phase based on the `IMPLEMENTATION_AUDIT_REPORT.md`. Due to prompt scope prioritizing, targeted fixes were applied.
+## Summary
 
-## Gaps Closed in this Session
+The original gap-closure phase began by fixing the faculty borrowing signature blockage. Later phases closed the larger structural gaps identified in the audit: production authentication, member management, single-book CRUD, real dashboards, circulation hardening, procurement, reports, and automated tests.
 
-### Priority Fix: Faculty Borrowing Flow
+## Gaps Closed
 
-- **Identified Gap**: The backend properly enforces a `facultySignatureText` property for `Teacher` level borrowings, but the `/dashboard/admin/circulation` form entirely lacked this field, making it fundamentally impossible to issue books to a Teacher via UI.
-- **What Was Fixed**: Added a "Faculty Signature Text" input specifically attached to the Issue workflow in the UI and connected it downstream.
-- **Files Modified**:
-  - `iict-library-client/src/pages/admin/AdminCirculationPage.tsx`
-  - `iict-library-client/src/services/library.api.ts`
+1. **Faculty Borrowing Flow**
+   - Added faculty signature capture to the circulation issue UI.
+   - Backend validates Teacher borrower records and signature requirements.
 
-## Remaining Gaps (Future Scope)
+2. **Production Authentication**
+   - Added bcrypt password hashing, JWT login/logout, `/me`, first-admin bootstrap, and Student/Teacher registration.
+   - Development header auth is now optional and disabled in production.
 
-Due to structural complexities and to avoid unsafe risky rewrites, the following modules are deferred to future gap closure efforts:
+3. **Member Management**
+   - Added admin member directory and create/status-management APIs.
 
-1. **Real Authentication**: True JWT authentication setup and password hashing algorithms rather than header-bypass trust.
-2. **Individual Book CRUD**: Creating pages and logic to construct, edit and safely archive single Books through individual forms rather than bulk CSV exclusively.
-3. **Dashboards**: Integrating robust aggregations backing the placeholder text on dashboards.
-4. **Procurement**: Fleshing out the `Procurement` and `BookRequisition` database models conceptually into controllers and frontend components.
-5. **Testing Framework**: Scaffold Integration and E2E Tests matching the use-cases logic.
+4. **Individual Book CRUD**
+   - Added admin single-book create/edit/archive workflow and catalog search.
+
+5. **Dashboard Data**
+   - Wired Admin, Student, and Teacher dashboards to real API-backed operational data.
+
+6. **Procurement**
+   - Added procurement applications, book requisitions, vendors, procurement orders, status tracking, and admin UI.
+
+7. **Report Generation**
+   - Added issued-book administrative report generation for LMS-FR15.
+
+8. **Testing**
+   - Added backend and frontend Vitest suites for the highest-risk circulation/procurement/report/user-facing slices.
+
+## Remaining Enhancements
+
+- Password reset, email verification, and MFA are not implemented.
+- Browser end-to-end tests are not implemented.
+- Persistent audit-log storage is not implemented.
+- CI deployment automation is not implemented.
+
+These items are deployment/institutional hardening tasks rather than uncovered SRS functional workflow gaps.

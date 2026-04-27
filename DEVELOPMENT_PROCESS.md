@@ -73,7 +73,7 @@ This document tracks the development process of the IICT Library Management Syst
   - Aligned Prisma schema with implemented outside-book workflow models and relations.
   - Completed missing frontend routing/layout/shared-component scaffolding.
   - Fixed strict TypeScript issues (type-only imports, selector typing, role typing).
-  - Added frontend session bridge to align with temporary backend header-based auth.
+  - Added a frontend session bridge for the early development auth mode. This was later replaced by JWT authentication in Phase 12.
   - Added and updated environment examples and expanded handoff documentation.
 
 - **Files Created or Updated**:
@@ -146,7 +146,7 @@ This document tracks the development process of the IICT Library Management Syst
   - Frontend startup confirmed with Vite dev server running.
 
 - **What Still Remains Optional**:
-  - Replace temporary header-based auth bridge with real JWT/cookie authentication.
+  - Completed later: JWT/cookie authentication was added in Phase 12.
   - Add Prisma seed script and demo dataset.
   - Add automated integration tests for role-protected flows.
   - Add deployment automation (CI pipeline) for build + migrate + deploy sequence.
@@ -354,7 +354,7 @@ This document tracks the development process of the IICT Library Management Syst
   - **Incomplete Book Management**: Individual CRUD functionality for books (Adding single books, Editing metadata, Archiving/Deleting) is missing from the UI and backend logic.
   - **Circulation Blocker**: Teacher borrowing restricts API calls by requiring `facultySignatureText`, which the UI currently fails to provide.
   - **Zero Tests**: No automated tests (unit, integration, e2e) are implemented despite building and passing TS compilation.
-  - **Missing Workflows**: Real Dashboards, search bars on Book Catalogs, Notifications, and Procurement are incomplete or missing.
+  - **Original Missing Workflows**: At the time of this audit, real dashboards, catalog search UI, notifications, and procurement were incomplete or missing. Later phases closed the dashboard, catalog, procurement, and report-generation gaps.
 
 - **Next Expected Actions**:
   - Build actual backend/frontend authentication and user management endpoints.
@@ -418,7 +418,7 @@ This document tracks the development process of the IICT Library Management Syst
   - Frontend Vitest passed: 3 files, 7 tests.
 
 - **Remaining Limitations**:
-  - Temporary header-based auth remains in place.
+  - Superseded by Phase 12: production JWT authentication is now implemented, while optional development header auth remains disabled in production.
   - Reservation precedence is documented but not enforced during admin issue.
   - No database migration was required.
 

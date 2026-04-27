@@ -29,6 +29,6 @@ This document maps the implemented features to the expectations defined in the o
 | **Procurement/Vendor / UC-001** | Applications, requisitions, vendor selection, approval, delivery, handover, shelving | Fully Satisfied | Admin procurement workflow covers central library applications, requisitions, vendors, procurement orders, delivery/handover dates, receiving records, procurement status, and shelving status. |
 | **LMS-FR15 Report Generation** | Admin issued-book reports | Fully Satisfied | `/api/reports/issued-books` and `/dashboard/admin/reports` generate filterable issued-book reports with summary totals, computed overdue status, and CSV download. |
 | **Analytics Dashboard**  | Trends and total metrics       | Fully Satisfied       | Admin, Student, and Teacher dashboards now render API-backed operational data.   |
-| **Testing**              | Automated verification         | Partial               | Focused Vitest coverage exists for circulation and procurement; full e2e coverage remains future work. |
+| **Testing**              | Automated verification         | Partial               | Focused Vitest coverage exists for circulation, procurement, reports, borrower pages, and RBAC visibility; full e2e coverage remains future work. |
 
 _This document was last updated after the administrative reports implementation pass (April 2026)._

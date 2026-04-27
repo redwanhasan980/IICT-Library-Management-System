@@ -2,74 +2,66 @@
 
 ## Datasource
 
-Prisma datasource is configured as:
+Prisma datasource:
 
 - provider: mysql
-- DATABASE_URL: MariaDB-compatible connection string
+- `DATABASE_URL`: MariaDB-compatible connection string
 
-## Core Models
+## Core Identity Models
 
-### User
+- `User`: email, hashed password, name, role, active status, auth owner for loans/fines/reservations.
+- `StudentProfile`: registration number, department, current semester.
+- `TeacherProfile`: teacher ID, department, designation, optional signature data.
+- `AdminProfile`: admin profile relation for administrative workflows.
 
-- id (cuid, PK)
-- email (unique)
-- password
-- name
-- role (ADMIN | STUDENT | TEACHER)
-- createdAt / updatedAt
+## Catalog And Classification
 
-### StudentProfile
+- `Book`: accession number, title, author/editor, edition/volume, publication details, source, binding, pagination, bill data, ISBN, department, subject category, DDC number, Cutter code, call number, location, barcode, copy counts, archive status, and optional `procurementId`.
+- `SystemSetting`: borrowing duration, max active loans, fine rate, reservation expiry, outside-book toggle, updater.
+- Enums: `Department`, `BookSource`, `BindingType`.
 
-- id (PK)
-- userId (unique, FK -> User)
-- entries relation to OutsideBookEntry
+## Circulation, Reservations, And Fines
 
-### AdminProfile
+- `Loan`: book, borrower, borrower role snapshot, faculty signature text, issuing/returning admins, issue/due/return dates, and loan status.
+- `Reservation`: book, user, queue number, status, expiry, fulfilled/cancelled/expired timestamps.
+- `FinePayment`: loan, borrower, recording admin, amount, payment date, and note.
+- Enums: `LoanStatus`, `ReservationStatus`.
 
-- id (PK)
-- userId (unique, FK -> User)
-- verifiedEntries relation
-- verifiedExits relation
+## Outside Book Monitoring
 
-### TeacherProfile
+- `OutsideBookEntry`: student, title, author, entry/exit timestamps, verification flags, entry/exit verifying admins, and student snapshot fields.
+- Enum: `OutsideBookEntryStatus`.
 
-- id (PK)
-- userId (unique, FK -> User)
+## Inventory Audit
 
-### OutsideBookEntry
+- `InventoryAuditSession`: title, notes, status, creator/closer, start/close timestamps.
+- `InventoryAuditScan`: audit session, accession number, optional matched book, scanner, scan time, matched flag.
+- Enum: `InventoryAuditSessionStatus`.
 
-- id (PK)
-- studentId (FK -> StudentProfile)
-- title
-- author
-- entryTime
-- exitTime nullable
-- isVerifiedEntry
-- isVerifiedExit
-- verifiedByEntryId nullable (FK -> AdminProfile)
-- verifiedByExitId nullable (FK -> AdminProfile)
-- createdAt / updatedAt
+## Procurement
 
-Indexes:
-
-- studentId
-- (isVerifiedExit, entryTime)
-- (isVerifiedEntry, isVerifiedExit)
+- `ProcurementApplication`: application code, budget year, allocated budget, department.
+- `BookRequisition`: requisition code, application, requested book title/author/publisher/edition/ISBN, quantity, unit price, total price.
+- `Vendor`: vendor code, name, quotation details.
+- `Procurement`: procurement code, requisition, vendor, approval/delivery/handover dates, receiving record, shelving status, procurement status.
+- Enums: `ShelvingStatus`, `ProcurementStatus`.
 
 ## Migration Flow
 
 Recommended workflow:
 
-1. Update schema.prisma
-2. Run prisma generate
-3. Run prisma migrate dev (development) or prisma migrate deploy (deployment)
+1. Update `schema.prisma`.
+2. Run `npm run prisma:generate`.
+3. Run `npm run prisma:migrate` in development or `prisma migrate deploy` in deployment.
 
 ## Seed Flow
 
 - No seed script is currently registered.
-- Optional next step: add Prisma seed to generate users/profiles/outside-book demo records.
+- First admin is created through `POST /api/auth/bootstrap-admin` using `ADMIN_SETUP_TOKEN`.
+- Demo users/books can be created through the admin UI or API after bootstrap.
 
 ## Compatibility Notes
 
-- Schema and connection URL are kept MariaDB-compatible.
-- Use mysql:// in DATABASE_URL for MariaDB with Prisma.
+- Schema and connection URL are MariaDB-compatible.
+- Use `mysql://` in `DATABASE_URL` for MariaDB with Prisma.
+- Procurement and reports implementation did not require schema changes because the needed models/relations already existed.
