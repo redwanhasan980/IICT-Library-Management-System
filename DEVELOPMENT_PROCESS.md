@@ -465,3 +465,24 @@ This document tracks the development process of the IICT Library Management Syst
 - **Remaining Limitations**:
   - Password reset, email verification, and MFA are not implemented.
   - Admin bootstrap requires `ADMIN_SETUP_TOKEN`; production deployments must set it and then use normal admin-created accounts afterward.
+
+## Phase 13: Real Dashboard Data Wiring
+
+- **What Was Improved**:
+  - Replaced placeholder Admin, Student, and Teacher dashboards with real API-backed operational summaries.
+  - Admin dashboard now shows active loans, overdue loans, pending reservations, unpaid fine rows, most borrowed books, and active borrowers.
+  - Student dashboard now shows active loans, overdue loans, pending reservations, outstanding fines, current loans, and outside-book status.
+  - Teacher dashboard now shows active loans, overdue loans, pending reservations, outstanding fines, and current loans.
+
+- **Files Created or Updated**:
+  - `iict-library-client/src/pages/admin/AdminDashboard.tsx`
+  - `iict-library-client/src/pages/student/StudentDashboard.tsx`
+  - `iict-library-client/src/pages/teacher/TeacherDashboard.tsx`
+
+- **Commands Used**:
+  - `npm run build` (client)
+  - `npm test` (client)
+
+- **What Was Tested**:
+  - Frontend TypeScript + Vite production build passed.
+  - Frontend Vitest passed.
