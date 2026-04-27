@@ -575,3 +575,24 @@ This document tracks the development process of the IICT Library Management Syst
 - **Remaining Limitations**:
   - CSV download exports the currently visible report page. A streaming all-pages export can be added later if the deployed dataset becomes large.
   - The report is focused on issued-book records because that is the SRS scenario for LMS-FR15. More specialized report templates can be layered on top of the same route pattern.
+
+## Phase 16: Deployment Script Alignment
+
+- **What Was Improved**:
+  - Replaced stale repository-root Vite scripts with orchestration scripts that build and test the real server and client packages.
+  - Added `prisma:migrate:deploy` for production migration execution.
+  - Added a deployment checklist covering required environment variables, migration commands, first-admin bootstrap, runtime start, and smoke tests.
+
+- **Files Created or Updated**:
+  - `package.json`
+  - `iict-library-server/package.json`
+  - `DEPLOYMENT_CHECKLIST.md`
+  - `README.md`
+
+- **Commands Used**:
+  - `npm run build` (repo root)
+  - `npm test` (repo root)
+
+- **What Was Tested**:
+  - Repository-root build now runs server TypeScript build and client production build.
+  - Repository-root test now runs backend and frontend Vitest suites.

@@ -4,10 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build": "npm --prefix iict-library-server run build && npm --prefix iict-library-client run build",
+    "test": "npm --prefix iict-library-server test && npm --prefix iict-library-client test",
+    "dev:server": "npm --prefix iict-library-server run dev",
+    "dev:client": "npm --prefix iict-library-client run dev",
+    "start:server": "npm --prefix iict-library-server start",
+    "preview:client": "npm --prefix iict-library-client run preview",
+    "prisma:generate": "npm --prefix iict-library-server run prisma:generate",
+    "prisma:migrate": "npm --prefix iict-library-server run prisma:migrate",
+    "prisma:migrate:deploy": "npm --prefix iict-library-server run prisma:migrate:deploy"
   },
   "dependencies": {
     "react": "^19.2.4",

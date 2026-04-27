@@ -136,12 +136,11 @@ Unauthorized access is now routed to a dedicated `/unauthorized` page for cleare
 ### Build checks
 
 ```bash
-cd iict-library-server
 npm run build
-
-cd ../iict-library-client
-npm run build
+npm test
 ```
+
+The repository-root scripts delegate to `iict-library-server` and `iict-library-client`.
 
 ### Manual test checklist
 
@@ -319,11 +318,13 @@ These are required before starting the backend for the new modules.
 ## Deployment Notes
 
 - Build both apps before deployment.
+- Use repository-root `npm run build` and `npm test` for final verification.
 - Set NODE_ENV=production on server.
 - Set CORS_ORIGIN to the deployed frontend origin.
 - Ensure MariaDB is reachable from backend runtime environment.
-- Run prisma generate and prisma migrate deploy in deployment pipeline.
+- Run `npm run prisma:generate` and `npm run prisma:migrate:deploy` in deployment pipeline.
 - Frontend is a static Vite build from iict-library-client/dist.
+- See [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) for the full deployment checklist.
 
 ## Demo Credentials
 

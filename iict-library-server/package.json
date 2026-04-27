@@ -10,6 +10,7 @@
     "start": "node dist/index.js",
     "test": "vitest run",
     "prisma:migrate": "npx dotenv -e .env -- prisma migrate dev",
+    "prisma:migrate:deploy": "npx dotenv -e .env -- prisma migrate deploy",
     "prisma:generate": "npx dotenv -e .env -- prisma generate",
     "prisma:studio": "npx dotenv -e .env -- prisma studio"
   },
