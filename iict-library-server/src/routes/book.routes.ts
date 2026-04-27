@@ -9,6 +9,7 @@ import {
   bookIdParamSchema,
   createBookSchema,
   listBooksSchema,
+  updateBookSchema,
 } from '../validators/book.validator';
 
 const router = Router();
@@ -20,6 +21,7 @@ router.get('/accession/:accessionNumber', validate(accessionParamSchema), bookCo
 router.get('/:id', validate(bookIdParamSchema), bookController.getBookById);
 
 router.post('/', restrictTo(Role.ADMIN), validate(createBookSchema), bookController.createBook);
+router.put('/:id', restrictTo(Role.ADMIN), validate(updateBookSchema), bookController.updateBook);
 router.patch('/:id/archive', restrictTo(Role.ADMIN), validate(archiveBookSchema), bookController.setArchiveStatus);
 
 export default router;

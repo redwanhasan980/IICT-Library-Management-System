@@ -10,6 +10,7 @@ const commonLinks = [
 
 const adminLinks = [
   { to: '/dashboard/books', label: 'Book Catalog' },
+  { to: '/dashboard/admin/catalog', label: 'Manage Books' },
   { to: '/dashboard/outside-book-log', label: 'Outside Book Log' },
   { to: '/dashboard/admin/circulation', label: 'Circulation Desk' },
   { to: '/dashboard/admin/reservations', label: 'Reservations' },

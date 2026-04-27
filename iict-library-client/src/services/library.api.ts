@@ -68,6 +68,15 @@ export const libraryApi = api.injectEndpoints({
       transformResponse: (response: ApiResponse<Book>) => response.data,
       invalidatesTags: ['Books'],
     }),
+    updateBook: builder.mutation<Book, { id: string; body: Partial<Book> }>({
+      query: ({ id, body }) => ({
+        url: `/books/${id}`,
+        method: 'PUT',
+        body,
+      }),
+      transformResponse: (response: ApiResponse<Book>) => response.data,
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Books', id: arg.id }, 'Books'],
+    }),
     setBookArchiveStatus: builder.mutation<Book, { id: string; isArchived: boolean }>({
       query: ({ id, isArchived }) => ({
         url: `/books/${id}/archive`,
@@ -292,6 +301,7 @@ export const {
   useListBooksQuery,
   useGetBookByIdQuery,
   useCreateBookMutation,
+  useUpdateBookMutation,
   useSetBookArchiveStatusMutation,
   useCreateReservationMutation,
   useCancelMyReservationMutation,

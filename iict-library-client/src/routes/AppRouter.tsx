@@ -21,6 +21,8 @@ import AdminBulkToolsPage from '../pages/admin/AdminBulkToolsPage';
 import AdminAnalyticsPage from '../pages/admin/AdminAnalyticsPage';
 import AdminInventoryAuditPage from '../pages/admin/AdminInventoryAuditPage';
 import AdminFineManagementPage from '../pages/admin/AdminFineManagementPage';
+import AdminCatalogPage from '../pages/admin/catalog/AdminCatalogPage';
+import AdminBookFormPage from '../pages/admin/catalog/AdminBookFormPage';
 
 // Student Pages
 import StudentDashboard from '../pages/student/StudentDashboard';
@@ -59,6 +61,18 @@ const AppRouter = () => {
           <Route
             path="admin"
             element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminDashboard /></ProtectedRoute>}
+          />
+          <Route
+            path="admin/catalog"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminCatalogPage /></ProtectedRoute>}
+          />
+          <Route
+            path="admin/catalog/new"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminBookFormPage /></ProtectedRoute>}
+          />
+          <Route
+            path="admin/catalog/:id/edit"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminBookFormPage /></ProtectedRoute>}
           />
           <Route
             path="outside-book-log"

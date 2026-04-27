@@ -179,6 +179,7 @@ npm run build
 
 - open `/dashboard/admin/analytics`
 - verify summary cards and trend/table sections load
+
 14. For Admin role:
 
 - open `/dashboard/admin/inventory-audit`
@@ -186,6 +187,7 @@ npm run build
 - add single and bulk accession scans
 - verify summary cards and result-table status filters
 - close the session and confirm historical session remains listable
+
 15. For Admin role:
 
 - open `/dashboard/admin/fines`
@@ -193,6 +195,7 @@ npm run build
 - select a loan transaction and record partial payment
 - verify remaining balance decreases and payment history updates
 - record final payment and verify transaction status becomes `PAID`
+
 16. For Student/Teacher role:
 
 - open `/dashboard/student/fines` or `/dashboard/teacher/fines`
@@ -239,3 +242,20 @@ For demo in current development mode:
 
 - Use any email + password on the login page
 - Select the role needed for the flow (Student/Admin/Teacher)
+
+## Implementation Audit Findings (April 2026)
+
+An extensive audit was performed on the codebase, comparing the implemented features against the original requirements documents. For full details, see the `IMPLEMENTATION_AUDIT_REPORT.md` file.
+
+**Crucial Known Deficiencies:**
+
+- **Authentication:** Faked via HTTP headers (`x-user-role`, `x-user-id`). No real JWT or password hashing exists.
+- **User Management:** Registration paths for students, teachers, and admins are completely missing.
+- **Book Catalog:** `Add`, `Edit`, and `Delete` UI for individual books are missing. Books can currently only be ingested via CSV. Search operates on the backend but lacks UI.
+- **Testing:** Zero automated tests exist in the workspace.
+- **Procurement:** Database models exist, but the feature is missing from the API and frontend.
+
+**Recent Gap Closures:**
+
+- **Faculty Borrowing Fix:** Added `facultySignatureText` input in the Admin Circulation Page to satisfy backend constraints.
+- **Documentation Update:** Created `GAP_CLOSURE_REPORT.md` and `REQUIREMENT_TRACEABILITY.md` to properly document the system's relationship to original specifications.

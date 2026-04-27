@@ -18,41 +18,88 @@ export interface AuthenticatedRequest extends Request {
   user?: AuthUser;
 }
 
-export const protect = (
+import prisma from '../config/database';
+
+export const protect = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ) => {
-  // Temporary auth bridge: allows local development while auth module is pending.
-  // Real JWT verification should replace this middleware.
-  const roleHeader = req.header('x-user-role') as Role | undefined;
-  const userIdHeader = req.header('x-user-id');
+  try {
+    const roleHeader = req.header('x-user-role') as Role | undefined;
+    const userIdHeader = req.header('x-user-id');
 
-  if (!roleHeader || !userIdHeader) {
-    return res
-      .status(401)
-      .json(
-        errorResponse(
-          'Unauthorized. Provide x-user-id and x-user-role headers for development access.'
-        )
-      );
+    if (!roleHeader || !userIdHeader) {
+      return res.status(401).json(errorResponse('Unauthorized. Provide x-user-id and x-user-role headers for development access.'));
+    }
+
+    const normalizedRole = String(roleHeader).toUpperCase();
+    if (!Object.values(Role).includes(normalizedRole as Role)) {
+      return res.status(400).json(errorResponse('Invalid role in x-user-role header.'));
+    }
+
+    const role = normalizedRole as Role;
+
+    // Auto-provision dev user in DB if it doesn't exist
+    let user = await prisma.user.findUnique({ where: { email: userIdHeader } });
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: userIdHeader,
+          name: userIdHeader.split('@')[0],
+          password: 'mock_password',
+          role: role,
+        }
+      });
+    }
+
+    // Auto-provision appropriate profile
+    let studentProfile, adminProfile, teacherProfile;
+
+    if (role === Role.STUDENT) {
+      studentProfile = await prisma.studentProfile.findUnique({ where: { userId: user.id } });
+      if (!studentProfile) {
+        studentProfile = await prisma.studentProfile.create({
+          data: {
+            userId: user.id,
+            studentRegNumber: `REG-${Date.now()}`,
+            department: 'SWE',
+            currentSemester: 1
+          }
+        });
+      }
+    } else if (role === Role.ADMIN) {
+      adminProfile = await prisma.adminProfile.findUnique({ where: { userId: user.id } });
+      if (!adminProfile) {
+        adminProfile = await prisma.adminProfile.create({
+          data: { userId: user.id }
+        });
+      }
+    } else if (role === Role.TEACHER) {
+      teacherProfile = await prisma.teacherProfile.findUnique({ where: { userId: user.id } });
+      if (!teacherProfile) {
+        teacherProfile = await prisma.teacherProfile.create({
+          data: {
+            userId: user.id,
+            teacherId: `TCH-${Date.now()}`,
+            department: 'SWE'
+          }
+        });
+      }
+    }
+
+    req.user = {
+      id: user.id,
+      role: user.role,
+      studentProfile: studentProfile ? { id: studentProfile.id } : undefined,
+      adminProfile: adminProfile ? { id: adminProfile.id } : undefined,
+      teacherProfile: teacherProfile ? { id: teacherProfile.id } : undefined,
+    };
+
+    return next();
+  } catch (error) {
+    return next(error);
   }
-
-  const normalizedRole = String(roleHeader).toUpperCase();
-  if (!Object.values(Role).includes(normalizedRole as Role)) {
-    return res.status(400).json(errorResponse('Invalid role in x-user-role header.'));
-  }
-
-  const role = normalizedRole as Role;
-  req.user = {
-    id: userIdHeader,
-    role,
-    studentProfile: role === Role.STUDENT ? { id: userIdHeader } : undefined,
-    adminProfile: role === Role.ADMIN ? { id: userIdHeader } : undefined,
-    teacherProfile: role === Role.TEACHER ? { id: userIdHeader } : undefined,
-  };
-
-  return next();
 };
 
 export const restrictTo = (...allowedRoles: Role[]) => {

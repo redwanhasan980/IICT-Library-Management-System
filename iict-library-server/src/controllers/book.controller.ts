@@ -32,6 +32,20 @@ class BookController {
     }
   }
 
+  async updateBook(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const actorId = req.user?.id;
+      if (!actorId) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const updated = await bookService.updateBook(actorId, req.params.id, req.body);
+      return res.status(200).json(successResponse(updated, 'Book updated'));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
   async getBookById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await bookService.getBookById(req.params.id);
