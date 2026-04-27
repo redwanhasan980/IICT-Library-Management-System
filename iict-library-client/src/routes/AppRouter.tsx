@@ -25,6 +25,7 @@ import AdminCatalogPage from '../pages/admin/catalog/AdminCatalogPage';
 import AdminBookFormPage from '../pages/admin/catalog/AdminBookFormPage';
 import AdminOutsideBookLogsPage from '../pages/admin/AdminOutsideBookLogsPage';
 import AdminUsersPage from '../pages/admin/AdminUsersPage';
+import AdminProcurementPage from '../pages/admin/AdminProcurementPage';
 
 // Student Pages
 import StudentDashboard from '../pages/student/StudentDashboard';
@@ -104,6 +105,10 @@ const AppRouter = () => {
           <Route
             path="admin/circulation"
             element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminCirculationPage /></ProtectedRoute>}
+          />
+          <Route
+            path="admin/procurement"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminProcurementPage /></ProtectedRoute>}
           />
           <Route
             path="admin/bulk-tools"

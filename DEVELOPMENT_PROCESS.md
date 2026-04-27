@@ -486,3 +486,49 @@ This document tracks the development process of the IICT Library Management Syst
 - **What Was Tested**:
   - Frontend TypeScript + Vite production build passed.
   - Frontend Vitest passed.
+
+## Phase 14: Procurement Workflow Implementation
+
+- **What Was Improved**:
+  - Implemented the SRS/UC-001 procurement workflow using the existing `ProcurementApplication`, `BookRequisition`, `Vendor`, and `Procurement` Prisma models.
+  - Added admin-only backend APIs for procurement summaries, applications, requisitions, vendors, and procurement orders.
+  - Added validation for unique procurement codes, existing application/requisition/vendor references, positive quantities, non-negative budgets/prices, enum values, pagination, and procurement date ordering.
+  - Added requisition total-price calculation when quantity and unit price are supplied without an explicit total.
+  - Added admin UI at `/dashboard/admin/procurement` for recording central library applications, book requisitions, vendor quotation details, procurement orders, delivery/handover dates, receiving records, procurement status, and shelving status.
+  - Kept procurement additive and did not require a schema migration.
+
+- **Files Created or Updated**:
+  - `iict-library-server/src/validators/procurement.validator.ts`
+  - `iict-library-server/src/services/procurement.service.ts`
+  - `iict-library-server/src/controllers/procurement.controller.ts`
+  - `iict-library-server/src/routes/procurement.routes.ts`
+  - `iict-library-server/src/services/procurement.service.test.ts`
+  - `iict-library-server/src/index.ts`
+  - `iict-library-client/src/types/procurement.types.ts`
+  - `iict-library-client/src/services/procurement.api.ts`
+  - `iict-library-client/src/pages/admin/AdminProcurementPage.tsx`
+  - `iict-library-client/src/pages/admin/AdminProcurementPage.test.tsx`
+  - `iict-library-client/src/config/api.ts`
+  - `iict-library-client/src/routes/AppRouter.tsx`
+  - `iict-library-client/src/layouts/Sidebar.tsx`
+  - `README.md`
+  - `API_OVERVIEW.md`
+  - `REQUIREMENT_TRACEABILITY.md`
+  - `PROCUREMENT_IMPLEMENTATION_REPORT.md`
+
+- **Commands Used**:
+  - `npm run build` (server)
+  - `npm test` (server)
+  - `npm run build` (client)
+  - `npm test` (client)
+
+- **What Was Tested**:
+  - Backend TypeScript build passed.
+  - Backend Vitest passed, including procurement service tests for application uniqueness, requisition total calculation, order creation validation, order filtering, and summary totals.
+  - Frontend TypeScript + Vite production build passed.
+  - Frontend Vitest passed, including procurement admin page rendering.
+
+- **Remaining Limitations**:
+  - Procurement records are linked to catalog books through the existing optional `Book.procurementId`, but this phase does not auto-create catalog accessions from completed procurement orders.
+  - Procurement deletion is intentionally not exposed; use status updates such as `CANCELLED` to preserve audit history.
+  - End-to-end browser automation and deployment pipeline automation remain future hardening work.

@@ -234,6 +234,154 @@ Behavior:
 
 - Returns circulation history for a specific book/accession record.
 
+## Procurement Routes
+
+Base path: /api/procurements
+
+Auth requirement:
+
+- Bearer token or auth cookie
+- Role: ADMIN
+
+### GET /api/procurements/summary
+
+Behavior:
+
+- Returns counts and totals for applications, requisitions, vendors, orders, allocated budget, requested quantity, and estimated cost.
+
+### GET /api/procurements/applications
+
+Query:
+
+- q: string
+- department: CSE | SWE | EEE
+- budgetYear: number
+- page, pageSize
+
+Behavior:
+
+- Lists central library procurement applications with their requisition summaries.
+
+### POST /api/procurements/applications
+
+Body:
+
+- applicationCode: string
+- budgetYear: number
+- allocatedBudget: number
+- department: CSE | SWE | EEE
+
+Behavior:
+
+- Creates a procurement application and rejects duplicate application codes.
+
+### PUT /api/procurements/applications/:id
+
+Behavior:
+
+- Updates procurement application metadata and keeps application code unique.
+
+### GET /api/procurements/requisitions
+
+Query:
+
+- q: string
+- applicationId: string
+- page, pageSize
+
+Behavior:
+
+- Lists book requisitions with application and procurement-order summary data.
+
+### POST /api/procurements/requisitions
+
+Body:
+
+- requisitionCode: string
+- applicationId: string
+- bookTitle: string
+- authorName: string
+- publisher, edition, isbn: optional string
+- quantity: number
+- pricePerUnit: optional number
+- totalPrice: optional number
+
+Behavior:
+
+- Creates a requisition after validating the application. When `totalPrice` is omitted and `pricePerUnit` is present, the service calculates `quantity * pricePerUnit`.
+
+### PUT /api/procurements/requisitions/:id
+
+Behavior:
+
+- Updates a requisition, validates application changes, and recalculates total price when quantity or unit price changes without an explicit total.
+
+### GET /api/procurements/vendors
+
+Query:
+
+- q: string
+- page, pageSize
+
+Behavior:
+
+- Lists vendors with procurement-order counts.
+
+### POST /api/procurements/vendors
+
+Body:
+
+- vendorCode: string
+- vendorName: string
+- quotationDetails: optional string
+
+Behavior:
+
+- Creates a vendor and rejects duplicate vendor codes.
+
+### PUT /api/procurements/vendors/:id
+
+Behavior:
+
+- Updates vendor metadata and keeps vendor code unique.
+
+### GET /api/procurements/orders
+
+Query:
+
+- q: string
+- requisitionId: string
+- vendorId: string
+- procurementStatus: NOT_STARTED | ONGOING | COMPLETED | CANCELLED
+- shelvingStatus: PENDING | IN_PROGRESS | SHELVED
+- page, pageSize
+
+Behavior:
+
+- Lists procurement orders with requisition, application, vendor, and cataloged-book data.
+
+### POST /api/procurements/orders
+
+Body:
+
+- procurementCode: string
+- requisitionId: string
+- vendorId: string
+- procurementApprovalDate, deliveryDate, handoverDateToIICT: optional date string
+- bookReceivingRecord: optional string
+- shelvingStatus: optional PENDING | IN_PROGRESS | SHELVED
+- procurementStatus: optional NOT_STARTED | ONGOING | COMPLETED | CANCELLED
+
+Behavior:
+
+- Creates a procurement order after validating requisition, vendor, unique code, and date ordering.
+
+### PUT /api/procurements/orders/:id
+
+Behavior:
+
+- Updates procurement status, shelving status, dates, receiving record, requisition, or vendor. Date ordering validation is preserved.
+
 ## Standard Response Contract
 
 Success:

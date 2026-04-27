@@ -226,6 +226,16 @@ npm run build
 - open `/dashboard/student/borrowing` or `/dashboard/teacher/borrowing`
 - verify current borrowed books and full borrowing history are visible
 
+19. For Admin role:
+
+- open `/dashboard/admin/procurement`
+- create a procurement application with application code, budget year, allocated budget, and department
+- create a book requisition under that application and verify total estimated price is calculated
+- create a vendor with quotation details
+- create a procurement order from the requisition and vendor
+- update the order to ongoing/completed and mark shelving as shelved
+- verify the summary cards and procurement order table update
+
 ## Newly Added Modules (Current)
 
 - Book reservation and waitlist workflow
@@ -235,6 +245,7 @@ npm run build
 - Advanced analytics dashboard (descriptive summaries)
 - Inventory audit and stock verification workflow
 - Manual fine payment tracking (no online gateway)
+- Procurement application, requisition, vendor, delivery, handover, and shelving workflow
 
 ## Circulation Workflow (Hardened)
 
@@ -255,9 +266,29 @@ Borrowing policy is read from `SystemSetting`: student max active loans defaults
 
 Reservation limitation: returns still auto-fulfill the next pending reservation, but admin issue does not currently block issuing to a borrower other than the pending reservation holder.
 
+## Procurement Workflow
+
+Procurement uses the existing MariaDB/Prisma procurement models. No schema migration was needed for this implementation. Admin users can record central library applications, create book requisitions, maintain vendor quotation records, create procurement orders, track approval/delivery/handover dates, mark procurement status, and track shelving status.
+
+Key API routes:
+
+- `GET /api/procurements/summary` - Admin only; returns application, requisition, vendor, order, budget, quantity, and estimated cost totals.
+- `GET /api/procurements/applications` - Admin only; paginated application list with `q`, `department`, `budgetYear`, `page`, and `pageSize` filters.
+- `POST /api/procurements/applications` - Admin only; creates a central library application record.
+- `PUT /api/procurements/applications/:id` - Admin only; updates an application.
+- `GET /api/procurements/requisitions` - Admin only; paginated requisition list with `q`, `applicationId`, `page`, and `pageSize`.
+- `POST /api/procurements/requisitions` - Admin only; creates a book requisition and calculates `totalPrice` from quantity and unit price when omitted.
+- `PUT /api/procurements/requisitions/:id` - Admin only; updates a requisition.
+- `GET /api/procurements/vendors` - Admin only; paginated vendor list with search.
+- `POST /api/procurements/vendors` - Admin only; creates a vendor quotation record.
+- `PUT /api/procurements/vendors/:id` - Admin only; updates a vendor.
+- `GET /api/procurements/orders` - Admin only; paginated procurement order list with status, shelving, requisition, vendor, and search filters.
+- `POST /api/procurements/orders` - Admin only; creates a procurement order.
+- `PUT /api/procurements/orders/:id` - Admin only; updates procurement status, shelving status, dates, receiving record, requisition, or vendor.
+
 ## Database Notes for This Phase
 
-Prisma schema now includes `Book`, `Loan`, `Reservation`, `SystemSetting`, `InventoryAuditSession`, `InventoryAuditScan`, and `FinePayment` models.
+Prisma schema now includes `Book`, `Loan`, `Reservation`, `SystemSetting`, `InventoryAuditSession`, `InventoryAuditScan`, `FinePayment`, `ProcurementApplication`, `BookRequisition`, `Vendor`, and `Procurement` models.
 
 After pulling latest code, run:
 
@@ -292,15 +323,16 @@ For demo in current authenticated mode:
 
 An extensive audit was performed on the codebase, comparing the implemented features against the original requirements documents. For full details, see the `IMPLEMENTATION_AUDIT_REPORT.md` file.
 
-**Crucial Known Deficiencies:**
+**Original Audit Deficiencies Now Closed:**
 
-- **Authentication:** Faked via HTTP headers (`x-user-role`, `x-user-id`). No real JWT or password hashing exists.
-- **User Management:** Registration paths for students, teachers, and admins are completely missing.
-- **Book Catalog:** `Add`, `Edit`, and `Delete` UI for individual books are missing. Books can currently only be ingested via CSV. Search operates on the backend but lacks UI.
-- **Testing:** Zero automated tests exist in the workspace.
-- **Procurement:** Database models exist, but the feature is missing from the API and frontend.
+- **Authentication:** JWT login, bcrypt password hashing, self-registration, admin bootstrap, and member management are implemented.
+- **User Management:** Student, Teacher, and Admin member management exists through backend APIs and `/dashboard/admin/users`.
+- **Book Catalog:** Single-book add/edit/archive and catalog search are implemented.
+- **Testing:** Focused backend and frontend Vitest suites now cover circulation and procurement slices.
+- **Procurement:** Backend APIs and the admin procurement UI are implemented.
 
 **Recent Gap Closures:**
 
 - **Faculty Borrowing Fix:** Added `facultySignatureText` input in the Admin Circulation Page to satisfy backend constraints.
 - **Documentation Update:** Created `GAP_CLOSURE_REPORT.md` and `REQUIREMENT_TRACEABILITY.md` to properly document the system's relationship to original specifications.
+- **Procurement Workflow:** Added procurement applications, requisitions, vendors, orders, summary cards, status updates, and documentation.

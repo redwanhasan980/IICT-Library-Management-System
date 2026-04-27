@@ -11,9 +11,9 @@ This document maps the implemented features to the expectations defined in the o
 | **Student Registration** | Self-signup flow               | Fully Satisfied       | Student/Teacher registration creates matching profile records with department data. |
 | **Member Management**    | Manage Students/Faculty/Admins | Fully Satisfied       | Admin member screen and `/api/users` routes support creation, lookup, and active status. |
 | **Book Catalog Data**    | ISBN, Accession, Subject       | Fully Satisfied       | `Book` Prisma entity matches ER fields perfectly.                                |
-| **Add Single Book**      | Admin adds one book at a time  | Missing               | Only implemented by Bulk CSV Import. No single-book form exists.                 |
-| **Edit/Delete Book**     | Modify metadata or soft-delete | Missing               | API has archive flag, but no UI supports this yet.                               |
-| **Search/Filter Books**  | Find books dynamically         | Partial               | Backend supports `q` parameter, frontend uses static fetching.                   |
+| **Add Single Book**      | Admin adds one book at a time  | Fully Satisfied       | Admin catalog form supports single-book creation with accession metadata.         |
+| **Edit/Delete Book**     | Modify metadata or soft-delete | Fully Satisfied       | Admin catalog supports editing and archive/reactivation through the API.          |
+| **Search/Filter Books**  | Find books dynamically         | Fully Satisfied       | Catalog and admin book views use backend `q` and pagination support.              |
 | **Spine Labels**         | Print format, classification   | Fully Satisfied       | Supports Dewey/Cutter codes mapping efficiently.                                 |
 | **Outside Book Logging** | Entry/Exit logs, Verification  | Fully Satisfied       | Implemented with admin cross-verification exactly matching process documents.    |
 | **LMS-FR8 Book Issuing** | Admin issues by accession      | Fully Satisfied       | `POST /api/loans/issue` accepts accession/book ID and borrower user/reg/teacher IDs. |
@@ -26,8 +26,8 @@ This document maps the implemented features to the expectations defined in the o
 | **Fines Management**     | Manual fine recording          | Fully Satisfied       | Supports split manual payments and full payoffs.                                 |
 | **Reservations**         | Queue books when out of stock  | Fully Satisfied       | Enforces expiry limitations effectively.                                         |
 | **Inventory Audit**      | Scan and determine missing     | Fully Satisfied       | Complex status calculation for stock verification via accessions works properly. |
-| **Procurement/Vendor**   | Managing book requisitions     | Missing               | Exists in ER and Prisma schema but 0% implemented in the application layer.      |
+| **Procurement/Vendor / UC-001** | Applications, requisitions, vendor selection, approval, delivery, handover, shelving | Fully Satisfied | Admin procurement workflow covers central library applications, requisitions, vendors, procurement orders, delivery/handover dates, receiving records, procurement status, and shelving status. |
 | **Analytics Dashboard**  | Trends and total metrics       | Fully Satisfied       | Admin, Student, and Teacher dashboards now render API-backed operational data.   |
-| **Testing**              | Automated verification         | Missing               | No tests authored.                                                               |
+| **Testing**              | Automated verification         | Partial               | Focused Vitest coverage exists for circulation and procurement; full e2e coverage remains future work. |
 
-_This document was last updated after the authentication and member-management hardening pass (April 2026)._
+_This document was last updated after the procurement workflow implementation pass (April 2026)._

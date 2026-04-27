@@ -16,6 +16,7 @@ const adminLinks = [
   { to: '/dashboard/outside-book-log', label: 'Outside Book Log' },
   { to: '/dashboard/admin/outside-book-logs', label: 'Outside Book Logs' },
   { to: '/dashboard/admin/circulation', label: 'Circulation Desk' },
+  { to: '/dashboard/admin/procurement', label: 'Procurement' },
   { to: '/dashboard/admin/reservations', label: 'Reservations' },
   { to: '/dashboard/admin/settings', label: 'System Settings' },
   { to: '/dashboard/admin/bulk-tools', label: 'Bulk Tools' },
