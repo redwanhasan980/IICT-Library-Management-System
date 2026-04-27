@@ -67,10 +67,15 @@ Required server variables:
 - PORT: API port (default 5000)
 - CORS_ORIGIN: frontend origin, example http://localhost:5173
 - DATABASE_URL: MariaDB Prisma URL, example mysql://root:password@localhost:3306/iict_library
+- JWT_SECRET: long random secret for signing auth tokens
+- JWT_EXPIRES_IN: token lifetime, default 7d
+- ADMIN_SETUP_TOKEN: one-time token for first admin bootstrap
+- ENABLE_DEV_AUTH: false in production
 
 Required client variables:
 
 - VITE_API_BASE_URL: backend API base URL, example http://localhost:5000/api
+- VITE_ENABLE_DEV_AUTH: false in production
 
 ## Database Migration and Seed
 
@@ -108,14 +113,21 @@ Default URLs:
 - Health: http://localhost:5000/api/health
 - Client: http://localhost:5173 (Vite may auto-increment if occupied)
 
-## Temporary Auth Mode (Current)
+## Authentication
 
-The backend currently uses a development auth bridge in middleware. Protected API routes expect request headers:
+The backend uses email/password authentication with bcrypt password hashing and JWT bearer tokens. The frontend login and registration pages call the backend auth APIs and store the returned token for RTK Query requests.
 
-- x-user-id
-- x-user-role: ADMIN, STUDENT, or TEACHER
+Core auth routes:
 
-The frontend login page currently sets a local development session and injects these headers automatically through RTK Query.
+- `POST /api/auth/login`
+- `POST /api/auth/register` for Student/Teacher self-registration
+- `POST /api/auth/bootstrap-admin` for first admin setup using `ADMIN_SETUP_TOKEN`
+- `GET /api/auth/me`
+- `POST /api/auth/logout`
+
+Admin users can manage members from `/dashboard/admin/users`.
+
+Optional local header auth is available only when `ENABLE_DEV_AUTH=true` and `NODE_ENV` is not `production`. Do not enable it in deployment.
 
 Unauthorized access is now routed to a dedicated `/unauthorized` page for clearer UX.
 
@@ -270,10 +282,11 @@ These are required before starting the backend for the new modules.
 
 There are no hardcoded backend credentials currently.
 
-For demo in current development mode:
+For demo in current authenticated mode:
 
-- Use any email + password on the login page
-- Select the role needed for the flow (Student/Admin/Teacher)
+- Create the first admin with `POST /api/auth/bootstrap-admin` and `ADMIN_SETUP_TOKEN`.
+- Register Student/Teacher accounts from `/register`.
+- Admins can create additional members from `/dashboard/admin/users`.
 
 ## Implementation Audit Findings (April 2026)
 

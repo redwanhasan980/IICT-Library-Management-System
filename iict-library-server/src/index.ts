@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import authRouter from './routes/auth.routes';
+import userRouter from './routes/user.routes';
 import outsideBookRouter from './routes/outsideBook.routes';
 import spineLabelRouter from './routes/spineLabel.routes';
 import bookRouter from './routes/book.routes';
@@ -36,6 +38,8 @@ app.get('/api/health', (req, res) => {
 });
 
 // API Routes
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
 app.use('/api/outside-books', outsideBookRouter);
 app.use('/api/spine-labels', spineLabelRouter);
 app.use('/api/books', bookRouter);

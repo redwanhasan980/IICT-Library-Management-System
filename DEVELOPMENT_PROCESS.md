@@ -421,3 +421,47 @@ This document tracks the development process of the IICT Library Management Syst
   - Temporary header-based auth remains in place.
   - Reservation precedence is documented but not enforced during admin issue.
   - No database migration was required.
+
+## Phase 12: Authentication and Member Management Hardening
+
+- **What Was Improved**:
+  - Replaced default header-only auth with bcrypt password verification and JWT bearer tokens.
+  - Added `POST /api/auth/login`, `POST /api/auth/register`, `POST /api/auth/bootstrap-admin`, `GET /api/auth/me`, and logout support.
+  - Added admin-only member management APIs for listing, creating, updating, and activating/deactivating users.
+  - Added `User.isActive` to support production account deactivation.
+  - Kept development header auth only behind `ENABLE_DEV_AUTH=true` and disabled it in production.
+  - Reworked frontend login/register flows to use backend auth APIs.
+  - Added admin member-management UI at `/dashboard/admin/users`.
+
+- **Files Created or Updated**:
+  - `iict-library-server/prisma/schema.prisma`
+  - `iict-library-server/prisma/migrations/20260427210508_production_auth_user_status/migration.sql`
+  - `iict-library-server/src/middleware/auth.middleware.ts`
+  - `iict-library-server/src/services/auth.service.ts`
+  - `iict-library-server/src/controllers/auth.controller.ts`
+  - `iict-library-server/src/routes/auth.routes.ts`
+  - `iict-library-server/src/services/user.service.ts`
+  - `iict-library-server/src/controllers/user.controller.ts`
+  - `iict-library-server/src/routes/user.routes.ts`
+  - `iict-library-client/src/pages/LoginPage.tsx`
+  - `iict-library-client/src/pages/RegisterPage.tsx`
+  - `iict-library-client/src/pages/admin/AdminUsersPage.tsx`
+  - `iict-library-client/src/services/auth.api.ts`
+  - `iict-library-client/src/services/user.api.ts`
+
+- **Commands Used**:
+  - `npm run prisma:migrate -- --name production_auth_user_status`
+  - `npm run build` (server)
+  - `npm test` (server)
+  - `npm run build` (client)
+  - `npm test` (client)
+
+- **What Was Tested**:
+  - Backend TypeScript build passed.
+  - Backend Vitest passed.
+  - Frontend TypeScript + Vite production build passed.
+  - Frontend Vitest passed.
+
+- **Remaining Limitations**:
+  - Password reset, email verification, and MFA are not implemented.
+  - Admin bootstrap requires `ADMIN_SETUP_TOKEN`; production deployments must set it and then use normal admin-created accounts afterward.

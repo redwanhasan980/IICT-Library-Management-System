@@ -10,6 +10,66 @@ Base URL (development):
 
 Returns service status.
 
+## Auth Routes
+
+Base path: /api/auth
+
+### POST /api/auth/login
+
+Body:
+
+- email: string
+- password: string
+
+Behavior:
+
+- Verifies password hash and returns the authenticated user plus JWT token.
+
+### POST /api/auth/register
+
+Body:
+
+- name, email, password
+- role: STUDENT or TEACHER
+- department
+- studentRegNumber/currentSemester for students
+- teacherId/designation/signatureData for teachers
+
+Behavior:
+
+- Creates a borrower account and matching profile.
+
+### POST /api/auth/bootstrap-admin
+
+Body:
+
+- setupToken
+- name, email, password
+
+Behavior:
+
+- Creates the first admin only when `ADMIN_SETUP_TOKEN` matches and no admin exists.
+
+### GET /api/auth/me
+
+Auth: Bearer token or auth cookie.
+
+Behavior:
+
+- Returns current user and profile data.
+
+## User Management Routes
+
+Base path: /api/users
+
+Auth: ADMIN
+
+- `GET /api/users` lists members with q, role, isActive, page, and pageSize filters.
+- `POST /api/users` creates a member and profile.
+- `GET /api/users/:id` returns a member.
+- `PUT /api/users/:id` updates identity/profile fields.
+- `PATCH /api/users/:id/status` activates or deactivates a member.
+
 Response shape:
 
 - success: true

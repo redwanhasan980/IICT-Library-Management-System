@@ -22,6 +22,8 @@ app.use('/loans', loanRouter);
 
 beforeEach(() => {
   vi.clearAllMocks();
+  process.env.ENABLE_DEV_AUTH = 'true';
+  process.env.NODE_ENV = 'test';
 });
 
 describe('loan routes RBAC', () => {

@@ -6,9 +6,10 @@ This document maps the implemented features to the expectations defined in the o
 
 | Feature / Module         | SRS / Use Case Expectation     | Implementation Status | Notes                                                                            |
 | :----------------------- | :----------------------------- | :-------------------- | :------------------------------------------------------------------------------- |
-| **Authentication**       | Secure login, logout, roles    | Partial               | Uses a mock header bridge (`x-user-role`, `x-user-id`). True JWT is missing.     |
+| **Authentication**       | Secure login, logout, roles    | Fully Satisfied       | JWT login, bcrypt password hashing, logout, `/me`, and first-admin bootstrap are implemented. |
 | **Role-Based Access**    | Restrict Student vs Admin      | Fully Satisfied       | Front-end and back-end strictly separate logic across domains.                   |
-| **Student Registration** | Self-signup flow               | Missing               | No UI or routes exist for single user creation.                                  |
+| **Student Registration** | Self-signup flow               | Fully Satisfied       | Student/Teacher registration creates matching profile records with department data. |
+| **Member Management**    | Manage Students/Faculty/Admins | Fully Satisfied       | Admin member screen and `/api/users` routes support creation, lookup, and active status. |
 | **Book Catalog Data**    | ISBN, Accession, Subject       | Fully Satisfied       | `Book` Prisma entity matches ER fields perfectly.                                |
 | **Add Single Book**      | Admin adds one book at a time  | Missing               | Only implemented by Bulk CSV Import. No single-book form exists.                 |
 | **Edit/Delete Book**     | Modify metadata or soft-delete | Missing               | API has archive flag, but no UI supports this yet.                               |
@@ -29,4 +30,4 @@ This document maps the implemented features to the expectations defined in the o
 | **Analytics Dashboard**  | Trends and total metrics       | Partial               | Specific analytics page works. Main dashboards use dummy descriptions.           |
 | **Testing**              | Automated verification         | Missing               | No tests authored.                                                               |
 
-_This document was last updated after the Gap Closure implementation pass (April 2026)._
+_This document was last updated after the authentication and member-management hardening pass (April 2026)._

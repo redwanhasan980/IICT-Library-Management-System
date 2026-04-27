@@ -1,39 +1,30 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import { Card } from '../components/shared/Card';
 import { Input } from '../components/shared/Input';
 import { Button } from '../components/shared/Button';
-import { useAppDispatch } from '../store';
-import { setCredentials } from '../services/auth.slice';
-import { Role } from '../types/user.types';
+import { useLoginMutation } from '../services/auth.api';
 
 const LoginPage = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<Role>(Role.STUDENT);
+  const [login, { isLoading }] = useLoginMutation();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const normalizedEmail = email.trim().toLowerCase();
-    if (!normalizedEmail || !password) {
+    if (!normalizedEmail || !password || isLoading) {
       return;
     }
 
-    dispatch(
-      setCredentials({
-        user: {
-          id: normalizedEmail,
-          email: normalizedEmail,
-          name: normalizedEmail.split('@')[0],
-          role,
-        },
-        token: 'dev-session-token',
-      })
-    );
-
-    navigate('/dashboard');
+    try {
+      await login({ email: normalizedEmail, password }).unwrap();
+      navigate('/dashboard');
+    } catch (error: any) {
+      toast.error(error?.data?.message || 'Login failed');
+    }
   };
 
   return (
@@ -42,33 +33,15 @@ const LoginPage = () => {
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
           <label htmlFor="email" className="text-sm text-warm-taupe">Email</label>
-          <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={isLoading} />
         </div>
         <div>
           <label htmlFor="password" className="text-sm text-warm-taupe">Password</label>
-          <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required disabled={isLoading} />
         </div>
 
-        <div>
-          <label htmlFor="role" className="text-sm text-warm-taupe">Role</label>
-          <select
-            id="role"
-            value={role}
-            onChange={(event) => setRole(event.target.value as Role)}
-            className="mt-1 w-full rounded-md border border-sandy-beige px-3 py-2 text-sm text-dark-brown focus:border-dark-brown focus:outline-none focus:ring-1 focus:ring-dark-brown"
-          >
-            <option value={Role.STUDENT}>Student</option>
-            <option value={Role.ADMIN}>Admin</option>
-            <option value={Role.TEACHER}>Teacher</option>
-          </select>
-        </div>
-
-        <p className="text-xs text-warm-taupe">
-          Temporary development login. Role and email are used to attach API auth headers.
-        </p>
-
-        <Button type="submit" className="w-full">
-          Sign in
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
       </form>
     </Card>

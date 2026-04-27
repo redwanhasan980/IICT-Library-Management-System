@@ -12,11 +12,11 @@ const baseQuery = fetchBaseQuery({
       headers.set('authorization', `Bearer ${token}`);
     }
 
-    if (user?.id) {
+    if (import.meta.env.VITE_ENABLE_DEV_AUTH === 'true' && user?.id) {
       headers.set('x-user-id', user.id);
     }
 
-    if (user?.role) {
+    if (import.meta.env.VITE_ENABLE_DEV_AUTH === 'true' && user?.role) {
       headers.set('x-user-role', user.role);
     }
 
@@ -27,6 +27,6 @@ const baseQuery = fetchBaseQuery({
 export const api = createApi({
   reducerPath: 'api',
   baseQuery,
-  tagTypes: ['OutsideBooks', 'SpineLabel', 'Books', 'Reservations', 'Loans', 'Policies', 'Analytics', 'InventoryAudit', 'Fines'],
+  tagTypes: ['OutsideBooks', 'SpineLabel', 'Books', 'Reservations', 'Loans', 'Policies', 'Analytics', 'InventoryAudit', 'Fines', 'Users'],
   endpoints: () => ({}),
 });

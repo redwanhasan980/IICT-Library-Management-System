@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '../store';
 import { logOut, selectCurrentUser } from '../services/auth.slice';
 import { Role } from '../types/user.types';
 import { Button } from '../components/shared/Button';
+import { useLogoutMutation } from '../services/auth.api';
 
 const commonLinks = [
   { to: '/dashboard', label: 'Dashboard' },
@@ -11,6 +12,7 @@ const commonLinks = [
 const adminLinks = [
   { to: '/dashboard/books', label: 'Book Catalog' },
   { to: '/dashboard/admin/catalog', label: 'Manage Books' },
+  { to: '/dashboard/admin/users', label: 'Members' },
   { to: '/dashboard/outside-book-log', label: 'Outside Book Log' },
   { to: '/dashboard/admin/outside-book-logs', label: 'Outside Book Logs' },
   { to: '/dashboard/admin/circulation', label: 'Circulation Desk' },
@@ -49,6 +51,7 @@ interface SidebarProps {
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
+  const [logout] = useLogoutMutation();
 
   const getLinksForRole = (role: Role | undefined) => {
     switch (role) {
@@ -121,7 +124,10 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             <Button
               variant="ghost"
               className="w-full"
-              onClick={() => dispatch(logOut())}
+              onClick={() => {
+                logout();
+                dispatch(logOut());
+              }}
             >
               Sign out
             </Button>

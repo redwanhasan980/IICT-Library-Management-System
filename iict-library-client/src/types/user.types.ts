@@ -11,4 +11,16 @@ export interface User {
   name?: string;
   email: string;
   role: Role;
+  isActive?: boolean;
+  student?: {
+    studentRegNumber?: string;
+    department?: string;
+    currentSemester?: number;
+  };
+  teacher?: {
+    teacherId?: string;
+    department?: string;
+    designation?: string;
+    signatureData?: string;
+  };
 }
