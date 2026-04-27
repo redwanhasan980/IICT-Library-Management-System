@@ -10,9 +10,12 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-dark-brown text-white hover:bg-[#3e2a25]',
-  secondary: 'bg-sandy-beige text-dark-brown hover:bg-[#c7b8b0]',
-  ghost: 'bg-transparent text-dark-brown hover:bg-sandy-beige',
+  primary:
+    'bg-gradient-to-r from-library-forest to-library-gold text-white shadow-[0_10px_20px_rgba(58,90,64,0.25)] hover:brightness-110',
+  secondary:
+    'bg-library-mist text-library-ink border border-sandy-beige shadow-sm hover:bg-white',
+  ghost:
+    'bg-transparent text-library-ink hover:bg-library-mist',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -31,7 +34,7 @@ export const Button = ({
   return (
     <button
       type={type}
-      className={`rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`rounded-full font-semibold tracking-wide transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-library-gold/60 focus-visible:ring-offset-2 focus-visible:ring-offset-pale-cream disabled:cursor-not-allowed disabled:opacity-60 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       {...props}
     >
       {children}

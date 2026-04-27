@@ -38,7 +38,12 @@ const teacherLinks = [
   { to: '/dashboard/teacher/fines', label: 'My Fines' },
 ];
 
-const Sidebar = () => {
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
 
@@ -58,42 +63,69 @@ const Sidebar = () => {
   const links = getLinksForRole(user?.role);
 
   return (
-    <aside className="w-64 bg-pale-cream text-dark-brown p-4">
-      <div className="text-2xl font-bold mb-8">IICT Library</div>
-      <nav>
-        <ul>
-          {links.map((link) => (
-            <li key={link.to}>
-              <NavLink
-                to={link.to}
-                className={({ isActive }) =>
-                  `block py-2 px-4 rounded transition-colors duration-200 ${
-                    isActive
-                      ? 'bg-sandy-beige text-dark-brown font-semibold'
-                      : 'hover:bg-sandy-beige'
-                  }`
-                }
-              >
-                {link.label}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      {user ? (
-        <div className="mt-6 border-t border-sandy-beige pt-4">
-          <p className="mb-3 text-xs text-warm-taupe">Signed in as {user.email}</p>
-          <Button
-            variant="ghost"
-            className="w-full"
-            onClick={() => dispatch(logOut())}
+    <>
+      <div
+        className={`fixed inset-0 z-40 bg-black/30 backdrop-blur-sm transition-opacity ${
+          isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        onClick={onClose}
+      />
+      <aside
+        className={`fixed right-4 top-4 z-50 h-[calc(100vh-2rem)] w-72 rounded-3xl border border-sandy-beige/70 bg-white/90 p-6 shadow-[0_20px_40px_rgba(22,35,28,0.12)] backdrop-blur transition-transform ${
+          isOpen ? 'translate-x-0' : 'translate-x-[calc(100%+2rem)]'
+        }`}
+      >
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-warm-taupe">IICT</p>
+            <h2 className="text-2xl font-semibold text-library-ink">Library Suite</h2>
+            <div className="mt-3 h-[3px] w-16 rounded-full bg-gradient-to-r from-library-forest to-library-gold" />
+          </div>
+          <button
+            type="button"
+            aria-label="Close navigation"
+            className="rounded-full border border-sandy-beige/70 bg-white p-2 text-library-ink shadow-sm"
+            onClick={onClose}
           >
-            Sign out
-          </Button>
+            ✕
+          </button>
         </div>
-      ) : null}
-    </aside>
+        <nav>
+          <ul className="space-y-1">
+            {links.map((link) => (
+              <li key={link.to}>
+                <NavLink
+                  to={link.to}
+                  onClick={onClose}
+                  className={({ isActive }) =>
+                    `block rounded-2xl px-4 py-2.5 text-sm font-medium transition-all ${
+                      isActive
+                        ? 'bg-library-mist text-library-ink shadow-sm'
+                        : 'text-warm-taupe hover:bg-library-mist/70 hover:text-library-ink'
+                    }`
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {user ? (
+          <div className="mt-8 border-t border-sandy-beige/70 pt-5">
+            <p className="mb-3 text-xs text-warm-taupe">Signed in as {user.email}</p>
+            <Button
+              variant="ghost"
+              className="w-full"
+              onClick={() => dispatch(logOut())}
+            >
+              Sign out
+            </Button>
+          </div>
+        ) : null}
+      </aside>
+    </>
   );
 };
 
