@@ -201,6 +201,19 @@ npm run build
 - open `/dashboard/student/fines` or `/dashboard/teacher/fines`
 - verify outstanding summary, transaction fine status, and payment history are visible
 
+17. For Admin role:
+
+- open `/dashboard/admin/circulation`
+- scan/type an accession number
+- issue by User ID, Student Reg No., or Teacher ID
+- verify active loans table, overdue filter, borrower history, and book circulation history
+- return an active loan and confirm returned status appears
+
+18. For Student/Teacher role:
+
+- open `/dashboard/student/borrowing` or `/dashboard/teacher/borrowing`
+- verify current borrowed books and full borrowing history are visible
+
 ## Newly Added Modules (Current)
 
 - Book reservation and waitlist workflow
@@ -210,6 +223,25 @@ npm run build
 - Advanced analytics dashboard (descriptive summaries)
 - Inventory audit and stock verification workflow
 - Manual fine payment tracking (no online gateway)
+
+## Circulation Workflow (Hardened)
+
+Circulation uses the unified `Loan` transaction model. Admin users can issue by accession number or book ID, return active loans, list active/all loans, filter overdue loans, and view borrower or book-level circulation history.
+
+Key API routes:
+
+- `POST /api/loans/issue` - Admin only; accepts `accessionNumber` or `bookId`, plus `userId`, `studentRegNumber`, or `teacherId`.
+- `PATCH /api/loans/:id/return` - Admin only; return is guarded against duplicate availability increments.
+- `GET /api/loans` - Admin only; paginated list with `status`, `overdue`, `borrowerRole`, and `q` filters.
+- `GET /api/loans/:id` - Admin or owning borrower.
+- `GET /api/loans/history/me` - Student/Teacher own borrowing history.
+- `GET /api/loans/borrowers/:userId/history` - Admin borrower history.
+- `GET /api/loans/books/:bookId/history` - Admin book circulation history.
+- `GET /api/loans/lookup/:accessionNumber` - Admin accession lookup with active-loan details.
+
+Borrowing policy is read from `SystemSetting`: student max active loans defaults to `3`, teacher max active loans defaults to `5`, student duration defaults to `14` days, and teacher duration defaults to `30` days. These values can be changed from the existing System Settings flow.
+
+Reservation limitation: returns still auto-fulfill the next pending reservation, but admin issue does not currently block issuing to a borrower other than the pending reservation holder.
 
 ## Database Notes for This Phase
 

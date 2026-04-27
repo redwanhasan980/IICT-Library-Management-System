@@ -4,6 +4,8 @@ import { protect, restrictTo } from '../middleware/auth.middleware';
 import { validate } from '../middleware/validate.middleware';
 import {
   createOutsideBookEntrySchema,
+  exitOutsideBookEntrySchema,
+  listOutsideBookEntriesSchema,
   verifyOutsideBookEntrySchema,
 } from '../validators/outsideBook.validator';
 import { Role } from '@prisma/client';
@@ -25,6 +27,27 @@ router.get(
   '/active',
   restrictTo(Role.ADMIN),
   OutsideBookController.getActiveEntries
+);
+
+router.get(
+  '/',
+  restrictTo(Role.ADMIN),
+  validate(listOutsideBookEntriesSchema),
+  OutsideBookController.listEntries
+);
+
+router.get(
+  '/:id',
+  restrictTo(Role.ADMIN),
+  validate(verifyOutsideBookEntrySchema),
+  OutsideBookController.getEntryById
+);
+
+router.patch(
+  '/:id/exit',
+  restrictTo(Role.STUDENT),
+  validate(exitOutsideBookEntrySchema),
+  OutsideBookController.markExit
 );
 
 router.patch(

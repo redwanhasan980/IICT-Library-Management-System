@@ -35,6 +35,14 @@ interface BookLookupResponse {
   activeLoan?: Loan;
 }
 
+interface PaginatedLoansResponse {
+  items: Loan[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
 interface BulkAuditScanResult {
   added: number;
 }
@@ -129,7 +137,15 @@ export const libraryApi = api.injectEndpoints({
       invalidatesTags: ['Reservations', 'Books'],
     }),
 
-    issueLoan: builder.mutation<Loan, { bookId: string; userId: string; dueAt?: string; facultySignatureText?: string }>({
+    issueLoan: builder.mutation<Loan, {
+      bookId?: string;
+      accessionNumber?: string;
+      userId?: string;
+      studentRegNumber?: string;
+      teacherId?: string;
+      dueAt?: string;
+      facultySignatureText?: string;
+    }>({
       query: (body) => ({
         url: '/loans/issue',
         method: 'POST',
@@ -148,6 +164,41 @@ export const libraryApi = api.injectEndpoints({
     }),
     listMyLoans: builder.query<Loan[], void>({
       query: () => '/loans/my',
+      transformResponse: (response: ApiResponse<Loan[]>) => response.data,
+      providesTags: ['Loans'],
+    }),
+    listMyLoanHistory: builder.query<Loan[], void>({
+      query: () => '/loans/history/me',
+      transformResponse: (response: ApiResponse<Loan[]>) => response.data,
+      providesTags: ['Loans'],
+    }),
+    listLoans: builder.query<PaginatedLoansResponse, {
+      status?: 'ACTIVE' | 'RETURNED' | 'OVERDUE';
+      overdue?: boolean;
+      borrowerRole?: 'STUDENT' | 'TEACHER';
+      q?: string;
+      page?: number;
+      pageSize?: number;
+    } | undefined>({
+      query: (params) => ({
+        url: '/loans',
+        params: params ?? {},
+      }),
+      transformResponse: (response: ApiResponse<PaginatedLoansResponse>) => response.data,
+      providesTags: ['Loans'],
+    }),
+    getLoanById: builder.query<Loan, string>({
+      query: (id) => `/loans/${id}`,
+      transformResponse: (response: ApiResponse<Loan>) => response.data,
+      providesTags: (_result, _error, id) => [{ type: 'Loans', id }],
+    }),
+    getBorrowerHistory: builder.query<Loan[], string>({
+      query: (userId) => `/loans/borrowers/${userId}/history`,
+      transformResponse: (response: ApiResponse<Loan[]>) => response.data,
+      providesTags: ['Loans'],
+    }),
+    getBookCirculationHistory: builder.query<Loan[], string>({
+      query: (bookId) => `/loans/books/${bookId}/history`,
       transformResponse: (response: ApiResponse<Loan[]>) => response.data,
       providesTags: ['Loans'],
     }),
@@ -312,6 +363,11 @@ export const {
   useIssueLoanMutation,
   useReturnLoanMutation,
   useListMyLoansQuery,
+  useListMyLoanHistoryQuery,
+  useListLoansQuery,
+  useGetLoanByIdQuery,
+  useGetBorrowerHistoryQuery,
+  useGetBookCirculationHistoryQuery,
   useLookupByAccessionQuery,
   useGetPoliciesQuery,
   useUpdatePoliciesMutation,

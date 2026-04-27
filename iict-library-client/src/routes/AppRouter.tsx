@@ -23,6 +23,7 @@ import AdminInventoryAuditPage from '../pages/admin/AdminInventoryAuditPage';
 import AdminFineManagementPage from '../pages/admin/AdminFineManagementPage';
 import AdminCatalogPage from '../pages/admin/catalog/AdminCatalogPage';
 import AdminBookFormPage from '../pages/admin/catalog/AdminBookFormPage';
+import AdminOutsideBookLogsPage from '../pages/admin/AdminOutsideBookLogsPage';
 
 // Student Pages
 import StudentDashboard from '../pages/student/StudentDashboard';
@@ -32,6 +33,7 @@ import BookCatalogPage from '../pages/books/BookCatalogPage';
 import BookDetailsPage from '../pages/books/BookDetailsPage';
 import MyReservationsPage from '../pages/shared/MyReservationsPage';
 import MyFinesPage from '../pages/shared/MyFinesPage';
+import MyBorrowingHistoryPage from '../pages/shared/MyBorrowingHistoryPage';
 
 // Teacher Pages
 import TeacherDashboard from '../pages/teacher/TeacherDashboard';
@@ -77,6 +79,10 @@ const AppRouter = () => {
           <Route
             path="outside-book-log"
             element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><ActiveOutsideBookLogPage /></ProtectedRoute>}
+          />
+          <Route
+            path="admin/outside-book-logs"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminOutsideBookLogsPage /></ProtectedRoute>}
           />
           <Route
             path="spine-label-generator"
@@ -129,6 +135,10 @@ const AppRouter = () => {
             element={<ProtectedRoute allowedRoles={[Role.STUDENT]}><MyReservationsPage /></ProtectedRoute>}
           />
           <Route
+            path="student/borrowing"
+            element={<ProtectedRoute allowedRoles={[Role.STUDENT]}><MyBorrowingHistoryPage /></ProtectedRoute>}
+          />
+          <Route
             path="student/fines"
             element={<ProtectedRoute allowedRoles={[Role.STUDENT]}><MyFinesPage /></ProtectedRoute>}
           />
@@ -149,6 +159,10 @@ const AppRouter = () => {
           <Route
             path="teacher/reservations"
             element={<ProtectedRoute allowedRoles={[Role.TEACHER]}><MyReservationsPage /></ProtectedRoute>}
+          />
+          <Route
+            path="teacher/borrowing"
+            element={<ProtectedRoute allowedRoles={[Role.TEACHER]}><MyBorrowingHistoryPage /></ProtectedRoute>}
           />
           <Route
             path="teacher/fines"

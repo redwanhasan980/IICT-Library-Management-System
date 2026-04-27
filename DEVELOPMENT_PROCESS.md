@@ -369,3 +369,55 @@ This document tracks the development process of the IICT Library Management Syst
   - **Faculty Borrowing Issue:** Added `facultySignatureText` to the frontend `issueLoan` API interface and Admin Circulation page. Fixed the core blockage for Teacher borrowing.
   - **Requirements Mapping:** Established exactly what SRS topics mapped to current modules in `REQUIREMENT_TRACEABILITY.md`.
   - **Gap Closure Reporting:** Recorded the current progress and scoped priorities safely utilizing `GAP_CLOSURE_REPORT.md` while waiting to completely implement deep system functionalities like Auth and Procurement.
+
+## Phase 11: Circulation Workflow Hardening
+
+- **What Was Improved**:
+  - Extended the existing unified `Loan` workflow instead of rebuilding circulation.
+  - Added accession-based issuing directly through `POST /api/loans/issue` while preserving `bookId` compatibility.
+  - Added borrower lookup by `userId`, `studentRegNumber`, or `teacherId`.
+  - Hardened issue/return transactions against unavailable, archived, already-issued, and duplicate-return cases.
+  - Added computed `effectiveStatus` and `isOverdue` fields in circulation responses without rewriting historical records.
+  - Added admin loan listing, loan detail, borrower history, and book circulation history APIs.
+  - Expanded the admin circulation page with active loan search, overdue filter, borrower history, and book history while keeping the existing design language.
+  - Added Student/Teacher “My Borrowing” pages for current loans and full history.
+  - Added focused Vitest coverage for backend circulation rules/RBAC and frontend circulation rendering/RBAC visibility.
+
+- **Files Created or Updated**:
+  - `iict-library-server/src/services/loan.service.ts`
+  - `iict-library-server/src/controllers/loan.controller.ts`
+  - `iict-library-server/src/routes/loan.routes.ts`
+  - `iict-library-server/src/validators/loan.validator.ts`
+  - `iict-library-server/src/services/loan.service.test.ts`
+  - `iict-library-server/src/routes/loan.routes.test.ts`
+  - `iict-library-client/src/pages/admin/AdminCirculationPage.tsx`
+  - `iict-library-client/src/pages/shared/MyBorrowingHistoryPage.tsx`
+  - `iict-library-client/src/services/library.api.ts`
+  - `iict-library-client/src/types/book.types.ts`
+  - `iict-library-client/src/routes/AppRouter.tsx`
+  - `iict-library-client/src/layouts/Sidebar.tsx`
+  - `README.md`
+  - `REQUIREMENT_TRACEABILITY.md`
+  - `CIRCULATION_IMPLEMENTATION_REPORT.md`
+
+- **Commands Used**:
+  - `npm run prisma:generate` (server)
+  - `npm install -D vitest supertest @types/supertest` (server)
+  - `npm install -D vitest@1.6.1` (server)
+  - `npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom happy-dom` (client)
+  - `npm install -D vitest@1.6.1` (client)
+  - `npm run build` (server)
+  - `npm test` (server)
+  - `npm run build` (client)
+  - `npm test` (client)
+
+- **What Was Tested**:
+  - Backend TypeScript build passed.
+  - Backend Vitest passed: 2 files, 9 tests.
+  - Frontend TypeScript + Vite production build passed.
+  - Frontend Vitest passed: 3 files, 7 tests.
+
+- **Remaining Limitations**:
+  - Temporary header-based auth remains in place.
+  - Reservation precedence is documented but not enforced during admin issue.
+  - No database migration was required.

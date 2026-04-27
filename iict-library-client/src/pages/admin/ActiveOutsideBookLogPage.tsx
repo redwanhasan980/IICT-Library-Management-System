@@ -7,6 +7,7 @@ import { Card } from '../../components/shared/Card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../../components/shared/Table';
 import { Button } from '../../components/shared/Button';
 import { EmptyState, ErrorState, LoadingState } from '../../components/shared/FeedbackState';
+import { Badge } from '../../components/shared/Badge';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 
@@ -31,6 +32,9 @@ const ActiveOutsideBookLogPage = () => {
     if (isVerifyingExit) {
       return;
     }
+    if (!window.confirm('Mark this entry as exited and verified?')) {
+      return;
+    }
     try {
       await verifyExit(id).unwrap();
       toast.success('Exit verified!');
@@ -50,9 +54,12 @@ const ActiveOutsideBookLogPage = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Student</TableHead>
+                <TableHead>Reg No.</TableHead>
+                <TableHead>Department</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Author</TableHead>
                 <TableHead>Entry Time</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -60,9 +67,18 @@ const ActiveOutsideBookLogPage = () => {
               {entries.map((entry) => (
                 <TableRow key={entry.id}>
                   <TableCell>{entry.student?.user?.name || entry.student?.id || 'N/A'}</TableCell>
+                  <TableCell>{entry.studentRegNumberSnapshot || '-'}</TableCell>
+                  <TableCell>{entry.studentDepartmentSnapshot || '-'}</TableCell>
                   <TableCell>{entry.title}</TableCell>
                   <TableCell>{entry.author}</TableCell>
                   <TableCell>{format(new Date(entry.entryTime), 'PPpp')}</TableCell>
+                  <TableCell>
+                    {entry.isVerifiedEntry ? (
+                      <Badge variant="info">Entry Verified</Badge>
+                    ) : (
+                      <Badge variant="warning">Pending Entry</Badge>
+                    )}
+                  </TableCell>
                   <TableCell className="space-x-2">
                     {!entry.isVerifiedEntry && (
                       <Button

@@ -10,8 +10,14 @@ export interface OutsideBookEntry {
   student?: StudentRef;
   title: string;
   author: string;
+  studentRegNumberSnapshot?: string;
+  studentDepartmentSnapshot?: string;
+  studentSemesterSnapshot?: number;
+  entryStatus?: 'ENTERED' | 'EXITED';
   entryTime: string;
   exitTime?: string;
+  studentStrikeMarkedAt?: string;
+  exitVerifiedAt?: string;
   isVerifiedEntry: boolean;
   isVerifiedExit: boolean;
   verifiedByEntry?: User;
@@ -76,12 +82,20 @@ export interface Loan {
   id: string;
   bookId: string;
   userId: string;
+  borrowerRole?: 'STUDENT' | 'TEACHER';
+  facultySignatureText?: string;
+  facultySignatureRecordedAt?: string;
   issuedAt: string;
   dueAt: string;
   returnedAt?: string;
   status: LoanStatus;
+  effectiveStatus?: LoanStatus;
+  isOverdue?: boolean;
   book?: Book;
-  user?: User;
+  user?: User & {
+    student?: { studentRegNumber?: string; department?: string; currentSemester?: number };
+    teacher?: { teacherId?: string; department?: string; designation?: string };
+  };
 }
 
 export interface SystemSetting {

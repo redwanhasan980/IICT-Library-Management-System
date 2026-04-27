@@ -5,6 +5,7 @@ import { Card } from '../../../components/shared/Card';
 import { Button } from '../../../components/shared/Button';
 import { Input } from '../../../components/shared/Input';
 import { LoadingState, ErrorState } from '../../../components/shared/FeedbackState';
+import type { Book } from '../../../types/book.types';
 
 const AdminBookFormPage = () => {
   const { id } = useParams();
@@ -87,7 +88,7 @@ const AdminBookFormPage = () => {
       pagination: formData.pagination ? parseInt(formData.pagination as string, 10) : undefined,
       totalCopies: parseInt(String(formData.totalCopies), 10),
       deweyDecimalNumber: formData.deweyDecimalNumber ? parseFloat(formData.deweyDecimalNumber as string) : undefined,
-    };
+    } as Partial<Book>;
 
     // basic cleanup for missing
     Object.keys(payload).forEach((key) => {

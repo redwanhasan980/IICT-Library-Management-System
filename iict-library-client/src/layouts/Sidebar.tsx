@@ -12,6 +12,7 @@ const adminLinks = [
   { to: '/dashboard/books', label: 'Book Catalog' },
   { to: '/dashboard/admin/catalog', label: 'Manage Books' },
   { to: '/dashboard/outside-book-log', label: 'Outside Book Log' },
+  { to: '/dashboard/admin/outside-book-logs', label: 'Outside Book Logs' },
   { to: '/dashboard/admin/circulation', label: 'Circulation Desk' },
   { to: '/dashboard/admin/reservations', label: 'Reservations' },
   { to: '/dashboard/admin/settings', label: 'System Settings' },
@@ -25,6 +26,7 @@ const adminLinks = [
 
 const studentLinks = [
   { to: '/dashboard/books', label: 'Book Catalog' },
+  { to: '/dashboard/student/borrowing', label: 'My Borrowing' },
   { to: '/dashboard/student/reservations', label: 'My Reservations' },
   { to: '/dashboard/student/fines', label: 'My Fines' },
   { to: '/dashboard/my-outside-books', label: 'My Outside Books' },
@@ -34,6 +36,7 @@ const studentLinks = [
 
 const teacherLinks = [
   { to: '/dashboard/books', label: 'Book Catalog' },
+  { to: '/dashboard/teacher/borrowing', label: 'My Borrowing' },
   { to: '/dashboard/teacher/reservations', label: 'My Reservations' },
   { to: '/dashboard/teacher/fines', label: 'My Fines' },
 ];

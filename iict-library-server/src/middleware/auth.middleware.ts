@@ -51,6 +51,11 @@ export const protect = async (
           role: role,
         }
       });
+    } else if (user.role !== role) {
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { role },
+      });
     }
 
     // Auto-provision appropriate profile
@@ -90,7 +95,7 @@ export const protect = async (
 
     req.user = {
       id: user.id,
-      role: user.role,
+      role,
       studentProfile: studentProfile ? { id: studentProfile.id } : undefined,
       adminProfile: adminProfile ? { id: adminProfile.id } : undefined,
       teacherProfile: teacherProfile ? { id: teacherProfile.id } : undefined,

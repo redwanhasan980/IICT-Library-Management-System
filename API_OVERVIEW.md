@@ -94,6 +94,86 @@ Behavior:
 
 - Returns normalized label preview payload.
 
+## Circulation / Loan Routes
+
+Base path: /api/loans
+
+Auth requirement:
+
+- x-user-id header
+- x-user-role header
+
+### POST /api/loans/issue
+
+Role: ADMIN
+
+Body:
+
+- accessionNumber or bookId
+- userId or studentRegNumber or teacherId
+- dueAt optional ISO datetime
+- facultySignatureText optional, required for Teacher if profile has no signature
+
+Behavior:
+
+- Issues an active loan, decrements availability, blocks archived/unavailable/already-issued accessions, and applies policy limits.
+
+### PATCH /api/loans/:id/return
+
+Role: ADMIN
+
+Behavior:
+
+- Returns an active loan, increments availability once, rejects duplicate returns, and triggers existing reservation auto-fulfillment.
+
+### GET /api/loans
+
+Role: ADMIN
+
+Query:
+
+- status: ACTIVE | RETURNED | OVERDUE
+- overdue: true | false
+- borrowerRole: STUDENT | TEACHER
+- q: string
+- page, pageSize
+
+Behavior:
+
+- Returns paginated circulation records with computed `effectiveStatus` and `isOverdue`.
+
+### GET /api/loans/:id
+
+Role: ADMIN or owning STUDENT/TEACHER
+
+Behavior:
+
+- Returns one loan transaction.
+
+### GET /api/loans/history/me
+
+Role: STUDENT or TEACHER
+
+Behavior:
+
+- Returns the authenticated borrower’s current and historical loans.
+
+### GET /api/loans/borrowers/:userId/history
+
+Role: ADMIN
+
+Behavior:
+
+- Returns all circulation records for a borrower.
+
+### GET /api/loans/books/:bookId/history
+
+Role: ADMIN
+
+Behavior:
+
+- Returns circulation history for a specific book/accession record.
+
 ## Standard Response Contract
 
 Success:
