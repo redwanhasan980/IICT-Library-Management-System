@@ -2,42 +2,59 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import AdminReportsPage from './AdminReportsPage';
 
+const issuedReport = {
+  filters: { status: 'ALL' },
+  summary: {
+    totalIssued: 1,
+    activeCount: 0,
+    returnedCount: 0,
+    overdueCount: 1,
+    uniqueBorrowers: 1,
+  },
+  items: [{
+    id: 'loan-1',
+    accessionNumber: 'ACC-1',
+    bookTitle: 'Database Systems',
+    author: 'Elmasri',
+    borrowerName: 'Student One',
+    borrowerEmail: 'student@example.com',
+    borrowerRole: 'STUDENT',
+    borrowerIdentifier: 'REG-1',
+    department: 'SWE',
+    issuedAt: '2026-04-01T00:00:00.000Z',
+    dueAt: '2026-04-05T00:00:00.000Z',
+    status: 'ACTIVE',
+    effectiveStatus: 'OVERDUE',
+    overdueDays: 23,
+  }],
+  page: 1,
+  pageSize: 25,
+  total: 1,
+  totalPages: 1,
+};
+
+const emptyReport = {
+  summary: {},
+  items: [],
+  page: 1,
+  pageSize: 25,
+  total: 0,
+  totalPages: 0,
+};
+
 vi.mock('../../services/report.api', () => ({
   useGetIssuedBooksReportQuery: () => ({
-    data: {
-      filters: { status: 'ALL' },
-      summary: {
-        totalIssued: 1,
-        activeCount: 0,
-        returnedCount: 0,
-        overdueCount: 1,
-        uniqueBorrowers: 1,
-      },
-      items: [{
-        id: 'loan-1',
-        accessionNumber: 'ACC-1',
-        bookTitle: 'Database Systems',
-        author: 'Elmasri',
-        borrowerName: 'Student One',
-        borrowerEmail: 'student@example.com',
-        borrowerRole: 'STUDENT',
-        borrowerIdentifier: 'REG-1',
-        department: 'SWE',
-        issuedAt: '2026-04-01T00:00:00.000Z',
-        dueAt: '2026-04-05T00:00:00.000Z',
-        status: 'ACTIVE',
-        effectiveStatus: 'OVERDUE',
-        overdueDays: 23,
-      }],
-      page: 1,
-      pageSize: 25,
-      total: 1,
-      totalPages: 1,
-    },
+    data: issuedReport,
     isLoading: false,
     isError: false,
     refetch: vi.fn(),
   }),
+  useGetReturnedBooksReportQuery: () => ({ data: emptyReport, isLoading: false, isError: false, refetch: vi.fn() }),
+  useGetOverdueLoansReportQuery: () => ({ data: emptyReport, isLoading: false, isError: false, refetch: vi.fn() }),
+  useGetOutsideBooksReportQuery: () => ({ data: emptyReport, isLoading: false, isError: false, refetch: vi.fn() }),
+  useGetCatalogInventoryReportQuery: () => ({ data: emptyReport, isLoading: false, isError: false, refetch: vi.fn() }),
+  useGetProcurementSummaryReportQuery: () => ({ data: emptyReport, isLoading: false, isError: false, refetch: vi.fn() }),
+  useGetAuditLogReportQuery: () => ({ data: emptyReport, isLoading: false, isError: false, refetch: vi.fn() }),
 }));
 
 describe('AdminReportsPage', () => {
@@ -49,7 +66,7 @@ describe('AdminReportsPage', () => {
     render(<AdminReportsPage />);
 
     expect(screen.getByText('Administrative Reports')).toBeInTheDocument();
-    expect(screen.getByText('Issued Book Report Filters')).toBeInTheDocument();
+    expect(screen.getByText('Report Filters')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Generate' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Download CSV' })).toBeInTheDocument();
     expect(screen.getByText('Database Systems')).toBeInTheDocument();

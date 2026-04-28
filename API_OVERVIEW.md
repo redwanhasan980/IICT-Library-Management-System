@@ -421,6 +421,60 @@ Behavior:
 - Returns summary totals for total issued, active, returned, overdue, and unique borrowers.
 - Returns paginated rows with accession number, book title, author, borrower identity, issue/due/return dates, persisted status, computed effective status, overdue days, issuing admin, and returning admin.
 
+### GET /api/reports/returned-books
+
+Behavior:
+
+- Generates the returned-book circulation report with the same date, borrower role, search, and pagination filters as issued books.
+
+### GET /api/reports/overdue-loans
+
+Behavior:
+
+- Generates active loan rows where `dueAt` is before the current server time and `returnedAt` is null.
+
+### GET /api/reports/outside-books
+
+Query:
+
+- from, to, status: ALL | ENTERED | EXITED
+- department: CSE | SWE | EEE
+- q, page, pageSize
+
+Behavior:
+
+- Returns outside-book entry/exit rows, student snapshots, verification flags, and summary totals.
+
+### GET /api/reports/catalog-inventory
+
+Query:
+
+- q, department, includeArchived, page, pageSize
+
+Behavior:
+
+- Returns catalog rows with accession, call number, barcode, copy counts, archive status, and inventory summary totals.
+
+### GET /api/reports/procurement-summary
+
+Query:
+
+- q, procurementStatus, shelvingStatus, page, pageSize
+
+Behavior:
+
+- Returns procurement order rows with requisition/vendor/application context, cataloged-book counts, status totals, and estimated value.
+
+### GET /api/reports/audit-logs
+
+Query:
+
+- q, actorId, action, entityType, entityId, from, to, page, pageSize
+
+Behavior:
+
+- Returns paginated persistent audit events with actor/action/entity metadata and summary counts.
+
 ## Audit Log Routes
 
 Base path: /api/audit-logs

@@ -254,7 +254,7 @@ The repository-root scripts delegate to `iict-library-server` and `iict-library-
 - Inventory audit and stock verification workflow
 - Manual fine payment tracking (no online gateway)
 - Procurement application, requisition, vendor, delivery, handover, and shelving workflow
-- Administrative issued-book report generation
+- Administrative database-backed report generation
 - Persistent admin audit logs with filters and CSV export
 
 ## Circulation Workflow (Hardened)
@@ -308,11 +308,17 @@ Key API routes:
 
 ## Administrative Reports
 
-The SRS LMS-FR15 report-generation requirement is covered by an admin issued-book report. The report supports date range, loan status, borrower role, and search filters, plus summary totals and CSV export from the admin UI.
+The SRS LMS-FR15 report-generation requirement is covered by database-backed admin report views. Reports support relevant filters, summary totals, paginated rows, and CSV export from the admin UI.
 
-Key API route:
+Key API routes:
 
-- `GET /api/reports/issued-books` - Admin only; returns report filters, summary totals, paginated issued-book rows, computed overdue status, and borrower/book identifiers.
+- `GET /api/reports/issued-books` - issued-book circulation report with computed overdue status.
+- `GET /api/reports/returned-books` - returned-book circulation report.
+- `GET /api/reports/overdue-loans` - active loans past due date.
+- `GET /api/reports/outside-books` - outside-book entry/exit monitoring report.
+- `GET /api/reports/catalog-inventory` - catalog and availability summary.
+- `GET /api/reports/procurement-summary` - procurement order and cataloging summary.
+- `GET /api/reports/audit-logs` - audit-log reporting view.
 
 ## Database Notes for This Phase
 

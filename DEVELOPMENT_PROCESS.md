@@ -726,3 +726,35 @@ This document tracks the development process of the IICT Library Management Syst
   - Auth service tests passed for login success/failure audit calls without password persistence.
   - Admin audit log page test passed for filter/table/CSV controls.
   - Repository-root build passed.
+
+## Phase 20: Expanded Database-Backed Reports
+
+- **What Was Improved**:
+  - Expanded admin reports beyond issued books to returned books, overdue loans, outside-book logs, catalog inventory, procurement summary, and audit-log reporting.
+  - Kept all report data database-derived; no fake dashboard/report data was introduced.
+  - Preserved visible-row CSV export and the existing report page design language while adding a report type selector and contextual filters.
+
+- **Files Created or Updated**:
+  - `iict-library-server/src/validators/report.validator.ts`
+  - `iict-library-server/src/services/report.service.ts`
+  - `iict-library-server/src/controllers/report.controller.ts`
+  - `iict-library-server/src/routes/report.routes.ts`
+  - `iict-library-server/src/services/report.service.test.ts`
+  - `iict-library-client/src/types/report.types.ts`
+  - `iict-library-client/src/services/report.api.ts`
+  - `iict-library-client/src/pages/admin/AdminReportsPage.tsx`
+  - `iict-library-client/src/pages/admin/AdminReportsPage.test.tsx`
+  - `README.md`
+  - `API_OVERVIEW.md`
+  - `REQUIREMENT_TRACEABILITY.md`
+  - `REPORTS_IMPLEMENTATION_REPORT.md`
+
+- **Commands Used**:
+  - `npm --prefix iict-library-server test -- src/services/report.service.test.ts`
+  - `npm --prefix iict-library-client test -- src/pages/admin/AdminReportsPage.test.tsx`
+  - `npm run build`
+
+- **What Was Tested**:
+  - Backend report service tests passed, including issued/overdue logic, catalog inventory summary, and procurement summary totals.
+  - Frontend report page test passed with the expanded report page.
+  - Repository-root build passed.
