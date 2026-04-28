@@ -672,3 +672,57 @@ This document tracks the development process of the IICT Library Management Syst
   - Backend loan service tests passed, including reservation block, reservation-holder issue, required override reason, and override audit event coverage.
   - Admin circulation page tests passed, including reservation override control rendering.
   - Repository-root build passed for server TypeScript and client production build.
+
+## Phase 19: Persistent Audit Logs
+
+- **What Was Improved**:
+  - Added a MariaDB-compatible `AuditLog` Prisma model and migration.
+  - Replaced the console-only audit helper with persistent audit writes and recursive redaction for password/token/secret-like metadata keys.
+  - Added admin-only `GET /api/audit-logs` with action, actor, entity, date range, search, and pagination filters.
+  - Added `/dashboard/admin/audit-logs` with filters, table states, and CSV export for visible rows.
+  - Added audit coverage for login success/failure, report generation, and member status changes while preserving existing catalog, circulation, outside-book, inventory-audit, fine, procurement, reservation, and bulk audit calls.
+
+- **Files Created or Updated**:
+  - `iict-library-server/prisma/schema.prisma`
+  - `iict-library-server/prisma/migrations/20260428212500_add_audit_logs/migration.sql`
+  - `iict-library-server/src/utils/auditLog.ts`
+  - `iict-library-server/src/utils/auditLog.test.ts`
+  - `iict-library-server/src/services/auditLog.service.ts`
+  - `iict-library-server/src/services/auditLog.service.test.ts`
+  - `iict-library-server/src/services/auth.service.ts`
+  - `iict-library-server/src/services/auth.service.test.ts`
+  - `iict-library-server/src/controllers/auditLog.controller.ts`
+  - `iict-library-server/src/controllers/auth.controller.ts`
+  - `iict-library-server/src/controllers/report.controller.ts`
+  - `iict-library-server/src/controllers/user.controller.ts`
+  - `iict-library-server/src/routes/auditLog.routes.ts`
+  - `iict-library-server/src/routes/auditLog.routes.test.ts`
+  - `iict-library-server/src/validators/auditLog.validator.ts`
+  - `iict-library-server/src/index.ts`
+  - `iict-library-client/src/types/audit.types.ts`
+  - `iict-library-client/src/services/audit.api.ts`
+  - `iict-library-client/src/pages/admin/AdminAuditLogsPage.tsx`
+  - `iict-library-client/src/pages/admin/AdminAuditLogsPage.test.tsx`
+  - `iict-library-client/src/config/api.ts`
+  - `iict-library-client/src/routes/AppRouter.tsx`
+  - `iict-library-client/src/layouts/Sidebar.tsx`
+  - `README.md`
+  - `API_OVERVIEW.md`
+  - `DATABASE_SCHEMA.md`
+  - `REQUIREMENT_TRACEABILITY.md`
+
+- **Commands Used**:
+  - `npm run prisma:generate`
+  - `npm --prefix iict-library-server test -- src/utils/auditLog.test.ts src/services/auditLog.service.test.ts src/routes/auditLog.routes.test.ts`
+  - `npm --prefix iict-library-server test -- src/services/auth.service.test.ts`
+  - `npm --prefix iict-library-client test -- src/pages/admin/AdminAuditLogsPage.test.tsx`
+  - `npm run build`
+
+- **What Was Tested**:
+  - Prisma Client generation passed.
+  - Audit utility tests passed for recursive metadata redaction and persistence payload shape.
+  - Audit service tests passed for filtered pagination.
+  - Audit route tests passed for admin-only access.
+  - Auth service tests passed for login success/failure audit calls without password persistence.
+  - Admin audit log page test passed for filter/table/CSV controls.
+  - Repository-root build passed.

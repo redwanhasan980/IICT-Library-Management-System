@@ -12,7 +12,10 @@ const cookieOptions = {
 class AuthController {
   async login(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
-      const result = await authService.login(req.body.email, req.body.password);
+      const result = await authService.login(req.body.email, req.body.password, {
+        ipAddress: req.ip,
+        userAgent: req.get('user-agent'),
+      });
       res.cookie('auth_token', result.token, cookieOptions);
       return res.status(200).json(successResponse(result, 'Login successful'));
     } catch (error) {

@@ -46,6 +46,11 @@ Prisma datasource:
 - `Procurement`: procurement code, requisition, vendor, approval/delivery/handover dates, receiving record, shelving status, procurement status.
 - Enums: `ShelvingStatus`, `ProcurementStatus`.
 
+## Audit Logs
+
+- `AuditLog`: actor ID, actor role, action, entity type, entity ID, sanitized JSON metadata, IP address, user-agent, and creation timestamp.
+- Indexed by action/date, actor/date, entity type/entity ID, and created date for admin filtering.
+
 ## Migration Flow
 
 Recommended workflow:
@@ -64,4 +69,4 @@ Recommended workflow:
 
 - Schema and connection URL are MariaDB-compatible.
 - Use `mysql://` in `DATABASE_URL` for MariaDB with Prisma.
-- Procurement and reports implementation did not require schema changes because the needed models/relations already existed.
+- Current readiness migrations add nullable `StudentProfile.phoneNumber` and persistent `AuditLog` storage while preserving MariaDB compatibility.

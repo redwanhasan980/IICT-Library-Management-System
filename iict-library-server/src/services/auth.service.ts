@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { Department, Role, User } from '@prisma/client';
 import prisma from '../config/database';
 import AppError from '../utils/AppError';
+import { logAuditEvent } from '../utils/auditLog';
 
 const TOKEN_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
@@ -32,6 +33,11 @@ interface BootstrapAdminInput {
   name: string;
   email: string;
   password: string;
+}
+
+interface AuditRequestContext {
+  ipAddress?: string;
+  userAgent?: string;
 }
 
 class AuthService {
@@ -67,16 +73,45 @@ class AuthService {
     return jwt.sign(payload, this.jwtSecret(), { expiresIn: TOKEN_EXPIRES_IN as jwt.SignOptions['expiresIn'] });
   }
 
-  async login(email: string, password: string) {
-    const user = await prisma.user.findUnique({ where: { email: email.trim().toLowerCase() } });
+  async login(email: string, password: string, context: AuditRequestContext = {}) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (!user || !user.isActive) {
+      logAuditEvent({
+        action: 'auth.login_failure',
+        actorId: user?.id,
+        actorRole: user?.role,
+        entity: 'User',
+        entityId: user?.id,
+        details: { email: normalizedEmail, reason: user ? 'inactive_user' : 'unknown_user' },
+        ...context,
+      });
       throw new AppError('Invalid email or password', 401);
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      logAuditEvent({
+        action: 'auth.login_failure',
+        actorId: user.id,
+        actorRole: user.role,
+        entity: 'User',
+        entityId: user.id,
+        details: { email: normalizedEmail, reason: 'invalid_password' },
+        ...context,
+      });
       throw new AppError('Invalid email or password', 401);
     }
+
+    logAuditEvent({
+      action: 'auth.login_success',
+      actorId: user.id,
+      actorRole: user.role,
+      entity: 'User',
+      entityId: user.id,
+      details: { email: normalizedEmail },
+      ...context,
+    });
 
     return {
       user: this.publicUser(user),

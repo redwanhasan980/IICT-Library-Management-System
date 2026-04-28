@@ -28,6 +28,7 @@ import AdminOutsideBookLogsPage from '../pages/admin/AdminOutsideBookLogsPage';
 import AdminUsersPage from '../pages/admin/AdminUsersPage';
 import AdminProcurementPage from '../pages/admin/AdminProcurementPage';
 import AdminReportsPage from '../pages/admin/AdminReportsPage';
+import AdminAuditLogsPage from '../pages/admin/AdminAuditLogsPage';
 
 // Student Pages
 import StudentDashboard from '../pages/student/StudentDashboard';
@@ -124,6 +125,10 @@ const AppRouter = () => {
           <Route
             path="admin/reports"
             element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminReportsPage /></ProtectedRoute>}
+          />
+          <Route
+            path="admin/audit-logs"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminAuditLogsPage /></ProtectedRoute>}
           />
           <Route
             path="admin/inventory-audit"

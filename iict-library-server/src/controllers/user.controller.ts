@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { Role } from '@prisma/client';
+import { AuthenticatedRequest } from '../middleware/auth.middleware';
 import userService from '../services/user.service';
 import { successResponse } from '../utils/apiResponse';
+import { logAuditEvent } from '../utils/auditLog';
 
 class UserController {
   async list(req: Request, res: Response, next: NextFunction) {
@@ -46,9 +48,19 @@ class UserController {
     }
   }
 
-  async setActiveStatus(req: Request, res: Response, next: NextFunction) {
+  async setActiveStatus(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const user = await userService.setActiveStatus(req.params.id, req.body.isActive);
+      logAuditEvent({
+        action: req.body.isActive ? 'member.activate' : 'member.deactivate',
+        actorId: req.user?.id,
+        actorRole: req.user?.role,
+        entity: 'User',
+        entityId: req.params.id,
+        details: { isActive: req.body.isActive },
+        ipAddress: req.ip,
+        userAgent: req.get('user-agent'),
+      });
       return res.status(200).json(successResponse(user, 'User status updated'));
     } catch (error) {
       return next(error);

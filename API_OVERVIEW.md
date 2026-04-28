@@ -421,6 +421,31 @@ Behavior:
 - Returns summary totals for total issued, active, returned, overdue, and unique borrowers.
 - Returns paginated rows with accession number, book title, author, borrower identity, issue/due/return dates, persisted status, computed effective status, overdue days, issuing admin, and returning admin.
 
+## Audit Log Routes
+
+Base path: /api/audit-logs
+
+Auth requirement:
+
+- Bearer token or auth cookie
+- Role: ADMIN
+
+### GET /api/audit-logs
+
+Query:
+
+- q: optional search across action, actor ID, entity type, and entity ID
+- actorId: optional user ID
+- action: optional exact action
+- entityType: optional entity type
+- entityId: optional entity ID
+- from, to: optional ISO datetime range
+- page, pageSize
+
+Behavior:
+
+- Returns paginated persistent audit log rows with actor, role, action, entity, sanitized metadata, IP address, user-agent, and timestamp.
+
 ## Standard Response Contract
 
 Success:

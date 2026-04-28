@@ -255,6 +255,7 @@ The repository-root scripts delegate to `iict-library-server` and `iict-library-
 - Manual fine payment tracking (no online gateway)
 - Procurement application, requisition, vendor, delivery, handover, and shelving workflow
 - Administrative issued-book report generation
+- Persistent admin audit logs with filters and CSV export
 
 ## Circulation Workflow (Hardened)
 
@@ -273,7 +274,17 @@ Key API routes:
 
 Borrowing policy is read from `SystemSetting`: student max active loans defaults to `3`, teacher max active loans defaults to `5`, student duration defaults to `14` days, and teacher duration defaults to `30` days. These values can be changed from the existing System Settings flow.
 
-Reservation-aware issuing is enforced: if a pending or currently fulfilled reservation hold exists, admin issue is blocked unless the borrower is the reservation holder. Admins can explicitly override the hold only by supplying a reason, which is written through the audit helper for the persistent audit phase.
+Reservation-aware issuing is enforced: if a pending or currently fulfilled reservation hold exists, admin issue is blocked unless the borrower is the reservation holder. Admins can explicitly override the hold only by supplying a reason, and that override is written to persistent audit logs.
+
+## Persistent Audit Logs
+
+Audit events are stored in the `AuditLog` table with actor, role, action, entity, sanitized JSON metadata, IP address, user-agent, and timestamp fields. Admin users can review them at `/dashboard/admin/audit-logs`.
+
+Key API route:
+
+- `GET /api/audit-logs` - Admin only; supports `q`, `actorId`, `action`, `entityType`, `entityId`, `from`, `to`, `page`, and `pageSize`.
+
+The audit helper redacts password/token/secret-like metadata keys before persistence. Current coverage includes login success/failure, catalog create/update/archive, circulation issue/return and reservation overrides, reservation changes, outside-book verification, inventory audit actions, fine payments, procurement changes, bulk exports/imports, report generation, and member status changes.
 
 ## Procurement Workflow
 
