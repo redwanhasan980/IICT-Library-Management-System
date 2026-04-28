@@ -345,7 +345,8 @@ Latest auth/member migration note: `StudentProfile.phoneNumber` is nullable for 
 - Ensure MariaDB is reachable from backend runtime environment.
 - Run `npm run prisma:generate` and `npm run prisma:migrate:deploy` in deployment pipeline.
 - Frontend is a static Vite build from iict-library-client/dist.
-- See [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) for the full deployment checklist.
+- See [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) and [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for deployment steps.
+- Final readiness docs: [SYSTEM_AUDIT_CURRENT_STATE.md](SYSTEM_AUDIT_CURRENT_STATE.md), [FINAL_SYSTEM_READINESS_CHECKLIST.md](FINAL_SYSTEM_READINESS_CHECKLIST.md), [FINAL_QA_REPORT.md](FINAL_QA_REPORT.md), and [SYSTEM_COMPLETION_REPORT.md](SYSTEM_COMPLETION_REPORT.md).
 
 ## Demo Credentials
 
