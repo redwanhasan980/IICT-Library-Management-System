@@ -39,6 +39,7 @@ model StudentProfile {
   id        String             @id @default(cuid())
   userId    String             @unique
   studentRegNumber String?     @unique
+  phoneNumber String?
   department Department?
   currentSemester Int?
   user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)

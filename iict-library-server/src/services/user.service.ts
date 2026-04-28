@@ -18,6 +18,7 @@ interface UserPayload {
   role?: Role;
   isActive?: boolean;
   studentRegNumber?: string;
+  phoneNumber?: string;
   teacherId?: string;
   department?: Department;
   currentSemester?: number;
@@ -48,19 +49,21 @@ class UserService {
     }
 
     if (role === Role.STUDENT) {
-      if (!payload.studentRegNumber || !payload.department) {
-        throw new AppError('Student registration number and department are required', 400);
+      if (!payload.studentRegNumber || !payload.phoneNumber || !payload.department) {
+        throw new AppError('Student registration number, phone number, and department are required', 400);
       }
       await tx.studentProfile.upsert({
         where: { userId },
         update: {
           studentRegNumber: payload.studentRegNumber,
+          phoneNumber: payload.phoneNumber,
           department: payload.department,
           currentSemester: payload.currentSemester,
         },
         create: {
           userId,
           studentRegNumber: payload.studentRegNumber,
+          phoneNumber: payload.phoneNumber,
           department: payload.department,
           currentSemester: payload.currentSemester,
         },
@@ -146,6 +149,8 @@ class UserService {
       throw new AppError('A user already exists with this email', 409);
     }
 
+    await this.ensureProfileIdentifiersAvailable(payload);
+
     const passwordHash = await bcrypt.hash(payload.password, 12);
 
     const user = await prisma.$transaction(async (tx) => {
@@ -181,6 +186,7 @@ class UserService {
 
     const nextRole = payload.role ?? existing.role;
     const passwordHash = payload.password ? await bcrypt.hash(payload.password, 12) : undefined;
+    await this.ensureProfileIdentifiersAvailable(payload, id);
 
     const user = await prisma.$transaction(async (tx) => {
       const updated = await tx.user.update({
@@ -196,6 +202,7 @@ class UserService {
 
       await this.ensureProfile(tx, updated.id, nextRole, {
         studentRegNumber: payload.studentRegNumber ?? existing.student?.studentRegNumber ?? undefined,
+        phoneNumber: payload.phoneNumber ?? existing.student?.phoneNumber ?? undefined,
         teacherId: payload.teacherId ?? existing.teacher?.teacherId ?? undefined,
         department: payload.department ?? existing.student?.department ?? existing.teacher?.department ?? undefined,
         currentSemester: payload.currentSemester ?? existing.student?.currentSemester ?? undefined,
@@ -220,6 +227,38 @@ class UserService {
     });
 
     return this.sanitize(user);
+  }
+
+  private async ensureProfileIdentifiersAvailable(payload: UserPayload, currentUserId?: string) {
+    if (payload.studentRegNumber) {
+      const existingStudent = await prisma.studentProfile.findUnique({
+        where: { studentRegNumber: payload.studentRegNumber },
+        select: { userId: true },
+      });
+      if (existingStudent && existingStudent.userId !== currentUserId) {
+        throw new AppError('A student already exists with this registration number', 409);
+      }
+    }
+
+    if (payload.teacherId) {
+      const existingTeacher = await prisma.teacherProfile.findUnique({
+        where: { teacherId: payload.teacherId },
+        select: { userId: true },
+      });
+      if (existingTeacher && existingTeacher.userId !== currentUserId) {
+        throw new AppError('A teacher already exists with this teacher ID', 409);
+      }
+    }
+
+    if (payload.email) {
+      const existingUser = await prisma.user.findUnique({
+        where: { email: payload.email.trim().toLowerCase() },
+        select: { id: true },
+      });
+      if (existingUser && existingUser.id !== currentUserId) {
+        throw new AppError('A user already exists with this email', 409);
+      }
+    }
   }
 }
 

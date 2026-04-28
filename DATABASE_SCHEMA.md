@@ -10,7 +10,7 @@ Prisma datasource:
 ## Core Identity Models
 
 - `User`: email, hashed password, name, role, active status, auth owner for loans/fines/reservations.
-- `StudentProfile`: registration number, department, current semester.
+- `StudentProfile`: registration number, phone number, department, current semester.
 - `TeacherProfile`: teacher ID, department, designation, optional signature data.
 - `AdminProfile`: admin profile relation for administrative workflows.
 

@@ -14,6 +14,7 @@ export interface User {
   isActive?: boolean;
   student?: {
     studentRegNumber?: string;
+    phoneNumber?: string;
     department?: string;
     currentSemester?: number;
   };

@@ -17,6 +17,7 @@ interface UserPayload {
   role?: Role;
   isActive?: boolean;
   studentRegNumber?: string;
+  phoneNumber?: string;
   teacherId?: string;
   department?: 'CSE' | 'SWE' | 'EEE';
   currentSemester?: number;

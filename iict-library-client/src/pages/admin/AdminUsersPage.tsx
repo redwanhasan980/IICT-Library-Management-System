@@ -7,7 +7,8 @@ import { EmptyState, ErrorState, LoadingState } from '../../components/shared/Fe
 import { Input } from '../../components/shared/Input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/shared/Table';
 import { useCreateUserMutation, useListUsersQuery, useSetUserActiveStatusMutation } from '../../services/user.api';
-import type { Role } from '../../types/user.types';
+import type { Role, User } from '../../types/user.types';
+import { getApiErrorMessage } from '../../utils/apiError';
 
 const AdminUsersPage = () => {
   const [searchInput, setSearchInput] = useState('');
@@ -21,6 +22,7 @@ const AdminUsersPage = () => {
     password: '',
     role: 'STUDENT' as Role,
     studentRegNumber: '',
+    phoneNumber: '',
     teacherId: '',
     department: 'SWE' as 'CSE' | 'SWE' | 'EEE',
     currentSemester: '',
@@ -48,6 +50,7 @@ const AdminUsersPage = () => {
       password: '',
       role: 'STUDENT',
       studentRegNumber: '',
+      phoneNumber: '',
       teacherId: '',
       department: 'SWE',
       currentSemester: '',
@@ -66,6 +69,7 @@ const AdminUsersPage = () => {
         role: formData.role,
         department: formData.role === 'ADMIN' ? undefined : formData.department,
         studentRegNumber: formData.role === 'STUDENT' ? formData.studentRegNumber.trim() : undefined,
+        phoneNumber: formData.role === 'STUDENT' ? formData.phoneNumber.trim() : undefined,
         currentSemester: formData.role === 'STUDENT' && formData.currentSemester ? Number(formData.currentSemester) : undefined,
         teacherId: formData.role === 'TEACHER' ? formData.teacherId.trim() : undefined,
         designation: formData.role === 'TEACHER' ? formData.designation.trim() || undefined : undefined,
@@ -73,8 +77,8 @@ const AdminUsersPage = () => {
       }).unwrap();
       toast.success('Member created');
       resetForm();
-    } catch (error: any) {
-      toast.error(error?.data?.message || 'Failed to create member');
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error, 'Failed to create member'));
     }
   };
 
@@ -84,7 +88,7 @@ const AdminUsersPage = () => {
     setPage(1);
   };
 
-  const memberIdentifier = (user: any) => {
+  const memberIdentifier = (user: User) => {
     if (user.role === 'STUDENT') {
       return user.student?.studentRegNumber || '-';
     }
@@ -147,6 +151,10 @@ const AdminUsersPage = () => {
                 <div>
                   <label className="text-sm text-warm-taupe">Student Reg Number</label>
                   <Input value={formData.studentRegNumber} onChange={(e) => updateField('studentRegNumber', e.target.value)} required disabled={isCreating} />
+                </div>
+                <div>
+                  <label className="text-sm text-warm-taupe">Phone Number</label>
+                  <Input value={formData.phoneNumber} onChange={(e) => updateField('phoneNumber', e.target.value)} required disabled={isCreating} />
                 </div>
                 <div>
                   <label className="text-sm text-warm-taupe">Current Semester</label>
@@ -233,8 +241,8 @@ const AdminUsersPage = () => {
                         onClick={async () => {
                           try {
                             await setStatus({ id: user.id, isActive: user.isActive === false }).unwrap();
-                          } catch (error: any) {
-                            toast.error(error?.data?.message || 'Failed to update member status');
+                          } catch (error: unknown) {
+                            toast.error(getApiErrorMessage(error, 'Failed to update member status'));
                           }
                         }}
                       >

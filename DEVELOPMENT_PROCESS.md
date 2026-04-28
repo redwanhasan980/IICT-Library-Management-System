@@ -596,3 +596,47 @@ This document tracks the development process of the IICT Library Management Syst
 - **What Was Tested**:
   - Repository-root build now runs server TypeScript build and client production build.
   - Repository-root test now runs backend and frontend Vitest suites.
+
+## Phase 17: Auth Registration Readiness
+
+- **What Was Improved**:
+  - Added nullable `StudentProfile.phoneNumber` with a MariaDB-compatible migration so existing records remain valid.
+  - Required phone number for new Student self-registration and admin-created Student records.
+  - Improved validation responses so field-level Zod errors surface with useful messages.
+  - Added duplicate checks for Student registration number, Teacher ID, and Book barcode.
+  - Added `/bootstrap-admin` frontend page for first-admin setup using the existing bootstrap API.
+  - Added visible login/register error messages in addition to toast feedback.
+
+- **Files Created or Updated**:
+  - `iict-library-server/prisma/schema.prisma`
+  - `iict-library-server/prisma/migrations/20260428211500_add_student_phone_number/migration.sql`
+  - `iict-library-server/src/middleware/validate.middleware.ts`
+  - `iict-library-server/src/validators/auth.validator.ts`
+  - `iict-library-server/src/validators/user.validator.ts`
+  - `iict-library-server/src/services/auth.service.ts`
+  - `iict-library-server/src/services/user.service.ts`
+  - `iict-library-server/src/services/book.service.ts`
+  - `iict-library-server/src/validators/auth.validator.test.ts`
+  - `iict-library-client/src/utils/apiError.ts`
+  - `iict-library-client/src/pages/LoginPage.tsx`
+  - `iict-library-client/src/pages/LoginPage.test.tsx`
+  - `iict-library-client/src/pages/RegisterPage.tsx`
+  - `iict-library-client/src/pages/RegisterPage.test.tsx`
+  - `iict-library-client/src/pages/BootstrapAdminPage.tsx`
+  - `iict-library-client/src/pages/admin/AdminUsersPage.tsx`
+  - `iict-library-client/src/routes/AppRouter.tsx`
+  - `README.md`
+  - `API_OVERVIEW.md`
+  - `DATABASE_SCHEMA.md`
+  - `REQUIREMENT_TRACEABILITY.md`
+  - `AUTH_IMPLEMENTATION_REPORT.md`
+
+- **Commands Used**:
+  - `npm run prisma:generate`
+  - `npm run build`
+  - `npm test`
+
+- **What Was Tested**:
+  - Prisma Client generation passed.
+  - Server and client builds passed.
+  - Server and client tests passed, including focused registration/login validation tests.

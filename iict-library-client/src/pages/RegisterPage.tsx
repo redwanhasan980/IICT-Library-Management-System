@@ -5,6 +5,7 @@ import { Button } from '../components/shared/Button';
 import { Card } from '../components/shared/Card';
 import { Input } from '../components/shared/Input';
 import { useRegisterMutation } from '../services/auth.api';
+import { getApiErrorMessage } from '../utils/apiError';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -14,12 +15,14 @@ const RegisterPage = () => {
     email: '',
     password: '',
     studentRegNumber: '',
+    phoneNumber: '',
     teacherId: '',
     department: 'SWE' as 'CSE' | 'SWE' | 'EEE',
     currentSemester: '',
     designation: '',
     signatureData: '',
   });
+  const [formError, setFormError] = useState('');
   const [registerAccount, { isLoading }] = useRegisterMutation();
 
   const updateField = (field: keyof typeof formData, value: string) => {
@@ -28,6 +31,7 @@ const RegisterPage = () => {
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setFormError('');
     try {
       await registerAccount({
         name: formData.name.trim(),
@@ -36,14 +40,17 @@ const RegisterPage = () => {
         role,
         department: formData.department,
         studentRegNumber: role === 'STUDENT' ? formData.studentRegNumber.trim() : undefined,
+        phoneNumber: role === 'STUDENT' ? formData.phoneNumber.trim() : undefined,
         currentSemester: role === 'STUDENT' && formData.currentSemester ? Number(formData.currentSemester) : undefined,
         teacherId: role === 'TEACHER' ? formData.teacherId.trim() : undefined,
         designation: role === 'TEACHER' ? formData.designation.trim() || undefined : undefined,
         signatureData: role === 'TEACHER' ? formData.signatureData.trim() || undefined : undefined,
       }).unwrap();
       navigate('/dashboard');
-    } catch (error: any) {
-      toast.error(error?.data?.message || 'Registration failed');
+    } catch (error: unknown) {
+      const message = getApiErrorMessage(error, 'Registration failed');
+      setFormError(message);
+      toast.error(message);
     }
   };
 
@@ -53,16 +60,16 @@ const RegisterPage = () => {
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <label className="text-sm text-warm-taupe">Name</label>
-            <Input value={formData.name} onChange={(e) => updateField('name', e.target.value)} required disabled={isLoading} />
+            <label htmlFor="register-name" className="text-sm text-warm-taupe">Name</label>
+            <Input id="register-name" value={formData.name} onChange={(e) => updateField('name', e.target.value)} required disabled={isLoading} />
           </div>
           <div>
-            <label className="text-sm text-warm-taupe">Email</label>
-            <Input type="email" value={formData.email} onChange={(e) => updateField('email', e.target.value)} required disabled={isLoading} />
+            <label htmlFor="register-email" className="text-sm text-warm-taupe">Email</label>
+            <Input id="register-email" type="email" value={formData.email} onChange={(e) => updateField('email', e.target.value)} required disabled={isLoading} />
           </div>
           <div>
-            <label className="text-sm text-warm-taupe">Password</label>
-            <Input type="password" value={formData.password} onChange={(e) => updateField('password', e.target.value)} required minLength={8} disabled={isLoading} />
+            <label htmlFor="register-password" className="text-sm text-warm-taupe">Password</label>
+            <Input id="register-password" type="password" value={formData.password} onChange={(e) => updateField('password', e.target.value)} required minLength={8} disabled={isLoading} />
           </div>
           <div>
             <label className="text-sm text-warm-taupe">Role</label>
@@ -92,8 +99,12 @@ const RegisterPage = () => {
           {role === 'STUDENT' ? (
             <>
               <div>
-                <label className="text-sm text-warm-taupe">Student Reg Number</label>
-                <Input value={formData.studentRegNumber} onChange={(e) => updateField('studentRegNumber', e.target.value)} required disabled={isLoading} />
+                <label htmlFor="student-reg-number" className="text-sm text-warm-taupe">Student Reg Number</label>
+                <Input id="student-reg-number" value={formData.studentRegNumber} onChange={(e) => updateField('studentRegNumber', e.target.value)} required disabled={isLoading} />
+              </div>
+              <div>
+                <label htmlFor="student-phone-number" className="text-sm text-warm-taupe">Phone Number</label>
+                <Input id="student-phone-number" value={formData.phoneNumber} onChange={(e) => updateField('phoneNumber', e.target.value)} required disabled={isLoading} />
               </div>
               <div>
                 <label className="text-sm text-warm-taupe">Current Semester</label>
@@ -117,6 +128,11 @@ const RegisterPage = () => {
             </>
           )}
         </div>
+        {formError && (
+          <p role="alert" className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            {formError}
+          </p>
+        )}
         <div className="flex justify-end">
           <Button type="submit" disabled={isLoading}>
             {isLoading ? 'Creating account...' : 'Create account'}

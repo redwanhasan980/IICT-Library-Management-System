@@ -8,6 +8,7 @@ const userPayloadSchema = z.object({
   role: z.nativeEnum(Role).optional(),
   isActive: z.boolean().optional(),
   studentRegNumber: z.string().min(1).optional(),
+  phoneNumber: z.string().min(1, 'Phone number is required').optional(),
   teacherId: z.string().min(1).optional(),
   department: z.nativeEnum(Department).optional(),
   currentSemester: z.coerce.number().int().positive().optional(),
@@ -38,8 +39,8 @@ export const createUserSchema = z.object({
     password: z.string().min(8, 'Password must be at least 8 characters'),
     role: z.nativeEnum(Role),
   }).superRefine((body, ctx) => {
-    if (body.role === Role.STUDENT && (!body.studentRegNumber || !body.department)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['studentRegNumber'], message: 'Student registration number and department are required' });
+    if (body.role === Role.STUDENT && (!body.studentRegNumber || !body.department || !body.phoneNumber)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['studentRegNumber'], message: 'Student registration number, phone number, and department are required' });
     }
     if (body.role === Role.TEACHER && (!body.teacherId || !body.department)) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['teacherId'], message: 'Teacher ID and department are required' });

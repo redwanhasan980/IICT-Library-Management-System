@@ -19,6 +19,7 @@ interface RegisterInput {
   password: string;
   role: Extract<Role, 'STUDENT' | 'TEACHER'>;
   studentRegNumber?: string;
+  phoneNumber?: string;
   teacherId?: string;
   department: Department;
   currentSemester?: number;
@@ -90,6 +91,26 @@ class AuthService {
       throw new AppError('A user already exists with this email', 409);
     }
 
+    if (payload.role === Role.STUDENT && payload.studentRegNumber) {
+      const existingStudent = await prisma.studentProfile.findUnique({
+        where: { studentRegNumber: payload.studentRegNumber },
+        select: { id: true },
+      });
+      if (existingStudent) {
+        throw new AppError('A student already exists with this registration number', 409);
+      }
+    }
+
+    if (payload.role === Role.TEACHER && payload.teacherId) {
+      const existingTeacher = await prisma.teacherProfile.findUnique({
+        where: { teacherId: payload.teacherId },
+        select: { id: true },
+      });
+      if (existingTeacher) {
+        throw new AppError('A teacher already exists with this teacher ID', 409);
+      }
+    }
+
     const passwordHash = await bcrypt.hash(payload.password, 12);
 
     const created = await prisma.$transaction(async (tx) => {
@@ -107,6 +128,7 @@ class AuthService {
           data: {
             userId: user.id,
             studentRegNumber: payload.studentRegNumber,
+            phoneNumber: payload.phoneNumber,
             department: payload.department,
             currentSemester: payload.currentSemester,
           },

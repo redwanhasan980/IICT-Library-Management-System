@@ -120,12 +120,14 @@ The backend uses email/password authentication with bcrypt password hashing and 
 Core auth routes:
 
 - `POST /api/auth/login`
-- `POST /api/auth/register` for Student/Teacher self-registration
+- `POST /api/auth/register` for Student/Teacher self-registration. Student registration requires phone number.
 - `POST /api/auth/bootstrap-admin` for first admin setup using `ADMIN_SETUP_TOKEN`
 - `GET /api/auth/me`
 - `POST /api/auth/logout`
 
 Admin users can manage members from `/dashboard/admin/users`.
+
+The first admin can also be created from `/bootstrap-admin` when `ADMIN_SETUP_TOKEN` is configured.
 
 Optional local header auth is available only when `ENABLE_DEV_AUTH=true` and `NODE_ENV` is not `production`. Do not enable it in deployment.
 
@@ -314,6 +316,8 @@ npm run prisma:migrate
 ```
 
 These are required before starting the backend for the new modules.
+
+Latest auth/member migration note: `StudentProfile.phoneNumber` is nullable for existing rows, but new Student registration and admin-created Student records require it.
 
 ## Deployment Notes
 

@@ -6,6 +6,7 @@ import { Button } from '../../../components/shared/Button';
 import { Input } from '../../../components/shared/Input';
 import { LoadingState, ErrorState } from '../../../components/shared/FeedbackState';
 import type { Book } from '../../../types/book.types';
+import { getApiErrorMessage } from '../../../utils/apiError';
 
 const AdminBookFormPage = () => {
   const { id } = useParams();
@@ -104,8 +105,8 @@ const AdminBookFormPage = () => {
         await createBook(payload).unwrap();
       }
       navigate('/dashboard/admin/catalog');
-    } catch (err: any) {
-      setErrorDesc(err?.data?.message || 'Failed to save book. Check accession number and fields.');
+    } catch (err: unknown) {
+      setErrorDesc(getApiErrorMessage(err, 'Failed to save book. Check accession number and fields.'));
     }
   };
 

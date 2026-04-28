@@ -49,6 +49,16 @@ class BookService {
       throw new AppError('A book already exists with this accession number', 409);
     }
 
+    if (payload.barcode) {
+      const barcodeExists = await prisma.book.findFirst({
+        where: { barcode: payload.barcode },
+        select: { id: true },
+      });
+      if (barcodeExists) {
+        throw new AppError('A book already exists with this barcode', 409);
+      }
+    }
+
     const totalCopies = payload.totalCopies ?? 1;
 
     const created = await prisma.book.create({
@@ -163,6 +173,16 @@ class BookService {
       });
       if (exists) {
         throw new AppError('Another book already exists with this accession number', 409);
+      }
+    }
+
+    if (payload.barcode && payload.barcode !== book.barcode) {
+      const barcodeExists = await prisma.book.findFirst({
+        where: { barcode: payload.barcode },
+        select: { id: true },
+      });
+      if (barcodeExists) {
+        throw new AppError('Another book already exists with this barcode', 409);
       }
     }
 

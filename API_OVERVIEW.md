@@ -32,12 +32,13 @@ Body:
 - name, email, password
 - role: STUDENT or TEACHER
 - department
-- studentRegNumber/currentSemester for students
+- studentRegNumber/phoneNumber/currentSemester for students
 - teacherId/designation/signatureData for teachers
 
 Behavior:
 
 - Creates a borrower account and matching profile.
+- Student registration requires a phone number, matching the borrower-list process record.
 
 ### POST /api/auth/bootstrap-admin
 
@@ -67,7 +68,7 @@ Auth: ADMIN
 - `GET /api/users` lists members with q, role, isActive, page, and pageSize filters.
 - `POST /api/users` creates a member and profile.
 - `GET /api/users/:id` returns a member.
-- `PUT /api/users/:id` updates identity/profile fields.
+- `PUT /api/users/:id` updates identity/profile fields, including Student phone number.
 - `PATCH /api/users/:id/status` activates or deactivates a member.
 
 Response shape:

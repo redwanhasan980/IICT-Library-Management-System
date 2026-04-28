@@ -7,6 +7,7 @@
 - Added admin-only member management for creating and activating/deactivating users.
 - Added `User.isActive` with a MariaDB-compatible Prisma migration.
 - Kept the old header auth only as an explicitly enabled local development fallback.
+- Added Student phone number capture and clearer field-level registration/login errors for demo and supportability.
 
 ## Backend Routes
 
@@ -25,6 +26,8 @@
 
 - Login now calls the backend login API.
 - Register now creates Student/Teacher accounts with profile fields.
+- Student registration and admin-created Student profiles now require phone number.
+- Added `/bootstrap-admin` frontend route for first-admin creation using the existing bootstrap API.
 - Admin sidebar includes `Members`.
 - Admin member page supports user creation, search, role filtering, and activate/deactivate actions.
 
@@ -41,6 +44,12 @@
 - Server tests: passed.
 - Client build: passed.
 - Client tests: passed.
+
+## Latest Readiness Update
+
+- Added migration `20260428211500_add_student_phone_number`.
+- Added validation tests for Student phone number and Teacher ID requirements.
+- Added frontend tests for registration field errors and login failure messaging.
 
 ## Remaining Limitations
 

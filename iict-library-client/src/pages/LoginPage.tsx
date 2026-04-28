@@ -5,11 +5,13 @@ import { Card } from '../components/shared/Card';
 import { Input } from '../components/shared/Input';
 import { Button } from '../components/shared/Button';
 import { useLoginMutation } from '../services/auth.api';
+import { getApiErrorMessage } from '../utils/apiError';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [formError, setFormError] = useState('');
   const [login, { isLoading }] = useLoginMutation();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -19,11 +21,14 @@ const LoginPage = () => {
       return;
     }
 
+    setFormError('');
     try {
       await login({ email: normalizedEmail, password }).unwrap();
       navigate('/dashboard');
-    } catch (error: any) {
-      toast.error(error?.data?.message || 'Login failed');
+    } catch (error: unknown) {
+      const message = getApiErrorMessage(error, 'Login failed');
+      setFormError(message);
+      toast.error(message);
     }
   };
 
@@ -39,6 +44,11 @@ const LoginPage = () => {
           <label htmlFor="password" className="text-sm text-warm-taupe">Password</label>
           <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required disabled={isLoading} />
         </div>
+        {formError && (
+          <p role="alert" className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            {formError}
+          </p>
+        )}
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? 'Signing in...' : 'Sign in'}

@@ -16,6 +16,7 @@ import {
   useReturnLoanMutation,
 } from '../../services/library.api';
 import type { Loan, LoanStatus } from '../../types/book.types';
+import { getApiErrorMessage } from '../../utils/apiError';
 
 const statusVariantMap: Record<LoanStatus, 'success' | 'info' | 'warning' | 'danger'> = {
   ACTIVE: 'info',
@@ -127,8 +128,8 @@ const AdminCirculationPage = () => {
       setFacultySignature('');
       setDueAt('');
       refetchLoans();
-    } catch (error: any) {
-      toast.error(error?.data?.message || 'Failed to issue loan');
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error, 'Failed to issue loan'));
     }
   };
 
@@ -143,8 +144,8 @@ const AdminCirculationPage = () => {
       await returnLoan(id).unwrap();
       toast.success('Loan returned successfully');
       refetchLoans();
-    } catch (error: any) {
-      toast.error(error?.data?.message || 'Failed to return loan');
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error, 'Failed to return loan'));
     }
   };
 

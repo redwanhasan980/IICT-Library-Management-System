@@ -8,7 +8,7 @@ This document maps the implemented features to the expectations defined in the o
 | :----------------------- | :----------------------------- | :-------------------- | :------------------------------------------------------------------------------- |
 | **Authentication**       | Secure login, logout, roles    | Fully Satisfied       | JWT login, bcrypt password hashing, logout, `/me`, and first-admin bootstrap are implemented. |
 | **Role-Based Access**    | Restrict Student vs Admin      | Fully Satisfied       | Front-end and back-end strictly separate logic across domains.                   |
-| **Student Registration** | Self-signup flow               | Fully Satisfied       | Student/Teacher registration creates matching profile records with department data. |
+| **Student Registration** | Self-signup flow               | Fully Satisfied       | Student/Teacher registration creates matching profile records; Student records include registration number, phone number, department, and semester data. |
 | **Member Management**    | Manage Students/Faculty/Admins | Fully Satisfied       | Admin member screen and `/api/users` routes support creation, lookup, and active status. |
 | **Book Catalog Data**    | ISBN, Accession, Subject       | Fully Satisfied       | `Book` Prisma entity matches ER fields perfectly.                                |
 | **Add Single Book**      | Admin adds one book at a time  | Fully Satisfied       | Admin catalog form supports single-book creation with accession metadata.         |
@@ -18,7 +18,7 @@ This document maps the implemented features to the expectations defined in the o
 | **Outside Book Logging** | Entry/Exit logs, Verification  | Fully Satisfied       | Implemented with admin cross-verification exactly matching process documents.    |
 | **LMS-FR8 Book Issuing** | Admin issues by accession      | Fully Satisfied       | `POST /api/loans/issue` accepts accession/book ID and borrower user/reg/teacher IDs. |
 | **LMS-FR9 Book Return**  | Return and mark available      | Fully Satisfied       | Return is admin-only and duplicate-return safe before availability increment.    |
-| **LMS-FR10 Student Borrower Records / UC-05** | Student borrower list/history | Fully Satisfied | Student profile validation, reg-number lookup, active loan limits, and history are implemented. |
+| **LMS-FR10 Student Borrower Records / UC-05** | Student borrower list/history | Fully Satisfied | Student profile validation, reg-number lookup, phone number capture, active loan limits, and history are implemented. |
 | **LMS-FR11 Faculty Borrower Records / UC-06** | Faculty records and signature | Fully Satisfied | Teacher ID lookup, department/profile validation, designation data, and signature capture are supported. |
 | **LMS-FR14 Borrowing History View** | Borrower and admin history views | Fully Satisfied | Student/Teacher own history plus admin borrower/book circulation histories are available. |
 | **Teacher Borrowing**    | Include faculty signatures     | Fully Satisfied       | Forms pass `facultySignatureText` back successfully and backend validates it for Teacher loans. |

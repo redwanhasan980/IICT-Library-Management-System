@@ -14,6 +14,7 @@ interface RegisterPayload {
   password: string;
   role: Extract<Role, 'STUDENT' | 'TEACHER'>;
   studentRegNumber?: string;
+  phoneNumber?: string;
   teacherId?: string;
   department: 'CSE' | 'SWE' | 'EEE';
   currentSemester?: number;

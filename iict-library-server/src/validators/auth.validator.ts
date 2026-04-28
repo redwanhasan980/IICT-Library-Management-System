@@ -17,6 +17,7 @@ export const registerSchema = z.object({
     password: passwordSchema,
     role: z.enum([Role.STUDENT, Role.TEACHER]),
     studentRegNumber: z.string().min(1).optional(),
+    phoneNumber: z.string().min(1, 'Phone number is required').optional(),
     teacherId: z.string().min(1).optional(),
     department: z.nativeEnum(Department),
     currentSemester: z.coerce.number().int().positive().optional(),
@@ -25,6 +26,9 @@ export const registerSchema = z.object({
   }).superRefine((body, ctx) => {
     if (body.role === Role.STUDENT && !body.studentRegNumber) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['studentRegNumber'], message: 'Student registration number is required' });
+    }
+    if (body.role === Role.STUDENT && !body.phoneNumber) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['phoneNumber'], message: 'Student phone number is required' });
     }
     if (body.role === Role.TEACHER && !body.teacherId) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['teacherId'], message: 'Teacher ID is required' });
