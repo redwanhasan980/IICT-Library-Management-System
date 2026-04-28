@@ -24,6 +24,13 @@ const statusVariantMap: Record<LoanStatus, 'success' | 'info' | 'warning' | 'dan
   OVERDUE: 'danger',
 };
 
+const reservationStatusVariantMap: Record<string, 'success' | 'info' | 'warning' | 'danger'> = {
+  PENDING: 'warning',
+  FULFILLED: 'success',
+  CANCELLED: 'danger',
+  EXPIRED: 'info',
+};
+
 const displayStatus = (loan: Loan) => loan.effectiveStatus ?? loan.status;
 
 const formatDate = (value?: string) => (value ? format(new Date(value), 'PPp') : '-');
@@ -45,6 +52,8 @@ const AdminCirculationPage = () => {
   const [borrowerIdentifier, setBorrowerIdentifier] = useState('');
   const [dueAt, setDueAt] = useState('');
   const [facultySignature, setFacultySignature] = useState('');
+  const [overrideReservation, setOverrideReservation] = useState(false);
+  const [reservationOverrideReason, setReservationOverrideReason] = useState('');
   const [loanSearchInput, setLoanSearchInput] = useState('');
   const [loanSearch, setLoanSearch] = useState('');
   const [overdueOnly, setOverdueOnly] = useState(false);
@@ -112,6 +121,8 @@ const AdminCirculationPage = () => {
       teacherId: borrowerMode === 'teacherId' ? identifier : undefined,
       dueAt: dueAt ? new Date(dueAt).toISOString() : undefined,
       facultySignatureText: facultySignature.trim() || undefined,
+      overrideReservation: overrideReservation || undefined,
+      reservationOverrideReason: overrideReservation ? reservationOverrideReason.trim() : undefined,
     };
   };
 
@@ -121,12 +132,19 @@ const AdminCirculationPage = () => {
       return;
     }
 
+    if (overrideReservation && !reservationOverrideReason.trim()) {
+      toast.error('Provide a reservation override reason');
+      return;
+    }
+
     try {
       await issueLoan(issuePayload()).unwrap();
       toast.success('Loan issued successfully');
       setBorrowerIdentifier('');
       setFacultySignature('');
       setDueAt('');
+      setOverrideReservation(false);
+      setReservationOverrideReason('');
       refetchLoans();
     } catch (error: unknown) {
       toast.error(getApiErrorMessage(error, 'Failed to issue loan'));
@@ -281,6 +299,42 @@ const AdminCirculationPage = () => {
                 <Badge variant="success">Currently Available</Badge>
               )}
             </div>
+            {lookupData.reservationHold && (
+              <div className="mt-3 rounded-md border border-sandy-beige bg-library-cream/60 p-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant={reservationStatusVariantMap[lookupData.reservationHold.status] || 'warning'}>
+                    Reserved: {lookupData.reservationHold.status}
+                  </Badge>
+                  <span className="text-warm-taupe">
+                    Holder: {lookupData.reservationHold.user?.name || lookupData.reservationHold.user?.email || lookupData.reservationHold.userId}
+                  </span>
+                  <span className="text-warm-taupe">Queue #{lookupData.reservationHold.queueNumber}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {lookupData?.reservationHold && (
+          <div className="grid gap-3 rounded-md border border-sandy-beige p-4">
+            <label className="flex items-center gap-2 text-sm text-warm-taupe">
+              <input
+                type="checkbox"
+                checked={overrideReservation}
+                onChange={(e) => setOverrideReservation(e.target.checked)}
+              />
+              Override reservation hold
+            </label>
+            {overrideReservation && (
+              <div>
+                <label className="text-sm text-warm-taupe">Override Reason</label>
+                <Input
+                  value={reservationOverrideReason}
+                  onChange={(e) => setReservationOverrideReason(e.target.value)}
+                  placeholder="Required reason for issuing outside reservation order"
+                />
+              </div>
+            )}
           </div>
         )}
 

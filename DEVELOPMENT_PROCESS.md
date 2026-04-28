@@ -640,3 +640,35 @@ This document tracks the development process of the IICT Library Management Syst
   - Prisma Client generation passed.
   - Server and client builds passed.
   - Server and client tests passed, including focused registration/login validation tests.
+
+## Phase 18: Reservation-Aware Circulation Issuing
+
+- **What Was Improved**:
+  - Enforced reservation precedence during admin issue so a pending or currently fulfilled reservation hold blocks issuing to another borrower.
+  - Added explicit admin override support on `POST /api/loans/issue` with a required override reason.
+  - Marked the matching reservation as `FULFILLED` when the reserved borrower receives the book.
+  - Added reservation-hold details to accession lookup so the admin circulation screen can show who currently has priority.
+  - Added admin circulation UI controls for reservation override while preserving the existing scanner-first design.
+
+- **Files Created or Updated**:
+  - `iict-library-server/src/services/loan.service.ts`
+  - `iict-library-server/src/services/reservation.service.ts`
+  - `iict-library-server/src/validators/loan.validator.ts`
+  - `iict-library-server/src/services/loan.service.test.ts`
+  - `iict-library-client/src/services/library.api.ts`
+  - `iict-library-client/src/pages/admin/AdminCirculationPage.tsx`
+  - `iict-library-client/src/pages/admin/AdminCirculationPage.test.tsx`
+  - `README.md`
+  - `API_OVERVIEW.md`
+  - `REQUIREMENT_TRACEABILITY.md`
+  - `CIRCULATION_IMPLEMENTATION_REPORT.md`
+
+- **Commands Used**:
+  - `npm --prefix iict-library-server test -- src/services/loan.service.test.ts`
+  - `npm --prefix iict-library-client test -- src/pages/admin/AdminCirculationPage.test.tsx`
+  - `npm run build`
+
+- **What Was Tested**:
+  - Backend loan service tests passed, including reservation block, reservation-holder issue, required override reason, and override audit event coverage.
+  - Admin circulation page tests passed, including reservation override control rendering.
+  - Repository-root build passed for server TypeScript and client production build.

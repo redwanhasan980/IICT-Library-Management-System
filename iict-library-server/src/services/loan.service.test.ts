@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { LoanStatus, Role } from '@prisma/client';
+import { LoanStatus, ReservationStatus, Role } from '@prisma/client';
 
 const mocks = vi.hoisted(() => {
   const prisma = {
@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => {
     studentProfile: { findUnique: vi.fn() },
     teacherProfile: { findUnique: vi.fn() },
     book: { findUnique: vi.fn(), updateMany: vi.fn(), update: vi.fn() },
+    reservation: { findFirst: vi.fn(), update: vi.fn() },
     loan: {
       count: vi.fn(),
       findFirst: vi.fn(),
@@ -30,6 +31,7 @@ vi.mock('./reservation.service', () => ({
 }));
 
 const { default: loanService } = await import('./loan.service');
+const { logAuditEvent } = await import('../utils/auditLog');
 
 const studentUser = {
   id: 'student-user',
@@ -69,6 +71,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   mocks.prisma.systemSetting.upsert.mockResolvedValue(policy);
   mocks.prisma.$transaction.mockImplementation((callback) => callback(mocks.prisma));
+  mocks.prisma.reservation.findFirst.mockResolvedValue(null);
 });
 
 describe('loanService circulation rules', () => {
@@ -101,6 +104,154 @@ describe('loanService circulation rules', () => {
     expect(result.isOverdue).toBe(false);
     expect(mocks.prisma.book.updateMany).toHaveBeenCalledWith(expect.objectContaining({
       where: expect.objectContaining({ id: activeBook.id, availableCopies: { gt: 0 } }),
+    }));
+  });
+
+  it('blocks issue when another borrower holds the next reservation', async () => {
+    mocks.prisma.user.findUnique.mockResolvedValue(studentUser);
+    mocks.prisma.book.findUnique.mockResolvedValue(activeBook);
+    mocks.prisma.loan.count.mockResolvedValue(0);
+    mocks.prisma.loan.findFirst.mockResolvedValue(null);
+    mocks.prisma.reservation.findFirst
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({
+        id: 'reservation-1',
+        bookId: activeBook.id,
+        userId: 'other-user',
+        status: ReservationStatus.PENDING,
+        queueNumber: 1,
+        user: { id: 'other-user', name: 'Queued Borrower', email: 'queued@example.com', role: Role.STUDENT },
+      });
+
+    await expect(loanService.issueLoan({
+      accessionNumber: activeBook.accessionNumber,
+      userId: studentUser.id,
+      issuedById: 'admin-1',
+    })).rejects.toThrow('Book is reserved for Queued Borrower');
+
+    expect(mocks.prisma.book.updateMany).not.toHaveBeenCalled();
+  });
+
+  it('fulfills a pending reservation when issuing to the reserved borrower', async () => {
+    const reservation = {
+      id: 'reservation-1',
+      bookId: activeBook.id,
+      userId: studentUser.id,
+      status: ReservationStatus.PENDING,
+      queueNumber: 1,
+      fulfilledAt: null,
+      user: { id: studentUser.id, name: studentUser.name, email: studentUser.email, role: Role.STUDENT },
+    };
+
+    mocks.prisma.user.findUnique.mockResolvedValue(studentUser);
+    mocks.prisma.book.findUnique.mockResolvedValue(activeBook);
+    mocks.prisma.loan.count.mockResolvedValue(0);
+    mocks.prisma.loan.findFirst.mockResolvedValue(null);
+    mocks.prisma.reservation.findFirst
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(reservation)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(reservation);
+    mocks.prisma.book.updateMany.mockResolvedValue({ count: 1 });
+    mocks.prisma.reservation.update.mockResolvedValue({ ...reservation, status: ReservationStatus.FULFILLED });
+    mocks.prisma.loan.create.mockResolvedValue({
+      id: 'loan-3',
+      bookId: activeBook.id,
+      userId: studentUser.id,
+      borrowerRole: Role.STUDENT,
+      issuedAt: new Date(),
+      dueAt: new Date(Date.now() + 86400000),
+      returnedAt: null,
+      status: LoanStatus.ACTIVE,
+      book: activeBook,
+      user: studentUser,
+    });
+
+    const result = await loanService.issueLoan({
+      accessionNumber: activeBook.accessionNumber,
+      userId: studentUser.id,
+      issuedById: 'admin-1',
+    });
+
+    expect(result.status).toBe(LoanStatus.ACTIVE);
+    expect(mocks.prisma.reservation.update).toHaveBeenCalledWith(expect.objectContaining({
+      where: { id: reservation.id },
+      data: expect.objectContaining({
+        status: ReservationStatus.FULFILLED,
+        expiresAt: null,
+      }),
+    }));
+  });
+
+  it('requires a reason when overriding reservation precedence', async () => {
+    mocks.prisma.user.findUnique.mockResolvedValue(studentUser);
+    mocks.prisma.book.findUnique.mockResolvedValue(activeBook);
+    mocks.prisma.loan.count.mockResolvedValue(0);
+    mocks.prisma.loan.findFirst.mockResolvedValue(null);
+    mocks.prisma.reservation.findFirst
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({
+        id: 'reservation-1',
+        bookId: activeBook.id,
+        userId: 'other-user',
+        status: ReservationStatus.PENDING,
+        queueNumber: 1,
+        user: { id: 'other-user', name: 'Queued Borrower', email: 'queued@example.com', role: Role.STUDENT },
+      });
+
+    await expect(loanService.issueLoan({
+      accessionNumber: activeBook.accessionNumber,
+      userId: studentUser.id,
+      issuedById: 'admin-1',
+      overrideReservation: true,
+    })).rejects.toThrow('Reservation override reason is required');
+  });
+
+  it('allows a reservation override with a reason and writes an audit event', async () => {
+    const reservation = {
+      id: 'reservation-1',
+      bookId: activeBook.id,
+      userId: 'other-user',
+      status: ReservationStatus.PENDING,
+      queueNumber: 1,
+      user: { id: 'other-user', name: 'Queued Borrower', email: 'queued@example.com', role: Role.STUDENT },
+    };
+
+    mocks.prisma.user.findUnique.mockResolvedValue(studentUser);
+    mocks.prisma.book.findUnique.mockResolvedValue(activeBook);
+    mocks.prisma.loan.count.mockResolvedValue(0);
+    mocks.prisma.loan.findFirst.mockResolvedValue(null);
+    mocks.prisma.reservation.findFirst
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(reservation)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(reservation);
+    mocks.prisma.book.updateMany.mockResolvedValue({ count: 1 });
+    mocks.prisma.loan.create.mockResolvedValue({
+      id: 'loan-4',
+      bookId: activeBook.id,
+      userId: studentUser.id,
+      borrowerRole: Role.STUDENT,
+      issuedAt: new Date(),
+      dueAt: new Date(Date.now() + 86400000),
+      returnedAt: null,
+      status: LoanStatus.ACTIVE,
+      book: activeBook,
+      user: studentUser,
+    });
+
+    const result = await loanService.issueLoan({
+      accessionNumber: activeBook.accessionNumber,
+      userId: studentUser.id,
+      issuedById: 'admin-1',
+      overrideReservation: true,
+      reservationOverrideReason: 'Borrower has written approval',
+    });
+
+    expect(result.status).toBe(LoanStatus.ACTIVE);
+    expect(logAuditEvent).toHaveBeenCalledWith(expect.objectContaining({
+      action: 'reservation.issue_override',
+      entityId: reservation.id,
     }));
   });
 

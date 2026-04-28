@@ -4,11 +4,6 @@ import AppError from '../utils/AppError';
 import { logAuditEvent } from '../utils/auditLog';
 import policyService from './policy.service';
 
-const ACTIVE_RESERVATION_STATUSES: ReservationStatus[] = [
-  ReservationStatus.PENDING,
-  ReservationStatus.FULFILLED,
-];
-
 class ReservationService {
   private async expireOverdueFulfilledReservations() {
     const now = new Date();
@@ -40,11 +35,18 @@ class ReservationService {
       throw new AppError('Book is currently available, no reservation needed', 400);
     }
 
+    const now = new Date();
     const existing = await prisma.reservation.findFirst({
       where: {
         userId,
         bookId,
-        status: { in: ACTIVE_RESERVATION_STATUSES },
+        OR: [
+          { status: ReservationStatus.PENDING },
+          {
+            status: ReservationStatus.FULFILLED,
+            expiresAt: { gt: now },
+          },
+        ],
       },
     });
 

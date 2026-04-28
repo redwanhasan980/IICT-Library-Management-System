@@ -262,18 +262,18 @@ Circulation uses the unified `Loan` transaction model. Admin users can issue by 
 
 Key API routes:
 
-- `POST /api/loans/issue` - Admin only; accepts `accessionNumber` or `bookId`, plus `userId`, `studentRegNumber`, or `teacherId`.
+- `POST /api/loans/issue` - Admin only; accepts `accessionNumber` or `bookId`, plus `userId`, `studentRegNumber`, or `teacherId`; supports reservation override with a required reason.
 - `PATCH /api/loans/:id/return` - Admin only; return is guarded against duplicate availability increments.
 - `GET /api/loans` - Admin only; paginated list with `status`, `overdue`, `borrowerRole`, and `q` filters.
 - `GET /api/loans/:id` - Admin or owning borrower.
 - `GET /api/loans/history/me` - Student/Teacher own borrowing history.
 - `GET /api/loans/borrowers/:userId/history` - Admin borrower history.
 - `GET /api/loans/books/:bookId/history` - Admin book circulation history.
-- `GET /api/loans/lookup/:accessionNumber` - Admin accession lookup with active-loan details.
+- `GET /api/loans/lookup/:accessionNumber` - Admin accession lookup with active-loan and reservation-hold details.
 
 Borrowing policy is read from `SystemSetting`: student max active loans defaults to `3`, teacher max active loans defaults to `5`, student duration defaults to `14` days, and teacher duration defaults to `30` days. These values can be changed from the existing System Settings flow.
 
-Reservation limitation: returns still auto-fulfill the next pending reservation, but admin issue does not currently block issuing to a borrower other than the pending reservation holder.
+Reservation-aware issuing is enforced: if a pending or currently fulfilled reservation hold exists, admin issue is blocked unless the borrower is the reservation holder. Admins can explicitly override the hold only by supplying a reason, which is written through the audit helper for the persistent audit phase.
 
 ## Procurement Workflow
 

@@ -9,12 +9,22 @@ export const issueLoanSchema = z.object({
     teacherId: z.string().min(1, 'Teacher ID is required').optional(),
     dueAt: z.string().datetime().optional(),
     facultySignatureText: z.string().min(1).optional(),
+    overrideReservation: z.boolean().optional(),
+    reservationOverrideReason: z.string().max(500, 'Reservation override reason must be at most 500 characters').optional(),
   }).refine((body) => body.bookId || body.accessionNumber, {
     message: 'Book ID or accession number is required',
     path: ['accessionNumber'],
   }).refine((body) => body.userId || body.studentRegNumber || body.teacherId, {
     message: 'Borrower user ID, student registration number, or teacher ID is required',
     path: ['userId'],
+  }).superRefine((body, ctx) => {
+    if (body.overrideReservation && !body.reservationOverrideReason?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Reservation override reason is required',
+        path: ['reservationOverrideReason'],
+      });
+    }
   }),
 });
 

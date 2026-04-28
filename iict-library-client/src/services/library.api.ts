@@ -33,6 +33,7 @@ interface ImportSummary {
 interface BookLookupResponse {
   book: Book;
   activeLoan?: Loan;
+  reservationHold?: Reservation;
 }
 
 interface PaginatedLoansResponse {
@@ -145,6 +146,8 @@ export const libraryApi = api.injectEndpoints({
       teacherId?: string;
       dueAt?: string;
       facultySignatureText?: string;
+      overrideReservation?: boolean;
+      reservationOverrideReason?: string;
     }>({
       query: (body) => ({
         url: '/loans/issue',

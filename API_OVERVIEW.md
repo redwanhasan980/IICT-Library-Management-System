@@ -174,10 +174,14 @@ Body:
 - userId or studentRegNumber or teacherId
 - dueAt optional ISO datetime
 - facultySignatureText optional, required for Teacher if profile has no signature
+- overrideReservation optional boolean
+- reservationOverrideReason required when overrideReservation is true
 
 Behavior:
 
-- Issues an active loan, decrements availability, blocks archived/unavailable/already-issued accessions, and applies policy limits.
+- Issues an active loan, decrements availability, blocks archived/unavailable/already-issued accessions, applies policy limits, and enforces reservation precedence.
+- If the borrower is the current reservation holder, the matching reservation is marked `FULFILLED`.
+- If another borrower holds the reservation, the route returns `409` unless an admin override reason is supplied.
 
 ### PATCH /api/loans/:id/return
 
@@ -218,6 +222,14 @@ Role: STUDENT or TEACHER
 Behavior:
 
 - Returns the authenticated borrower’s current and historical loans.
+
+### GET /api/loans/lookup/:accessionNumber
+
+Role: ADMIN
+
+Behavior:
+
+- Returns book lookup data, active loan data when the accession is issued, and the current reservation hold when one exists.
 
 ### GET /api/loans/borrowers/:userId/history
 

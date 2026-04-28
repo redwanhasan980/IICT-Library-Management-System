@@ -37,6 +37,16 @@ vi.mock('../../services/library.api', () => ({
         book: { title: 'Algorithms', accessionNumber: 'ACC-1' },
         user: { id: 'student-user', name: 'Student One', email: 'student@example.com', role: 'STUDENT' },
       },
+      reservationHold: {
+        id: 'reservation-1',
+        bookId: 'book-1',
+        userId: 'queued-user',
+        queueNumber: 1,
+        status: 'PENDING',
+        createdAt: '2026-04-01T00:00:00.000Z',
+        updatedAt: '2026-04-01T00:00:00.000Z',
+        user: { id: 'queued-user', name: 'Queued Borrower', email: 'queued@example.com', role: 'STUDENT' },
+      },
     },
     isFetching: false,
   }),
@@ -108,5 +118,14 @@ describe('AdminCirculationPage', () => {
 
     expect(screen.getByText('Borrower History')).toBeInTheDocument();
     expect(screen.getByText('Book Circulation History')).toBeInTheDocument();
+  });
+
+  it('renders reservation override controls when an accession has a reservation hold', () => {
+    render(<AdminCirculationPage />);
+
+    expect(screen.getByText('Reserved: PENDING')).toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText('Override reservation hold'));
+
+    expect(screen.getByPlaceholderText('Required reason for issuing outside reservation order')).toBeInTheDocument();
   });
 });

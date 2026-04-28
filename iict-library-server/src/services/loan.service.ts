@@ -1,4 +1,4 @@
-import { LoanStatus, Role } from '@prisma/client';
+import { LoanStatus, Prisma, ReservationStatus, Role } from '@prisma/client';
 import prisma from '../config/database';
 import AppError from '../utils/AppError';
 import { logAuditEvent } from '../utils/auditLog';
@@ -14,6 +14,8 @@ interface IssueLoanInput {
   issuedById: string;
   dueAt?: string;
   facultySignatureText?: string;
+  overrideReservation?: boolean;
+  reservationOverrideReason?: string;
 }
 
 interface ListLoansQuery {
@@ -24,6 +26,8 @@ interface ListLoansQuery {
   page?: number;
   pageSize?: number;
 }
+
+type PrismaExecutor = typeof prisma | Prisma.TransactionClient;
 
 class LoanService {
   private withComputedStatus<T extends { status: LoanStatus; dueAt: Date; returnedAt: Date | null }>(loan: T) {
@@ -89,6 +93,54 @@ class LoanService {
     }
 
     throw new AppError('Provide borrower userId, student registration number, or teacher ID', 400);
+  }
+
+  private async findReservationHold(db: PrismaExecutor, bookId: string, now = new Date()) {
+    const activeFulfilled = await db.reservation.findFirst({
+      where: {
+        bookId,
+        status: ReservationStatus.FULFILLED,
+        expiresAt: { gt: now },
+      },
+      include: {
+        user: { select: { id: true, name: true, email: true, role: true } },
+      },
+      orderBy: [{ fulfilledAt: 'asc' }, { createdAt: 'asc' }],
+    });
+
+    if (activeFulfilled) {
+      return activeFulfilled;
+    }
+
+    return db.reservation.findFirst({
+      where: {
+        bookId,
+        status: ReservationStatus.PENDING,
+      },
+      include: {
+        user: { select: { id: true, name: true, email: true, role: true } },
+      },
+      orderBy: [{ queueNumber: 'asc' }, { createdAt: 'asc' }],
+    });
+  }
+
+  private assertReservationCanIssue(
+    reservation: Awaited<ReturnType<LoanService['findReservationHold']>>,
+    borrowerUserId: string,
+    payload: Pick<IssueLoanInput, 'overrideReservation' | 'reservationOverrideReason'>
+  ) {
+    if (!reservation || reservation.userId === borrowerUserId) {
+      return;
+    }
+
+    if (!payload.overrideReservation) {
+      const borrowerName = reservation.user?.name || reservation.user?.email || 'the reserved borrower';
+      throw new AppError(`Book is reserved for ${borrowerName}. Use an override with a reason to issue it to another borrower.`, 409);
+    }
+
+    if (!payload.reservationOverrideReason?.trim()) {
+      throw new AppError('Reservation override reason is required', 400);
+    }
   }
 
   async issueLoan(payload: IssueLoanInput) {
@@ -182,6 +234,9 @@ class LoanService {
       throw new AppError('Due date must be after issue date', 400);
     }
 
+    const reservationHold = await this.findReservationHold(prisma, book.id, issueDate);
+    this.assertReservationCanIssue(reservationHold, user.id, payload);
+
     const loan = await prisma.$transaction(async (tx) => {
       const updateResult = await tx.book.updateMany({
         where: {
@@ -210,6 +265,9 @@ class LoanService {
         throw new AppError('This accession number is already issued', 409);
       }
 
+      const reservationHoldInTx = await this.findReservationHold(tx, book.id, issueDate);
+      this.assertReservationCanIssue(reservationHoldInTx, user.id, payload);
+
       const created = await tx.loan.create({
         data: {
           bookId: book.id,
@@ -236,6 +294,17 @@ class LoanService {
         },
       });
 
+      if (reservationHoldInTx?.userId === user.id) {
+        await tx.reservation.update({
+          where: { id: reservationHoldInTx.id },
+          data: {
+            status: ReservationStatus.FULFILLED,
+            fulfilledAt: reservationHoldInTx.fulfilledAt ?? issueDate,
+            expiresAt: null,
+          },
+        });
+      }
+
       return created;
     });
 
@@ -246,6 +315,21 @@ class LoanService {
       entityId: loan.id,
       details: { userId: user.id, bookId: book.id, dueAt: dueDate.toISOString() },
     });
+
+    if (reservationHold?.userId && reservationHold.userId !== user.id && payload.overrideReservation) {
+      logAuditEvent({
+        action: 'reservation.issue_override',
+        actorId: payload.issuedById,
+        entity: 'Reservation',
+        entityId: reservationHold.id,
+        details: {
+          bookId: book.id,
+          reservedUserId: reservationHold.userId,
+          issuedToUserId: user.id,
+          reason: payload.reservationOverrideReason?.trim(),
+        },
+      });
+    }
 
     return this.withComputedStatus(loan);
   }
@@ -498,9 +582,12 @@ class LoanService {
       orderBy: { issuedAt: 'desc' },
     });
 
+    const reservationHold = await this.findReservationHold(prisma, book.id);
+
     return {
       book,
       activeLoan: activeLoan ? this.withComputedStatus(activeLoan) : undefined,
+      reservationHold: reservationHold ?? undefined,
     };
   }
 }
