@@ -39,7 +39,6 @@ model StudentProfile {
   id        String             @id @default(cuid())
   userId    String             @unique
   studentRegNumber String?     @unique
-  phoneNumber String?
   department Department?
   currentSemester Int?
   user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -299,24 +298,6 @@ model FinePayment {
   @@index([recordedById, paymentDate])
 }
 
-model AuditLog {
-  id         String   @id @default(cuid())
-  actorId    String?
-  actorRole  Role?
-  action     String
-  entityType String?
-  entityId   String?
-  metadata   Json?
-  ipAddress  String?
-  userAgent  String?
-  createdAt  DateTime @default(now())
-
-  @@index([action, createdAt])
-  @@index([actorId, createdAt])
-  @@index([entityType, entityId])
-  @@index([createdAt])
-}
-
 model Reservation {
   id          String            @id @default(cuid())
   bookId       String
@@ -416,4 +397,22 @@ enum InventoryAuditResultStatus {
   EXTRA_OR_UNMATCHED
   ISSUED_DURING_AUDIT
   INACTIVE_OR_ARCHIVED
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actorRole  Role?
+  action     String
+  entityType String?
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([action, createdAt])
+  @@index([actorId, createdAt])
+  @@index([entityType, entityId])
+  @@index([createdAt])
 }

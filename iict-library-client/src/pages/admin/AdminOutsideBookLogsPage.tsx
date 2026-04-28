@@ -96,7 +96,7 @@ const AdminOutsideBookLogsPage = () => {
     try {
       await verifyEntry(id).unwrap();
       toast.success('Entry verified!');
-    } catch {
+    } catch (error) {
       toast.error('Failed to verify entry.');
     }
   };
@@ -111,7 +111,7 @@ const AdminOutsideBookLogsPage = () => {
     try {
       await verifyExit(id).unwrap();
       toast.success('Exit verified!');
-    } catch {
+    } catch (error) {
       toast.error('Failed to verify exit.');
     }
   };

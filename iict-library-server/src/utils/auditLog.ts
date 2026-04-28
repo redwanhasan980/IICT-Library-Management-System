@@ -68,9 +68,18 @@ export const logAuditEvent = ({
   ipAddress,
   userAgent,
 }: AuditEvent) => {
+  const auditClient = (prisma as typeof prisma & { auditLog?: { create: (args: { data: Record<string, unknown> }) => Promise<unknown> } })
+    .auditLog;
+
+  if (!auditClient || typeof auditClient.create !== 'function') {
+    // eslint-disable-next-line no-console
+    console.warn('[AUDIT_LOG_MISSING] Prisma client is missing AuditLog model.');
+    return;
+  }
+
   const safeMetadata = sanitizeAuditMetadata(metadata ?? details) as Prisma.InputJsonValue | undefined;
 
-  void prisma.auditLog.create({
+  void auditClient.create({
     data: {
       action,
       actorId,

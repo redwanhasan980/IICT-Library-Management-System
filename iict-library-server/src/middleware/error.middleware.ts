@@ -14,6 +14,11 @@ export const errorHandler = (
 ) => {
   const isProduction = process.env.NODE_ENV === 'production';
 
+  if (!isProduction) {
+    // eslint-disable-next-line no-console
+    console.error('Unhandled error:', error);
+  }
+
   if (error instanceof AppError) {
     res.status(error.statusCode).json(errorResponse(error.message));
     return;

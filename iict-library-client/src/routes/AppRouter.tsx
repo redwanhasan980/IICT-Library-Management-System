@@ -4,7 +4,6 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import HomePage from '../pages/HomePage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
-import BootstrapAdminPage from '../pages/BootstrapAdminPage';
 import DashboardHomePage from '../pages/DashboardHomePage';
 import NotFoundPage from '../pages/NotFoundPage';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
@@ -28,7 +27,6 @@ import AdminOutsideBookLogsPage from '../pages/admin/AdminOutsideBookLogsPage';
 import AdminUsersPage from '../pages/admin/AdminUsersPage';
 import AdminProcurementPage from '../pages/admin/AdminProcurementPage';
 import AdminReportsPage from '../pages/admin/AdminReportsPage';
-import AdminAuditLogsPage from '../pages/admin/AdminAuditLogsPage';
 
 // Student Pages
 import StudentDashboard from '../pages/student/StudentDashboard';
@@ -51,7 +49,6 @@ const AppRouter = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/bootstrap-admin" element={<BootstrapAdminPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
         </Route>
 
@@ -125,10 +122,6 @@ const AppRouter = () => {
           <Route
             path="admin/reports"
             element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminReportsPage /></ProtectedRoute>}
-          />
-          <Route
-            path="admin/audit-logs"
-            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminAuditLogsPage /></ProtectedRoute>}
           />
           <Route
             path="admin/inventory-audit"
