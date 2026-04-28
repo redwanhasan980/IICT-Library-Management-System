@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Card } from '../components/shared/Card';
 import { Input } from '../components/shared/Input';
@@ -54,6 +54,12 @@ const LoginPage = () => {
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
       </form>
+      <div className="mt-4 text-center text-sm text-warm-taupe">
+        <span>New here? </span>
+        <Link to="/register" className="font-semibold text-library-forest hover:text-library-gold">
+          Create an account
+        </Link>
+      </div>
     </Card>
   );
 };
