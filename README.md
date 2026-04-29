@@ -276,6 +276,34 @@ Borrowing policy is read from `SystemSetting`: student max active loans defaults
 
 Reservation-aware issuing is enforced: if a pending or currently fulfilled reservation hold exists, admin issue is blocked unless the borrower is the reservation holder. Admins can explicitly override the hold only by supplying a reason, and that override is written to persistent audit logs.
 
+## Library Home, Header, Footer, And Public Catalog
+
+The app now uses a reusable role-aware header and footer across public and protected pages. Header links are selected from the authenticated role so Admin-only routes are not shown to Student or Teacher users. Mobile navigation uses a hamburger menu, and authenticated users have a compact profile/logout menu.
+
+Public routes:
+
+- `/` - Library home with carousel, real aggregate stats, featured books, recommendations/fallbacks, new arrivals, popular books, quick actions, services, and help guidance.
+- `/catalog` - unauthenticated safe catalog search using public book metadata only.
+- `/about` - institution/library overview.
+- `/bootstrap-admin` - first-admin bootstrap screen when `ADMIN_SETUP_TOKEN` is configured.
+
+Protected routes added or surfaced:
+
+- `/dashboard` - role-aware library dashboard summary.
+- `/dashboard/profile` - authenticated account/profile view.
+- `/dashboard/admin/audit-logs` - persistent audit log review.
+
+Key API routes:
+
+- `GET /api/dashboard/home` - public safe aggregate home data, recent books, popular books, and featured books.
+- `GET /api/dashboard/summary` - authenticated role-aware stats and recent activity.
+- `GET /api/books/public` - public safe catalog metadata with search and pagination.
+- `GET /api/books/recent` - public recent active catalog records.
+- `GET /api/books/popular` - public popular books ordered by loan count.
+- `GET /api/books/recommended` - authenticated non-AI recommendations based on borrower history fields, with recent-book fallback.
+
+There is no persistent favourites/bookmarks feature in this release. The home page intentionally uses **Featured Books** from active, available catalog records and documents that choice in `DASHBOARD_LAYOUT_IMPLEMENTATION_REPORT.md`.
+
 ## Persistent Audit Logs
 
 Audit events are stored in the `AuditLog` table with actor, role, action, entity, sanitized JSON metadata, IP address, user-agent, and timestamp fields. Admin users can review them at `/dashboard/admin/audit-logs`.

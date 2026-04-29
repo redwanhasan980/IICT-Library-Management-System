@@ -10,6 +10,77 @@ Base URL (development):
 
 Returns service status.
 
+## Dashboard And Public Discovery Routes
+
+### GET /api/dashboard/home
+
+Auth: Public.
+
+Behavior:
+
+- Returns safe aggregate home stats: total books, available books, issued books, overdue loans, and active outside-book entries.
+- Returns recent books, popular books ordered by loan count, and featured books from active available catalog records.
+- Does not expose borrower/member private records.
+
+### GET /api/dashboard/summary
+
+Auth: Bearer token or auth cookie.
+
+Behavior:
+
+- Admin users receive operational stats including total books, available books, issued books, overdue loans, active outside-book entries, student/teacher counts, pending procurement, and recent activity.
+- Student/Teacher users receive personal stats for current borrowed books, returned books, overdue books, active outside-book entries where applicable, and recent own borrowing activity.
+
+### GET /api/books/public
+
+Auth: Public.
+
+Query:
+
+- q: optional search over title, author, accession, call number, and subject category
+- page, pageSize
+
+Behavior:
+
+- Returns active, non-archived catalog metadata suitable for unauthenticated browsing.
+
+### GET /api/books/recent
+
+Auth: Public.
+
+Query:
+
+- limit: optional number, max 20
+
+Behavior:
+
+- Returns recently added active catalog records ordered by creation date.
+
+### GET /api/books/popular
+
+Auth: Public.
+
+Query:
+
+- limit: optional number, max 20
+
+Behavior:
+
+- Returns active books ordered by recorded loan count. Returns an empty list if no loan history exists.
+
+### GET /api/books/recommended
+
+Auth: Bearer token or auth cookie.
+
+Query:
+
+- limit: optional number, max 20
+
+Behavior:
+
+- Uses transparent non-AI logic. If borrowing history exists, recommends active books with matching department, subject category, author, or broad DDC range and excludes already borrowed books.
+- Falls back to recent active books when there is no usable history.
+
 ## Auth Routes
 
 Base path: /api/auth

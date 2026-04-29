@@ -14,6 +14,7 @@ This document maps the implemented features to the expectations defined in the o
 | **Add Single Book**      | Admin adds one book at a time  | Fully Satisfied       | Admin catalog form supports single-book creation with accession metadata.         |
 | **Edit/Delete Book**     | Modify metadata or soft-delete | Fully Satisfied       | Admin catalog supports editing and archive/reactivation through the API.          |
 | **Search/Filter Books**  | Find books dynamically         | Fully Satisfied       | Catalog and admin book views use backend `q` and pagination support.              |
+| **Public Catalog Discovery** | Public book search access | Fully Satisfied | `/catalog` uses safe public metadata from `/api/books/public`; protected catalog CRUD remains unchanged. |
 | **Spine Labels**         | Print format, classification   | Fully Satisfied       | Supports Dewey/Cutter codes mapping efficiently.                                 |
 | **Outside Book Logging** | Entry/Exit logs, Verification  | Fully Satisfied       | Implemented with admin cross-verification exactly matching process documents.    |
 | **LMS-FR8 Book Issuing** | Admin issues by accession      | Fully Satisfied       | `POST /api/loans/issue` accepts accession/book ID and borrower user/reg/teacher IDs, enforces reservation priority, and supports audited admin overrides with a reason. |
@@ -29,7 +30,9 @@ This document maps the implemented features to the expectations defined in the o
 | **Procurement/Vendor / UC-001** | Applications, requisitions, vendor selection, approval, delivery, handover, shelving | Fully Satisfied | Admin procurement workflow covers central library applications, requisitions, vendors, procurement orders, delivery/handover dates, receiving records, procurement status, and shelving status. |
 | **LMS-FR15 Report Generation** | Admin operational reports | Fully Satisfied | `/dashboard/admin/reports` now covers issued, returned, overdue, outside-book, catalog inventory, procurement, and audit-log report views using real database data and visible-row CSV export. |
 | **Administrative Auditability** | Track critical admin/security actions | Fully Satisfied | Persistent `AuditLog` records cover authentication events, circulation, catalog, outside-book, procurement, fine, report, bulk, reservation, inventory-audit, and member status actions; admins can filter/export visible rows. |
+| **Header/Footer Navigation** | Role-aware access to library modules | Fully Satisfied | Reusable header/footer show public, Student, Teacher, and Admin links according to authenticated role, with mobile navigation and logout. |
+| **Library Home Dashboard** | Useful home/dashboard presentation | Fully Satisfied | Home and `/dashboard` render DB-backed stats, featured books, recent books, popular books, recommendations/fallbacks, quick actions, services, and help/rules guidance. |
 | **Analytics Dashboard**  | Trends and total metrics       | Fully Satisfied       | Admin, Student, and Teacher dashboards now render API-backed operational data.   |
-| **Testing**              | Automated verification         | Partial               | Focused Vitest coverage exists for circulation, procurement, reports, borrower pages, and RBAC visibility; full e2e coverage remains future work. |
+| **Testing**              | Automated verification         | Partial               | Focused Vitest coverage exists for circulation, procurement, reports, dashboard APIs, layout navigation, borrower pages, and RBAC visibility; full e2e coverage remains future work. |
 
-_This document was last updated after the persistent audit log readiness pass (April 2026)._
+_This document was last updated after the dashboard layout readiness pass (April 2026)._

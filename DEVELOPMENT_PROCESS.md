@@ -783,3 +783,53 @@ This document tracks the development process of the IICT Library Management Syst
 
 - **What Was Tested**:
   - Final verification is rerun after this documentation phase before commit.
+
+## Phase 22: Header, Footer, And Library Home Dashboard
+
+- **What Was Improved**:
+  - Reconciled Prisma schema with already-applied student phone/audit migrations and regenerated Prisma Client to resolve stale-client runtime/build failures.
+  - Added public, role-aware, responsive Header and Footer components across public and dashboard layouts.
+  - Added public `/catalog`, `/about`, `/bootstrap-admin`, protected `/dashboard/profile`, and admin `/dashboard/admin/audit-logs` routes.
+  - Added DB-backed home/dashboard APIs for safe public stats, recent books, popular books, featured books, authenticated role summaries, and non-AI recommendations.
+  - Replaced placeholder home/dashboard index pages with a library home experience: carousel, real stats, Featured Books, You May Like, New Arrivals, Popular Books, quick actions, services, activity, and help/rules.
+  - Chose Featured Books instead of a persistent favourites feature because no favourites model existed and a new bookmarking workflow was outside the least-risky readiness pass.
+
+- **Files Created or Updated**:
+  - `iict-library-server/prisma/schema.prisma`
+  - `iict-library-server/src/routes/dashboard.routes.ts`
+  - `iict-library-server/src/controllers/dashboard.controller.ts`
+  - `iict-library-server/src/services/dashboard.service.ts`
+  - `iict-library-server/src/routes/book.routes.ts`
+  - `iict-library-server/src/controllers/book.controller.ts`
+  - `iict-library-server/src/services/book.service.ts`
+  - `iict-library-server/src/validators/book.validator.ts`
+  - `iict-library-client/src/components/layout/Header.tsx`
+  - `iict-library-client/src/components/layout/Footer.tsx`
+  - `iict-library-client/src/components/home/*`
+  - `iict-library-client/src/pages/HomePage.tsx`
+  - `iict-library-client/src/pages/DashboardHomePage.tsx`
+  - `iict-library-client/src/pages/PublicCatalogPage.tsx`
+  - `iict-library-client/src/pages/AboutLibraryPage.tsx`
+  - `iict-library-client/src/pages/ProfilePage.tsx`
+  - `iict-library-client/public/images/library-hero-*.svg`
+  - `README.md`
+  - `API_OVERVIEW.md`
+  - `REQUIREMENT_TRACEABILITY.md`
+  - `DASHBOARD_LAYOUT_IMPLEMENTATION_REPORT.md`
+
+- **Commands Used**:
+  - `npm run prisma:migrate:deploy`
+  - `npm run prisma:generate`
+  - `npm --prefix iict-library-server run build`
+  - `npm --prefix iict-library-server test`
+  - `npm --prefix iict-library-client run build`
+  - `npm --prefix iict-library-client test`
+  - `npm run build`
+  - `npm test`
+  - `npm --prefix iict-library-client run lint`
+
+- **What Was Tested**:
+  - Server build passed after Prisma schema/client reconciliation.
+  - Backend dashboard/book-discovery service tests passed for public counts, admin/member privacy, public catalog, popular books, recommendation history, and fallback logic.
+  - Frontend layout/home tests passed for Header role links, logout flow, Footer role-safe links, carousel timer behavior, home dashboard sections, and borrower dashboard sections.
+  - Final root build and test suites passed; client lint passed after removing unused outside-book `catch` bindings. The Vite build still reports a non-blocking chunk-size warning.
