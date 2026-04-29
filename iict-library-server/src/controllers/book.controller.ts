@@ -32,6 +32,57 @@ class BookController {
     }
   }
 
+  async listPublicBooks(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await bookService.listPublicBooks({
+        q: req.query.q as string | undefined,
+        page: req.query.page ? Number(req.query.page) : undefined,
+        pageSize: req.query.pageSize ? Number(req.query.pageSize) : undefined,
+      });
+      return res.status(200).json(successResponse(result));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async listRecentBooks(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await bookService.listRecentBooks({
+        limit: req.query.limit ? Number(req.query.limit) : undefined,
+      });
+      return res.status(200).json(successResponse(result));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async listPopularBooks(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await bookService.listPopularBooks({
+        limit: req.query.limit ? Number(req.query.limit) : undefined,
+      });
+      return res.status(200).json(successResponse(result));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async listRecommendedBooks(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const result = await bookService.listRecommendedBooks(userId, {
+        limit: req.query.limit ? Number(req.query.limit) : undefined,
+      });
+      return res.status(200).json(successResponse(result));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
   async updateBook(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const actorId = req.user?.id;

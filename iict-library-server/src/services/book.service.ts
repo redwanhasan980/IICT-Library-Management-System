@@ -38,7 +38,46 @@ interface ListBooksQuery {
   pageSize?: number;
 }
 
+interface PublicBookQuery {
+  q?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+interface BookLimitQuery {
+  limit?: number;
+}
+
 class BookService {
+  private normalizePagination(query: { page?: number; pageSize?: number }) {
+    const page = query.page && query.page > 0 ? query.page : 1;
+    const pageSize = query.pageSize && query.pageSize > 0 ? Math.min(query.pageSize, 100) : 20;
+    return {
+      page,
+      pageSize,
+      skip: (page - 1) * pageSize,
+    };
+  }
+
+  private normalizeLimit(limit?: number) {
+    return limit && limit > 0 ? Math.min(limit, 20) : 8;
+  }
+
+  private publicBookWhere(query: PublicBookQuery = {}) {
+    return {
+      isArchived: false,
+      OR: query.q
+        ? [
+            { title: { contains: query.q } },
+            { author: { contains: query.q } },
+            { accessionNumber: { contains: query.q } },
+            { callNumber: { contains: query.q } },
+            { subjectCategory: { contains: query.q } },
+          ]
+        : undefined,
+    };
+  }
+
   async createBook(actorId: string, payload: CreateBookInput) {
     const exists = await prisma.book.findUnique({
       where: { accessionNumber: payload.accessionNumber },
@@ -105,9 +144,7 @@ class BookService {
   }
 
   async listBooks(query: ListBooksQuery) {
-    const page = query.page && query.page > 0 ? query.page : 1;
-    const pageSize = query.pageSize && query.pageSize > 0 ? Math.min(query.pageSize, 100) : 20;
-    const skip = (page - 1) * pageSize;
+    const { page, pageSize, skip } = this.normalizePagination(query);
 
     const where = {
       isArchived: query.includeArchived ? undefined : false,
@@ -139,6 +176,136 @@ class BookService {
       total,
       totalPages: Math.ceil(total / pageSize),
     };
+  }
+
+  async listPublicBooks(query: PublicBookQuery) {
+    const { page, pageSize, skip } = this.normalizePagination(query);
+    const where = this.publicBookWhere(query);
+
+    const [items, total] = await Promise.all([
+      prisma.book.findMany({
+        where,
+        skip,
+        take: pageSize,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.book.count({ where }),
+    ]);
+
+    return {
+      items,
+      page,
+      pageSize,
+      total,
+      totalPages: Math.ceil(total / pageSize),
+    };
+  }
+
+  async listRecentBooks(query: BookLimitQuery = {}) {
+    return prisma.book.findMany({
+      where: { isArchived: false },
+      take: this.normalizeLimit(query.limit),
+      orderBy: [{ createdAt: 'desc' }],
+    });
+  }
+
+  async listFeaturedBooks(query: BookLimitQuery = {}) {
+    return prisma.book.findMany({
+      where: {
+        isArchived: false,
+        availableCopies: { gt: 0 },
+      },
+      take: this.normalizeLimit(query.limit),
+      orderBy: [{ availableCopies: 'desc' }, { createdAt: 'desc' }],
+    });
+  }
+
+  async listPopularBooks(query: BookLimitQuery = {}) {
+    const limit = this.normalizeLimit(query.limit);
+    const loanGroups = await prisma.loan.groupBy({
+      by: ['bookId'],
+      _count: { bookId: true },
+      orderBy: {
+        _count: {
+          bookId: 'desc',
+        },
+      },
+      take: limit,
+    });
+
+    const bookIds = loanGroups.map((group) => group.bookId);
+    if (bookIds.length === 0) {
+      return [];
+    }
+
+    const books = await prisma.book.findMany({
+      where: {
+        id: { in: bookIds },
+        isArchived: false,
+      },
+    });
+
+    const booksById = new Map(books.map((book) => [book.id, book]));
+
+    return loanGroups
+      .map((group) => {
+        const book = booksById.get(group.bookId);
+        return book ? { ...book, loanCount: group._count.bookId } : null;
+      })
+      .filter((book): book is NonNullable<typeof book> => Boolean(book));
+  }
+
+  async listRecommendedBooks(userId: string, query: BookLimitQuery = {}) {
+    const limit = this.normalizeLimit(query.limit);
+    const history = await prisma.loan.findMany({
+      where: { userId },
+      include: { book: true },
+      orderBy: { issuedAt: 'desc' },
+      take: 20,
+    });
+
+    if (history.length === 0) {
+      return this.listRecentBooks({ limit });
+    }
+
+    const borrowedBookIds = history.map((loan) => loan.bookId);
+    const departments = [...new Set(history.map((loan) => loan.book.department).filter(Boolean))];
+    const subjects = [...new Set(history.map((loan) => loan.book.subjectCategory).filter(Boolean))];
+    const authors = [...new Set(history.map((loan) => loan.book.author).filter(Boolean))];
+    const ddcRanges = [
+      ...new Set(
+        history
+          .map((loan) => (loan.book.deweyDecimalNumber ? Number(loan.book.deweyDecimalNumber) : undefined))
+          .filter((value): value is number => Number.isFinite(value))
+          .map((value) => Math.floor(value / 100) * 100)
+      ),
+    ];
+
+    const recommendationWhere = {
+      isArchived: false,
+      id: { notIn: borrowedBookIds },
+      OR: [
+        ...departments.map((department) => ({ department })),
+        ...subjects.map((subjectCategory) => ({ subjectCategory })),
+        ...authors.map((author) => ({ author })),
+        ...ddcRanges.map((prefix) => ({
+          deweyDecimalNumber: {
+            gte: prefix,
+            lt: prefix + 100,
+          },
+        })),
+      ],
+    };
+
+    const recommendations = recommendationWhere.OR.length
+      ? await prisma.book.findMany({
+          where: recommendationWhere,
+          take: limit,
+          orderBy: [{ availableCopies: 'desc' }, { createdAt: 'desc' }],
+        })
+      : [];
+
+    return recommendations.length > 0 ? recommendations : this.listRecentBooks({ limit });
   }
 
   async getBookById(id: string) {

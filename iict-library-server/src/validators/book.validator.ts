@@ -39,6 +39,20 @@ export const listBooksSchema = z.object({
   }),
 });
 
+export const publicListBooksSchema = z.object({
+  query: z.object({
+    q: z.string().optional(),
+    page: z.coerce.number().int().positive().optional(),
+    pageSize: z.coerce.number().int().positive().max(100).optional(),
+  }),
+});
+
+export const bookDiscoverySchema = z.object({
+  query: z.object({
+    limit: z.coerce.number().int().positive().max(20).optional(),
+  }),
+});
+
 export const bookIdParamSchema = z.object({
   params: z.object({
     id: z.string().min(1, 'Book ID is required'),

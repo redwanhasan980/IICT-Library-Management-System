@@ -17,6 +17,7 @@ import fineRouter from './routes/fine.routes';
 import procurementRouter from './routes/procurement.routes';
 import reportRouter from './routes/report.routes';
 import auditLogRouter from './routes/auditLog.routes';
+import dashboardRouter from './routes/dashboard.routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import { successResponse } from './utils/apiResponse';
 
@@ -42,6 +43,7 @@ app.get('/api/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRouter);
+app.use('/api/dashboard', dashboardRouter);
 app.use('/api/users', userRouter);
 app.use('/api/outside-books', outsideBookRouter);
 app.use('/api/spine-labels', spineLabelRouter);
