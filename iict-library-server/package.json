@@ -12,7 +12,8 @@
     "prisma:migrate": "npx dotenv -e .env -- prisma migrate dev",
     "prisma:migrate:deploy": "npx dotenv -e .env -- prisma migrate deploy",
     "prisma:generate": "npx dotenv -e .env -- prisma generate",
-    "prisma:studio": "npx dotenv -e .env -- prisma studio"
+    "prisma:studio": "npx dotenv -e .env -- prisma studio",
+    "seed:demo": "npx dotenv -e .env -- tsx prisma/seed-demo-data.ts"
   },
   "keywords": [],
   "author": "",

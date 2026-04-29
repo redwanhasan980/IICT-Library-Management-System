@@ -53,6 +53,7 @@ export interface Book {
   catalogEntryDate?: string;
   catalogedById?: string;
   barcode?: string;
+  coverImageUrl?: string;
   procurementId?: string;
   totalCopies: number;
   availableCopies: number;

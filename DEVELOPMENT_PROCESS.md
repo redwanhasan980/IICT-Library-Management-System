@@ -833,3 +833,48 @@ This document tracks the development process of the IICT Library Management Syst
   - Backend dashboard/book-discovery service tests passed for public counts, admin/member privacy, public catalog, popular books, recommendation history, and fallback logic.
   - Frontend layout/home tests passed for Header role links, logout flow, Footer role-safe links, carousel timer behavior, home dashboard sections, and borrower dashboard sections.
   - Final root build and test suites passed; client lint passed after removing unused outside-book `catch` bindings. The Vite build still reports a non-blocking chunk-size warning.
+
+## Phase 23: Runtime Database Repair And Demo Dataset
+
+- **What Was Improved**:
+  - Investigated admin page "Failed to load" states and confirmed they were not caused only by an empty database.
+  - Repaired live MariaDB drift where the applied migration history existed but the `auditlog` table and `studentprofile.phoneNumber` column were missing.
+  - Added a nullable `Book.coverImageUrl` field, local book-cover placeholder asset, catalog/detail cover rendering, and admin create/edit support for cover URLs.
+  - Added a repository-root `npm run seed:demo` command that creates demo admin/student/teacher users, 20 catalog books, sample outside-book entries, sample loans, and audit log rows.
+  - Restarted the backend and verified protected admin endpoints with the seeded admin account.
+
+- **Files Created or Updated**:
+  - `iict-library-server/prisma/schema.prisma`
+  - `iict-library-server/prisma/migrations/20260429142500_repair_auditlog_and_book_covers/migration.sql`
+  - `iict-library-server/prisma/migrations/20260429143500_repair_student_phone_number/migration.sql`
+  - `iict-library-server/prisma/seed-demo-data.ts`
+  - `iict-library-server/package.json`
+  - `package.json`
+  - `iict-library-server/src/services/book.service.ts`
+  - `iict-library-server/src/validators/book.validator.ts`
+  - `iict-library-client/public/images/book-cover-placeholder.svg`
+  - `iict-library-client/src/components/home/BookSection.tsx`
+  - `iict-library-client/src/pages/PublicCatalogPage.tsx`
+  - `iict-library-client/src/pages/books/BookDetailsPage.tsx`
+  - `iict-library-client/src/pages/admin/catalog/AdminCatalogPage.tsx`
+  - `iict-library-client/src/pages/admin/catalog/AdminBookFormPage.tsx`
+  - `iict-library-client/src/types/book.types.ts`
+  - `README.md`
+  - `DATABASE_SCHEMA.md`
+  - `DEVELOPMENT_PROCESS.md`
+
+- **Commands Used**:
+  - `npm --prefix iict-library-server run prisma:migrate:deploy`
+  - `npm --prefix iict-library-server run prisma:generate`
+  - `npm run seed:demo`
+  - `npm --prefix iict-library-server run build`
+  - `npm --prefix iict-library-client run build`
+  - `npm test`
+  - `npm --prefix iict-library-client run lint`
+
+- **What Was Tested**:
+  - Server and client builds passed.
+  - Root backend/frontend Vitest suites passed.
+  - Client lint passed.
+  - Seeded admin login succeeded and returned data from `/api/audit-logs`, `/api/users`, `/api/dashboard/summary`, and `/api/outside-books`.
+  - Seeded student login succeeded and returned data from `/api/outside-books/my-entries`.

@@ -1,0 +1,1 @@
+ALTER TABLE `studentprofile` ADD COLUMN IF NOT EXISTS `phoneNumber` VARCHAR(191) NULL;

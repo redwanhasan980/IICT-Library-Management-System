@@ -89,7 +89,19 @@ npm run prisma:migrate
 
 ### Seed steps
 
-There is currently no seed script in package.json. If seed data is required, add a Prisma seed script in a later phase.
+Demo data can be loaded after migrations are applied:
+
+```bash
+npm run seed:demo
+```
+
+The demo seed creates 20 catalog books with local cover placeholders, sample outside-book records, sample loans, audit logs, and these local credentials:
+
+- Admin: `admin.demo@iict.local` / `Admin@12345`
+- Student: `student.demo@iict.local` / `Student@12345`
+- Teacher: `teacher.demo@iict.local` / `Teacher@12345`
+
+Use the demo seed only for local development, QA, or presentation databases.
 
 ## Run (Development)
 

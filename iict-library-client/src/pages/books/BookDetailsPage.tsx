@@ -52,29 +52,39 @@ const BookDetailsPage = () => {
       {!isLoading && !isError && book && (
         <>
           <Card className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-dark-brown">{book.title}</h1>
-              {book.availableCopies > 0 ? (
-                <Badge variant="success">Available</Badge>
-              ) : (
-                <Badge variant="warning">Unavailable</Badge>
-              )}
-            </div>
+            <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
+              <img
+                src={book.coverImageUrl || '/images/book-cover-placeholder.svg'}
+                alt={`Cover for ${book.title}`}
+                className="aspect-[9/13] w-full rounded-2xl border border-sandy-beige/70 bg-library-mist object-cover shadow-sm"
+              />
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-4">
+                  <h1 className="text-2xl font-bold text-dark-brown">{book.title}</h1>
+                  {book.availableCopies > 0 ? (
+                    <Badge variant="success">Available</Badge>
+                  ) : (
+                    <Badge variant="warning">Unavailable</Badge>
+                  )}
+                </div>
 
-            <div className="grid gap-2 text-sm text-warm-taupe md:grid-cols-2">
-              <p><strong>Author:</strong> {book.author}</p>
-              <p><strong>Accession:</strong> {book.accessionNumber}</p>
-              <p><strong>Department:</strong> {book.department || 'N/A'}</p>
-              <p><strong>Available Copies:</strong> {book.availableCopies}</p>
-              <p><strong>Total Copies:</strong> {book.totalCopies}</p>
-              <p><strong>Pending Reservations:</strong> {pendingReservationsCount}</p>
-            </div>
+                <div className="grid gap-2 text-sm text-warm-taupe md:grid-cols-2">
+                  <p><strong>Author:</strong> {book.author}</p>
+                  <p><strong>Accession:</strong> {book.accessionNumber}</p>
+                  <p><strong>Department:</strong> {book.department || 'N/A'}</p>
+                  <p><strong>Call Number:</strong> {book.callNumber || 'N/A'}</p>
+                  <p><strong>Available Copies:</strong> {book.availableCopies}</p>
+                  <p><strong>Total Copies:</strong> {book.totalCopies}</p>
+                  <p><strong>Pending Reservations:</strong> {pendingReservationsCount}</p>
+                </div>
 
-            {user && (user.role === Role.STUDENT || user.role === Role.TEACHER) && book.availableCopies < 1 && (
-              <Button onClick={handleReserve} disabled={isReserving}>
-                {isReserving ? 'Reserving...' : 'Reserve this book'}
-              </Button>
-            )}
+                {user && (user.role === Role.STUDENT || user.role === Role.TEACHER) && book.availableCopies < 1 && (
+                  <Button onClick={handleReserve} disabled={isReserving}>
+                    {isReserving ? 'Reserving...' : 'Reserve this book'}
+                  </Button>
+                )}
+              </div>
+            </div>
           </Card>
 
           <Card className="space-y-3">

@@ -1,6 +1,14 @@
 import { z } from 'zod';
 import { BindingType, BookSource, Department } from '@prisma/client';
 
+const coverImageSchema = z
+  .string()
+  .refine(
+    (value) => value.startsWith('/') || z.string().url().safeParse(value).success,
+    'Cover image URL must be an absolute URL or a root-relative local path'
+  )
+  .optional();
+
 const baseBookSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   author: z.string().min(1, 'Author is required'),
@@ -26,6 +34,7 @@ const baseBookSchema = z.object({
   catalogEntryDate: z.string().optional(),
   catalogedById: z.string().optional(),
   barcode: z.string().optional(),
+  coverImageUrl: coverImageSchema,
   procurementId: z.string().optional(),
   totalCopies: z.number().int().positive().optional(),
 });

@@ -12,7 +12,8 @@
     "preview:client": "npm --prefix iict-library-client run preview",
     "prisma:generate": "npm --prefix iict-library-server run prisma:generate",
     "prisma:migrate": "npm --prefix iict-library-server run prisma:migrate",
-    "prisma:migrate:deploy": "npm --prefix iict-library-server run prisma:migrate:deploy"
+    "prisma:migrate:deploy": "npm --prefix iict-library-server run prisma:migrate:deploy",
+    "seed:demo": "npm --prefix iict-library-server run seed:demo"
   },
   "dependencies": {
     "react": "^19.2.4",

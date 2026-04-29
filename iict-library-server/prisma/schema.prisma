@@ -131,6 +131,7 @@ model Book {
   catalogedById  String?
   catalogedBy    User?         @relation("BookCatalogedByUser", fields: [catalogedById], references: [id], onDelete: SetNull)
   barcode        String?       @unique
+  coverImageUrl  String?
   procurementId  String?
   procurement    Procurement?  @relation(fields: [procurementId], references: [id], onDelete: SetNull)
   totalCopies    Int           @default(1)

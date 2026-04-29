@@ -40,6 +40,7 @@ const AdminBookFormPage = () => {
     cutterCode: '',
     callNumber: '',
     barcode: '',
+    coverImageUrl: '',
     locationCode: '',
     totalCopies: 1,
   });
@@ -69,6 +70,7 @@ const AdminBookFormPage = () => {
         cutterCode: bookDetails.cutterCode || '',
         callNumber: bookDetails.callNumber || '',
         barcode: bookDetails.barcode || '',
+        coverImageUrl: bookDetails.coverImageUrl || '',
         locationCode: bookDetails.locationCode || '',
         totalCopies: bookDetails.totalCopies || 1,
       });
@@ -198,6 +200,10 @@ const AdminBookFormPage = () => {
             <div>
               <label className="text-sm">Barcode</label>
               <Input name="barcode" value={formData.barcode} onChange={handleChange} />
+            </div>
+            <div>
+              <label className="text-sm">Cover Image URL</label>
+              <Input name="coverImageUrl" value={formData.coverImageUrl} onChange={handleChange} placeholder="/images/book-cover-placeholder.svg" />
             </div>
             <div>
               <label className="text-sm">Total Copies *</label>

@@ -31,6 +31,11 @@ const BookSection = ({ title, description, books = [], emptyMessage, actionTarge
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {books.map((book) => (
             <Card key={book.id} className="flex h-full flex-col gap-4">
+              <img
+                src={book.coverImageUrl || '/images/book-cover-placeholder.svg'}
+                alt={`Cover for ${book.title}`}
+                className="h-44 w-full rounded-xl border border-sandy-beige/70 bg-library-mist object-cover"
+              />
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h3 className="text-lg font-semibold text-library-ink">{book.title}</h3>

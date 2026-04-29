@@ -16,7 +16,7 @@ Prisma datasource:
 
 ## Catalog And Classification
 
-- `Book`: accession number, title, author/editor, edition/volume, publication details, source, binding, pagination, bill data, ISBN, department, subject category, DDC number, Cutter code, call number, location, barcode, copy counts, archive status, and optional `procurementId`.
+- `Book`: accession number, title, author/editor, edition/volume, publication details, source, binding, pagination, bill data, ISBN, department, subject category, DDC number, Cutter code, call number, location, barcode, optional cover image URL, copy counts, archive status, and optional `procurementId`.
 - `SystemSetting`: borrowing duration, max active loans, fine rate, reservation expiry, outside-book toggle, updater.
 - Enums: `Department`, `BookSource`, `BindingType`.
 
@@ -61,9 +61,9 @@ Recommended workflow:
 
 ## Seed Flow
 
-- No seed script is currently registered.
 - First admin is created through `POST /api/auth/bootstrap-admin` using `ADMIN_SETUP_TOKEN`.
-- Demo users/books can be created through the admin UI or API after bootstrap.
+- Local demo data can be created with `npm run seed:demo` from the repository root after migrations are applied.
+- The demo seed creates local-only admin/student/teacher credentials, 20 active catalog books, placeholder cover image references, outside-book entries, sample loans, and audit log rows.
 
 ## Compatibility Notes
 

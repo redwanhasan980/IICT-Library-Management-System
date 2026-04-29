@@ -27,6 +27,7 @@ interface CreateBookInput {
   catalogEntryDate?: string;
   catalogedById?: string;
   barcode?: string;
+  coverImageUrl?: string;
   procurementId?: string;
   totalCopies?: number;
 }
@@ -126,6 +127,7 @@ class BookService {
         catalogEntryDate: payload.catalogEntryDate ? new Date(payload.catalogEntryDate) : undefined,
         catalogedById: payload.catalogedById,
         barcode: payload.barcode,
+        coverImageUrl: payload.coverImageUrl,
         procurementId: payload.procurementId,
         totalCopies,
         availableCopies: totalCopies,
@@ -380,6 +382,7 @@ class BookService {
         catalogEntryDate: payload.catalogEntryDate ? new Date(payload.catalogEntryDate) : undefined,
         catalogedById: payload.catalogedById,
         barcode: payload.barcode,
+        coverImageUrl: payload.coverImageUrl,
         procurementId: payload.procurementId,
         totalCopies: payload.totalCopies,
         availableCopies: payload.totalCopies, // We might need to handle this more intelligently if loans are active, but for basic single-copy modeling this works

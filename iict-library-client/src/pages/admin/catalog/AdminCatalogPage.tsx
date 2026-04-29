@@ -102,6 +102,7 @@ const AdminCatalogPage = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Cover</TableHead>
                   <TableHead>Accession</TableHead>
                   <TableHead>Title</TableHead>
                   <TableHead>Author</TableHead>
@@ -112,13 +113,20 @@ const AdminCatalogPage = () => {
               <TableBody>
                 {data.items.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center italic text-warm-taupe py-6">
+                    <TableCell colSpan={6} className="text-center italic text-warm-taupe py-6">
                       No books found.
                     </TableCell>
                   </TableRow>
                 ) : (
                   data.items.map((book) => (
                     <TableRow key={book.id}>
+                      <TableCell>
+                        <img
+                          src={book.coverImageUrl || '/images/book-cover-placeholder.svg'}
+                          alt={`Cover for ${book.title}`}
+                          className="h-14 w-10 rounded border border-sandy-beige bg-library-mist object-cover"
+                        />
+                      </TableCell>
                       <TableCell className="font-mono text-xs">{book.accessionNumber}</TableCell>
                       <TableCell className="font-medium">{book.title}</TableCell>
                       <TableCell>{book.author}</TableCell>
