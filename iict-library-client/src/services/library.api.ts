@@ -23,6 +23,8 @@ interface PaginatedBooksResponse {
   totalPages: number;
 }
 
+export type PopularBook = Book & { loanCount?: number };
+
 interface ImportSummary {
   rowsProcessed: number;
   created: number;
@@ -61,6 +63,38 @@ export const libraryApi = api.injectEndpoints({
         params: params ?? {},
       }),
       transformResponse: (response: ApiResponse<PaginatedBooksResponse>) => response.data,
+      providesTags: ['Books'],
+    }),
+    listPublicBooks: builder.query<PaginatedBooksResponse, { q?: string; page?: number; pageSize?: number } | undefined>({
+      query: (params) => ({
+        url: '/books/public',
+        params: params ?? {},
+      }),
+      transformResponse: (response: ApiResponse<PaginatedBooksResponse>) => response.data,
+      providesTags: ['Books'],
+    }),
+    listRecentBooks: builder.query<Book[], { limit?: number } | undefined>({
+      query: (params) => ({
+        url: '/books/recent',
+        params: params ?? {},
+      }),
+      transformResponse: (response: ApiResponse<Book[]>) => response.data,
+      providesTags: ['Books'],
+    }),
+    listPopularBooks: builder.query<PopularBook[], { limit?: number } | undefined>({
+      query: (params) => ({
+        url: '/books/popular',
+        params: params ?? {},
+      }),
+      transformResponse: (response: ApiResponse<PopularBook[]>) => response.data,
+      providesTags: ['Books'],
+    }),
+    listRecommendedBooks: builder.query<Book[], { limit?: number } | undefined>({
+      query: (params) => ({
+        url: '/books/recommended',
+        params: params ?? {},
+      }),
+      transformResponse: (response: ApiResponse<Book[]>) => response.data,
       providesTags: ['Books'],
     }),
     getBookById: builder.query<Book & { reservations?: Reservation[] }, string>({
@@ -353,6 +387,10 @@ export const libraryApi = api.injectEndpoints({
 
 export const {
   useListBooksQuery,
+  useListPublicBooksQuery,
+  useListRecentBooksQuery,
+  useListPopularBooksQuery,
+  useListRecommendedBooksQuery,
   useGetBookByIdQuery,
   useCreateBookMutation,
   useUpdateBookMutation,

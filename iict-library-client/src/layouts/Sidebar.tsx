@@ -24,6 +24,7 @@ const adminLinks = [
   { to: '/dashboard/admin/fines', label: 'Fine Management' },
   { to: '/dashboard/admin/analytics', label: 'Analytics' },
   { to: '/dashboard/admin/reports', label: 'Reports' },
+  { to: '/dashboard/admin/audit-logs', label: 'Audit Logs' },
   { to: '/dashboard/spine-label-generator', label: 'Spine Label Generator' },
   // Add other admin links here
 ];
@@ -95,7 +96,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             className="rounded-full border border-sandy-beige/70 bg-white p-2 text-library-ink shadow-sm"
             onClick={onClose}
           >
-            ✕
+            X
           </button>
         </div>
         <nav>

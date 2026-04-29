@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">Quiet study area</title>
+  <desc id="desc">A quiet academic study area with open books, reading lights, and shelves.</desc>
+  <rect width="1200" height="640" fill="#f7f1e7"/>
+  <rect x="0" y="420" width="1200" height="220" fill="#d8c8ad"/>
+  <rect x="90" y="90" width="260" height="360" rx="18" fill="#3a5a40"/>
+  <rect x="410" y="90" width="260" height="360" rx="18" fill="#3a5a40"/>
+  <rect x="730" y="90" width="260" height="360" rx="18" fill="#3a5a40"/>
+  <g fill="#efe5d6">
+    <rect x="125" y="135" width="190" height="20" rx="10"/>
+    <rect x="125" y="190" width="190" height="20" rx="10"/>
+    <rect x="125" y="245" width="190" height="20" rx="10"/>
+    <rect x="445" y="135" width="190" height="20" rx="10"/>
+    <rect x="445" y="190" width="190" height="20" rx="10"/>
+    <rect x="445" y="245" width="190" height="20" rx="10"/>
+    <rect x="765" y="135" width="190" height="20" rx="10"/>
+    <rect x="765" y="190" width="190" height="20" rx="10"/>
+    <rect x="765" y="245" width="190" height="20" rx="10"/>
+  </g>
+  <rect x="220" y="390" width="760" height="68" rx="34" fill="#8f6a1f"/>
+  <rect x="340" y="315" width="520" height="120" rx="20" fill="#b68a3a"/>
+  <path d="M430 345c70-35 120-20 170 18v92c-52-36-104-47-170-18z" fill="#f7f1e7"/>
+  <path d="M600 363c58-38 112-53 170-18v92c-64-29-112-18-170 18z" fill="#e7ece7"/>
+  <path d="M600 360v95" stroke="#8f6a1f" stroke-width="8" stroke-linecap="round"/>
+  <path d="M1005 140h75v210h-75z" fill="#1f2a24"/>
+  <circle cx="1042" cy="125" r="54" fill="#b68a3a"/>
+  <path d="M1042 180v170" stroke="#1f2a24" stroke-width="16" stroke-linecap="round"/>
+</svg>

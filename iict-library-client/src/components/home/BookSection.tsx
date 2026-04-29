@@ -1,0 +1,81 @@
+import { Link } from 'react-router-dom';
+import { Badge } from '../shared/Badge';
+import { Card } from '../shared/Card';
+import { EmptyState } from '../shared/FeedbackState';
+import type { Book } from '../../types/book.types';
+
+type BookCard = Book & { loanCount?: number };
+
+interface BookSectionProps {
+  title: string;
+  description?: string;
+  books?: BookCard[];
+  emptyMessage: string;
+  actionTarget: (book: BookCard) => string;
+  actionLabel?: string;
+}
+
+const BookSection = ({ title, description, books = [], emptyMessage, actionTarget, actionLabel = 'View Details' }: BookSectionProps) => {
+  return (
+    <section className="space-y-4">
+      <div>
+        <h2 className="text-2xl font-semibold text-library-ink">{title}</h2>
+        {description ? <p className="mt-1 text-sm text-warm-taupe">{description}</p> : null}
+      </div>
+
+      {books.length === 0 ? (
+        <Card>
+          <EmptyState message={emptyMessage} />
+        </Card>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {books.map((book) => (
+            <Card key={book.id} className="flex h-full flex-col gap-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-library-ink">{book.title}</h3>
+                  <p className="mt-1 text-sm text-warm-taupe">{book.authorEditor || book.author}</p>
+                </div>
+                <Badge variant={book.availableCopies > 0 ? 'success' : 'warning'}>
+                  {book.availableCopies > 0 ? 'Available' : 'Issued'}
+                </Badge>
+              </div>
+
+              <dl className="grid gap-2 text-sm text-warm-taupe">
+                <div className="flex justify-between gap-3">
+                  <dt>Accession</dt>
+                  <dd className="font-semibold text-library-ink">{book.accessionNumber}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt>Call Number</dt>
+                  <dd className="font-semibold text-library-ink">{book.callNumber || '-'}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt>Classification</dt>
+                  <dd className="font-semibold text-library-ink">{book.deweyDecimalNumber || book.subjectCategory || '-'}</dd>
+                </div>
+                {typeof book.loanCount === 'number' ? (
+                  <div className="flex justify-between gap-3">
+                    <dt>Borrowed</dt>
+                    <dd className="font-semibold text-library-ink">{book.loanCount} times</dd>
+                  </div>
+                ) : null}
+              </dl>
+
+              <div className="mt-auto">
+                <Link
+                  to={actionTarget(book)}
+                  className="inline-flex rounded-full border border-sandy-beige bg-white px-4 py-2 text-sm font-semibold text-library-ink shadow-sm transition hover:bg-library-mist"
+                >
+                  {actionLabel}
+                </Link>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+};
+
+export default BookSection;

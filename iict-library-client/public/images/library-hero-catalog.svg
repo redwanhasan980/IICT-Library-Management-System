@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">Digital catalog desk</title>
+  <desc id="desc">A library desk with catalog cards, books, and a computer search screen.</desc>
+  <rect width="1200" height="640" fill="#e7ece7"/>
+  <circle cx="1010" cy="110" r="160" fill="#d8c8ad"/>
+  <rect x="95" y="105" width="1010" height="430" rx="28" fill="#f7f1e7"/>
+  <rect x="165" y="170" width="390" height="250" rx="18" fill="#1f2a24"/>
+  <rect x="195" y="205" width="330" height="42" rx="21" fill="#e7ece7"/>
+  <rect x="220" y="280" width="260" height="18" rx="9" fill="#b68a3a"/>
+  <rect x="220" y="320" width="210" height="18" rx="9" fill="#b68a3a"/>
+  <rect x="220" y="360" width="280" height="18" rx="9" fill="#b68a3a"/>
+  <rect x="650" y="185" width="350" height="265" rx="20" fill="#d8c8ad"/>
+  <g fill="#3a5a40">
+    <rect x="690" y="225" width="260" height="36" rx="8"/>
+    <rect x="690" y="285" width="260" height="36" rx="8"/>
+    <rect x="690" y="345" width="260" height="36" rx="8"/>
+  </g>
+  <g fill="#f7f1e7">
+    <rect x="715" y="238" width="120" height="10" rx="5"/>
+    <rect x="715" y="298" width="150" height="10" rx="5"/>
+    <rect x="715" y="358" width="100" height="10" rx="5"/>
+  </g>
+  <rect x="120" y="460" width="960" height="48" rx="24" fill="#8f6a1f"/>
+  <path d="M588 168l58 58-58 58-58-58z" fill="#b68a3a"/>
+  <path d="M588 197l29 29-29 29-29-29z" fill="#f7f1e7"/>
+</svg>

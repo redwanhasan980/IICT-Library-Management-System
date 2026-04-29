@@ -2,9 +2,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import PublicLayout from '../layouts/PublicLayout';
 import DashboardLayout from '../layouts/DashboardLayout';
 import HomePage from '../pages/HomePage';
+import PublicCatalogPage from '../pages/PublicCatalogPage';
+import AboutLibraryPage from '../pages/AboutLibraryPage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
+import BootstrapAdminPage from '../pages/BootstrapAdminPage';
 import DashboardHomePage from '../pages/DashboardHomePage';
+import ProfilePage from '../pages/ProfilePage';
 import NotFoundPage from '../pages/NotFoundPage';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
 import ProtectedRoute from './ProtectedRoute';
@@ -27,6 +31,7 @@ import AdminOutsideBookLogsPage from '../pages/admin/AdminOutsideBookLogsPage';
 import AdminUsersPage from '../pages/admin/AdminUsersPage';
 import AdminProcurementPage from '../pages/admin/AdminProcurementPage';
 import AdminReportsPage from '../pages/admin/AdminReportsPage';
+import AdminAuditLogsPage from '../pages/admin/AdminAuditLogsPage';
 
 // Student Pages
 import StudentDashboard from '../pages/student/StudentDashboard';
@@ -47,8 +52,11 @@ const AppRouter = () => {
       <Routes>
         <Route element={<PublicLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/catalog" element={<PublicCatalogPage />} />
+          <Route path="/about" element={<AboutLibraryPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/bootstrap-admin" element={<BootstrapAdminPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
         </Route>
 
@@ -61,6 +69,7 @@ const AppRouter = () => {
           }
         >
           <Route index element={<DashboardHomePage />} />
+          <Route path="profile" element={<ProfilePage />} />
 
           {/* Admin Routes */}
           <Route
@@ -122,6 +131,10 @@ const AppRouter = () => {
           <Route
             path="admin/reports"
             element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminReportsPage /></ProtectedRoute>}
+          />
+          <Route
+            path="admin/audit-logs"
+            element={<ProtectedRoute allowedRoles={[Role.ADMIN]}><AdminAuditLogsPage /></ProtectedRoute>}
           />
           <Route
             path="admin/inventory-audit"
