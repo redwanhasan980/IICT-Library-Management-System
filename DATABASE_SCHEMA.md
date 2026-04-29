@@ -16,7 +16,8 @@ Prisma datasource:
 
 ## Catalog And Classification
 
-- `Book`: accession number, title, author/editor, edition/volume, publication details, source, binding, pagination, bill data, ISBN, department, subject category, DDC number, Cutter code, call number, location, barcode, optional cover image URL, copy counts, archive status, and optional `procurementId`.
+- `Book`: accession number, title, author/editor, edition/volume, publication details, source, binding, pagination, bill data, ISBN, department, subject category, DDC number, Cutter code, call number, location, barcode, optional legacy cover image URL, copy counts, archive status, optional `procurementId`, and related image metadata.
+- `BookImage`: Cloudinary image metadata for catalog books, including Cloudinary public ID, asset ID, secure URL, format, dimensions, byte size, sort order, and primary-image flag. Actual image bytes are stored in Cloudinary, not MariaDB.
 - `SystemSetting`: borrowing duration, max active loans, fine rate, reservation expiry, outside-book toggle, updater.
 - Enums: `Department`, `BookSource`, `BindingType`.
 

@@ -7,6 +7,7 @@ import { Input } from '../../../components/shared/Input';
 import { Badge } from '../../../components/shared/Badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../../components/shared/Table';
 import { ErrorState, LoadingState } from '../../../components/shared/FeedbackState';
+import { getBookThumbnailSrc } from '../../../utils/bookImage';
 
 const AdminCatalogPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -122,7 +123,7 @@ const AdminCatalogPage = () => {
                     <TableRow key={book.id}>
                       <TableCell>
                         <img
-                          src={book.coverImageUrl || '/images/book-cover-placeholder.svg'}
+                          src={getBookThumbnailSrc(book)}
                           alt={`Cover for ${book.title}`}
                           className="h-14 w-10 rounded border border-sandy-beige bg-library-mist object-cover"
                         />

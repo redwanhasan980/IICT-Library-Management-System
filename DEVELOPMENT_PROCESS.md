@@ -878,3 +878,47 @@ This document tracks the development process of the IICT Library Management Syst
   - Client lint passed.
   - Seeded admin login succeeded and returned data from `/api/audit-logs`, `/api/users`, `/api/dashboard/summary`, and `/api/outside-books`.
   - Seeded student login succeeded and returned data from `/api/outside-books/my-entries`.
+
+## Phase 24: Cloudinary Book Image Gallery
+
+- **What Was Improved**:
+  - Replaced placeholder-only catalog imagery with a Cloudinary-backed multi-image gallery for books.
+  - Added `BookImage` metadata storage while keeping actual image bytes out of MariaDB.
+  - Added admin-only upload, delete, reorder, and primary-image selection APIs.
+  - Updated catalog cards, home book sections, admin catalog rows, and book detail pages to prefer uploaded primary images before falling back to `coverImageUrl` and the placeholder.
+  - Added an admin image manager to the book add/edit form with multi-file selection, previews, set-primary, delete, and ordering controls.
+
+- **Files Created or Updated**:
+  - `iict-library-server/prisma/schema.prisma`
+  - `iict-library-server/prisma/migrations/20260430102000_add_cloudinary_book_images/migration.sql`
+  - `iict-library-server/src/config/cloudinary.ts`
+  - `iict-library-server/src/middleware/bookImageUpload.middleware.ts`
+  - `iict-library-server/src/services/bookImage.service.ts`
+  - `iict-library-server/src/services/book.service.ts`
+  - `iict-library-server/src/controllers/book.controller.ts`
+  - `iict-library-server/src/routes/book.routes.ts`
+  - `iict-library-server/src/validators/book.validator.ts`
+  - `iict-library-client/src/components/books/BookImageManager.tsx`
+  - `iict-library-client/src/pages/books/BookDetailsPage.tsx`
+  - `iict-library-client/src/pages/admin/catalog/AdminBookFormPage.tsx`
+  - `iict-library-client/src/services/library.api.ts`
+  - `README.md`
+  - `API_OVERVIEW.md`
+  - `DATABASE_SCHEMA.md`
+  - `DEVELOPMENT_PROCESS.md`
+
+- **Commands Used**:
+  - `npm --prefix iict-library-server install cloudinary multer`
+  - `npm --prefix iict-library-server install -D @types/multer`
+  - `npm --prefix iict-library-server run prisma:generate`
+  - `npm --prefix iict-library-server run build`
+  - `npm --prefix iict-library-client run build`
+  - `npm --prefix iict-library-server test -- src/services/bookImage.service.test.ts src/services/book.service.discovery.test.ts`
+  - `npm --prefix iict-library-client test -- src/components/books/BookImageManager.test.tsx`
+
+- **What Was Tested**:
+  - Prisma Client generation passed after stopping the backend process that held the Windows Prisma engine lock.
+  - Server and client builds passed.
+  - Backend book-image service tests passed for Cloudinary transformation URLs, multi-image upload metadata, delete/promotion behavior, and reorder/primary behavior.
+  - Frontend image-manager tests passed for upload previews and image management actions.
+  - Migration deploy could not be completed during this phase because MariaDB was not listening on `localhost:3306`; rerun `npm run prisma:migrate:deploy` after starting MariaDB.

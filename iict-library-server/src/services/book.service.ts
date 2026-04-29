@@ -1,6 +1,8 @@
+import type { BookImage } from '@prisma/client';
 import prisma from '../config/database';
 import AppError from '../utils/AppError';
 import { logAuditEvent } from '../utils/auditLog';
+import { getPrimaryBookImage, mapBookImage } from './bookImage.service';
 
 interface CreateBookInput {
   title: string;
@@ -50,6 +52,29 @@ interface BookLimitQuery {
 }
 
 class BookService {
+  private imageOrderBy() {
+    return [{ sortOrder: 'asc' as const }, { createdAt: 'asc' as const }];
+  }
+
+  private decorateBookListItem<T extends { images?: BookImage[] }>(book: T) {
+    const { images, ...rest } = book;
+    return {
+      ...rest,
+      primaryImage: getPrimaryBookImage(images),
+    };
+  }
+
+  private decorateBookDetail<T extends { images?: BookImage[] }>(book: T) {
+    const { images = [], ...rest } = book;
+    const mappedImages = images.map(mapBookImage);
+
+    return {
+      ...rest,
+      images: mappedImages,
+      primaryImage: mappedImages.find((image) => image.isPrimary) ?? mappedImages[0],
+    };
+  }
+
   private normalizePagination(query: { page?: number; pageSize?: number }) {
     const page = query.page && query.page > 0 ? query.page : 1;
     const pageSize = query.pageSize && query.pageSize > 0 ? Math.min(query.pageSize, 100) : 20;
@@ -166,13 +191,14 @@ class BookService {
         where,
         skip,
         take: pageSize,
+        include: { images: { orderBy: this.imageOrderBy() } },
         orderBy: { createdAt: 'desc' },
       }),
       prisma.book.count({ where }),
     ]);
 
     return {
-      items,
+      items: items.map((item) => this.decorateBookListItem(item)),
       page,
       pageSize,
       total,
@@ -189,13 +215,14 @@ class BookService {
         where,
         skip,
         take: pageSize,
+        include: { images: { orderBy: this.imageOrderBy() } },
         orderBy: { createdAt: 'desc' },
       }),
       prisma.book.count({ where }),
     ]);
 
     return {
-      items,
+      items: items.map((item) => this.decorateBookListItem(item)),
       page,
       pageSize,
       total,
@@ -204,22 +231,28 @@ class BookService {
   }
 
   async listRecentBooks(query: BookLimitQuery = {}) {
-    return prisma.book.findMany({
+    const books = await prisma.book.findMany({
       where: { isArchived: false },
       take: this.normalizeLimit(query.limit),
+      include: { images: { orderBy: this.imageOrderBy() } },
       orderBy: [{ createdAt: 'desc' }],
     });
+
+    return books.map((book) => this.decorateBookListItem(book));
   }
 
   async listFeaturedBooks(query: BookLimitQuery = {}) {
-    return prisma.book.findMany({
+    const books = await prisma.book.findMany({
       where: {
         isArchived: false,
         availableCopies: { gt: 0 },
       },
       take: this.normalizeLimit(query.limit),
+      include: { images: { orderBy: this.imageOrderBy() } },
       orderBy: [{ availableCopies: 'desc' }, { createdAt: 'desc' }],
     });
+
+    return books.map((book) => this.decorateBookListItem(book));
   }
 
   async listPopularBooks(query: BookLimitQuery = {}) {
@@ -245,6 +278,7 @@ class BookService {
         id: { in: bookIds },
         isArchived: false,
       },
+      include: { images: { orderBy: this.imageOrderBy() } },
     });
 
     const booksById = new Map(books.map((book) => [book.id, book]));
@@ -252,7 +286,7 @@ class BookService {
     return loanGroups
       .map((group) => {
         const book = booksById.get(group.bookId);
-        return book ? { ...book, loanCount: group._count.bookId } : null;
+        return book ? { ...this.decorateBookListItem(book), loanCount: group._count.bookId } : null;
       })
       .filter((book): book is NonNullable<typeof book> => Boolean(book));
   }
@@ -303,17 +337,21 @@ class BookService {
       ? await prisma.book.findMany({
           where: recommendationWhere,
           take: limit,
+          include: { images: { orderBy: this.imageOrderBy() } },
           orderBy: [{ availableCopies: 'desc' }, { createdAt: 'desc' }],
         })
       : [];
 
-    return recommendations.length > 0 ? recommendations : this.listRecentBooks({ limit });
+    return recommendations.length > 0
+      ? recommendations.map((book) => this.decorateBookListItem(book))
+      : this.listRecentBooks({ limit });
   }
 
   async getBookById(id: string) {
     const book = await prisma.book.findUnique({
       where: { id },
       include: {
+        images: { orderBy: this.imageOrderBy() },
         reservations: {
           where: { status: 'PENDING' },
           orderBy: { queueNumber: 'asc' },
@@ -326,7 +364,7 @@ class BookService {
       throw new AppError('Book not found', 404);
     }
 
-    return book;
+    return this.decorateBookDetail(book);
   }
 
   async updateBook(actorId: string, id: string, payload: Partial<CreateBookInput>) {

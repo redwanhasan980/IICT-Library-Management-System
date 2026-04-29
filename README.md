@@ -71,6 +71,7 @@ Required server variables:
 - JWT_EXPIRES_IN: token lifetime, default 7d
 - ADMIN_SETUP_TOKEN: one-time token for first admin bootstrap
 - ENABLE_DEV_AUTH: false in production
+- CLOUDINARY_URL or CLOUDINARY_CLOUD_NAME/CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET: Cloudinary credentials for book image uploads
 
 Required client variables:
 
@@ -102,6 +103,12 @@ The demo seed creates 20 catalog books with local cover placeholders, sample out
 - Teacher: `teacher.demo@iict.local` / `Teacher@12345`
 
 Use the demo seed only for local development, QA, or presentation databases.
+
+## Book Images
+
+Admins can upload multiple images for each catalog book from the add/edit book screen. Images are uploaded to Cloudinary, and MariaDB stores only image metadata, ordering, and primary-image state. The first uploaded image is used as the catalog cover unless an admin chooses another primary image. Existing `coverImageUrl` values remain as a fallback, followed by the local placeholder image.
+
+The LMS does not enforce a custom MB limit; Cloudinary account and plan limits still apply. Uploaded images are delivered through Cloudinary transformations for card covers, thumbnails, and detail-page gallery views.
 
 ## Run (Development)
 

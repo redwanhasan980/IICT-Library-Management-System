@@ -4,6 +4,7 @@ import { Button } from '../../components/shared/Button';
 import { Badge } from '../../components/shared/Badge';
 import { EmptyState, ErrorState, LoadingState } from '../../components/shared/FeedbackState';
 import { useListBooksQuery } from '../../services/library.api';
+import { getBookCoverSrc } from '../../utils/bookImage';
 
 const BookCatalogPage = () => {
   const { data, isLoading, isError, refetch } = useListBooksQuery({ page: 1, pageSize: 50 });
@@ -29,6 +30,11 @@ const BookCatalogPage = () => {
               const unavailable = book.availableCopies < 1;
               return (
                 <article key={book.id} className="rounded-md border border-sandy-beige p-4">
+                  <img
+                    src={getBookCoverSrc(book)}
+                    alt={`Cover for ${book.title}`}
+                    className="mb-3 h-44 w-full rounded-xl border border-sandy-beige/70 bg-library-mist object-cover"
+                  />
                   <div className="mb-3 flex items-center justify-between gap-2">
                     <h2 className="text-base font-semibold text-dark-brown">{book.title}</h2>
                     {unavailable ? <Badge variant="warning">Unavailable</Badge> : <Badge variant="success">Available</Badge>}

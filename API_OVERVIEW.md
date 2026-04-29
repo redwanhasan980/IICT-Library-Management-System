@@ -81,6 +81,49 @@ Behavior:
 - Uses transparent non-AI logic. If borrowing history exists, recommends active books with matching department, subject category, author, or broad DDC range and excludes already borrowed books.
 - Falls back to recent active books when there is no usable history.
 
+## Book Image Routes
+
+Book image metadata is included in book responses as `primaryImage` for list/card views and `images` for detail views. Image bytes are stored and delivered by Cloudinary; MariaDB stores only metadata.
+
+### POST /api/books/:bookId/images
+
+Auth: ADMIN.
+
+Content type: `multipart/form-data`
+
+Fields:
+
+- `images`: one or more JPEG, PNG, or WebP files
+
+Behavior:
+
+- Uploads images to Cloudinary under a book-specific folder.
+- Adds image metadata records to MariaDB.
+- Makes the first uploaded image primary when the book has no primary image.
+- Does not enforce a custom LMS MB limit; Cloudinary account limits still apply.
+
+### PATCH /api/books/:bookId/images/order
+
+Auth: ADMIN.
+
+Body:
+
+- `imageIds`: ordered image IDs
+- `primaryImageId`: optional image ID to mark primary
+
+Behavior:
+
+- Updates display order and primary-image state for the selected book.
+
+### DELETE /api/books/:bookId/images/:imageId
+
+Auth: ADMIN.
+
+Behavior:
+
+- Deletes the Cloudinary asset and removes the metadata row.
+- Promotes the next image as primary if the deleted image was primary.
+
 ## Auth Routes
 
 Base path: /api/auth

@@ -132,6 +132,7 @@ model Book {
   catalogedBy    User?         @relation("BookCatalogedByUser", fields: [catalogedById], references: [id], onDelete: SetNull)
   barcode        String?       @unique
   coverImageUrl  String?
+  images         BookImage[]
   procurementId  String?
   procurement    Procurement?  @relation(fields: [procurementId], references: [id], onDelete: SetNull)
   totalCopies    Int           @default(1)
@@ -151,6 +152,26 @@ model Book {
   @@index([callNumber])
   @@index([barcode])
   @@index([procurementId])
+}
+
+model BookImage {
+  id                 String   @id @default(cuid())
+  bookId             String
+  book               Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  cloudinaryPublicId String   @unique
+  assetId            String?
+  secureUrl          String   @db.VarChar(1024)
+  format             String?
+  width              Int?
+  height             Int?
+  bytes              Int?
+  sortOrder          Int      @default(0)
+  isPrimary          Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([bookId, sortOrder])
+  @@index([bookId, isPrimary])
 }
 
 model ProcurementApplication {

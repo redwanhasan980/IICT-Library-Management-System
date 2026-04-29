@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
 import { successResponse } from '../utils/apiResponse';
 import bookService from '../services/book.service';
+import bookImageService from '../services/bookImage.service';
 
 class BookController {
   async createBook(req: AuthenticatedRequest, res: Response, next: NextFunction) {
@@ -124,6 +125,54 @@ class BookController {
 
       const updated = await bookService.setArchiveStatus(actorId, req.params.id, req.body.isArchived);
       return res.status(200).json(successResponse(updated, req.body.isArchived ? 'Book archived' : 'Book re-activated'));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async uploadImages(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const actorId = req.user?.id;
+      if (!actorId) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const files = Array.isArray(req.files) ? req.files : [];
+      const result = await bookImageService.uploadImages(actorId, req.params.id, files);
+      return res.status(201).json(successResponse(result, 'Book images uploaded'));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async deleteImage(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const actorId = req.user?.id;
+      if (!actorId) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const result = await bookImageService.deleteImage(actorId, req.params.id, req.params.imageId);
+      return res.status(200).json(successResponse(result, 'Book image removed'));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async reorderImages(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const actorId = req.user?.id;
+      if (!actorId) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const result = await bookImageService.reorderImages(
+        actorId,
+        req.params.id,
+        req.body.imageIds,
+        req.body.primaryImageId
+      );
+      return res.status(200).json(successResponse(result, 'Book images updated'));
     } catch (error) {
       return next(error);
     }

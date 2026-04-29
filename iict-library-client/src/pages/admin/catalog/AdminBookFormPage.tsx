@@ -1,12 +1,18 @@
 ﻿import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCreateBookMutation, useGetBookByIdQuery, useUpdateBookMutation } from '../../../services/library.api';
+import {
+  useCreateBookMutation,
+  useGetBookByIdQuery,
+  useUpdateBookMutation,
+  useUploadBookImagesMutation,
+} from '../../../services/library.api';
 import { Card } from '../../../components/shared/Card';
 import { Button } from '../../../components/shared/Button';
 import { Input } from '../../../components/shared/Input';
 import { LoadingState, ErrorState } from '../../../components/shared/FeedbackState';
 import type { Book } from '../../../types/book.types';
 import { getApiErrorMessage } from '../../../utils/apiError';
+import BookImageManager from '../../../components/books/BookImageManager';
 
 const AdminBookFormPage = () => {
   const { id } = useParams();
@@ -16,8 +22,9 @@ const AdminBookFormPage = () => {
   const { data: bookDetails, isLoading: isFetching, isError: isFetchError } = useGetBookByIdQuery(id as string, { skip: !isEditing });
   const [createBook, { isLoading: isCreating }] = useCreateBookMutation();
   const [updateBook, { isLoading: isUpdating }] = useUpdateBookMutation();
+  const [uploadBookImages, { isLoading: isUploadingImages }] = useUploadBookImagesMutation();
 
-  const isSaving = isCreating || isUpdating;
+  const isSaving = isCreating || isUpdating || isUploadingImages;
 
   const [formData, setFormData] = useState({
     title: '',
@@ -46,6 +53,7 @@ const AdminBookFormPage = () => {
   });
 
   const [errorDesc, setErrorDesc] = useState('');
+  const [selectedImageFiles, setSelectedImageFiles] = useState<File[]>([]);
 
   useEffect(() => {
     if (isEditing && bookDetails) {
@@ -101,11 +109,18 @@ const AdminBookFormPage = () => {
     });
 
     try {
+      let savedBook: Book;
       if (isEditing && id) {
-        await updateBook({ id, body: payload }).unwrap();
+        savedBook = await updateBook({ id, body: payload }).unwrap();
       } else {
-        await createBook(payload).unwrap();
+        savedBook = await createBook(payload).unwrap();
       }
+
+      if (selectedImageFiles.length > 0) {
+        await uploadBookImages({ bookId: savedBook.id, files: selectedImageFiles }).unwrap();
+      }
+
+      setSelectedImageFiles([]);
       navigate('/dashboard/admin/catalog');
     } catch (err: unknown) {
       setErrorDesc(getApiErrorMessage(err, 'Failed to save book. Check accession number and fields.'));
@@ -228,6 +243,14 @@ const AdminBookFormPage = () => {
               <Input name="billDate" type="date" value={formData.billDate} onChange={handleChange} />
             </div>
           </div>
+
+          <BookImageManager
+            bookId={id}
+            images={bookDetails?.images}
+            selectedFiles={selectedImageFiles}
+            onSelectedFilesChange={setSelectedImageFiles}
+            isSaving={isSaving}
+          />
 
           <div className="flex justify-end gap-4 border-t pt-6">
             <Button type="button" variant="outline" onClick={() => navigate('/dashboard/admin/catalog')}>Cancel</Button>

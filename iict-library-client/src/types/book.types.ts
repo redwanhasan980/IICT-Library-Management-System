@@ -27,6 +27,24 @@ export interface OutsideBookEntry {
 export type ReservationStatus = 'PENDING' | 'FULFILLED' | 'CANCELLED' | 'EXPIRED';
 export type LoanStatus = 'ACTIVE' | 'RETURNED' | 'OVERDUE';
 
+export interface BookImage {
+  id: string;
+  bookId: string;
+  cloudinaryPublicId: string;
+  assetId?: string | null;
+  secureUrl: string;
+  thumbnailUrl: string;
+  coverUrl: string;
+  detailUrl: string;
+  format?: string | null;
+  width?: number | null;
+  height?: number | null;
+  bytes?: number | null;
+  sortOrder: number;
+  isPrimary: boolean;
+  createdAt: string;
+}
+
 export interface Book {
   id: string;
   title: string;
@@ -58,6 +76,8 @@ export interface Book {
   totalCopies: number;
   availableCopies: number;
   isArchived: boolean;
+  primaryImage?: BookImage;
+  images?: BookImage[];
   createdAt: string;
   updatedAt: string;
 }

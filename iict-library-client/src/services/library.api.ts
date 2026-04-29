@@ -3,6 +3,7 @@ import type { ApiResponse } from '../types/api.types';
 import type {
   AnalyticsDashboard,
   Book,
+  BookImage,
   FinePayment,
   FineTransactionSummary,
   FineUserSummary,
@@ -128,6 +129,37 @@ export const libraryApi = api.injectEndpoints({
       }),
       transformResponse: (response: ApiResponse<Book>) => response.data,
       invalidatesTags: ['Books'],
+    }),
+    uploadBookImages: builder.mutation<BookImage[], { bookId: string; files: File[] }>({
+      query: ({ bookId, files }) => {
+        const formData = new FormData();
+        files.forEach((file) => formData.append('images', file));
+
+        return {
+          url: `/books/${bookId}/images`,
+          method: 'POST',
+          body: formData,
+        };
+      },
+      transformResponse: (response: ApiResponse<BookImage[]>) => response.data,
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Books', id: arg.bookId }, 'Books', 'Dashboard'],
+    }),
+    deleteBookImage: builder.mutation<BookImage[], { bookId: string; imageId: string }>({
+      query: ({ bookId, imageId }) => ({
+        url: `/books/${bookId}/images/${imageId}`,
+        method: 'DELETE',
+      }),
+      transformResponse: (response: ApiResponse<BookImage[]>) => response.data,
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Books', id: arg.bookId }, 'Books', 'Dashboard'],
+    }),
+    reorderBookImages: builder.mutation<BookImage[], { bookId: string; imageIds: string[]; primaryImageId?: string }>({
+      query: ({ bookId, imageIds, primaryImageId }) => ({
+        url: `/books/${bookId}/images/order`,
+        method: 'PATCH',
+        body: { imageIds, primaryImageId },
+      }),
+      transformResponse: (response: ApiResponse<BookImage[]>) => response.data,
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Books', id: arg.bookId }, 'Books', 'Dashboard'],
     }),
 
     createReservation: builder.mutation<Reservation, { bookId: string }>({
@@ -395,6 +427,9 @@ export const {
   useCreateBookMutation,
   useUpdateBookMutation,
   useSetBookArchiveStatusMutation,
+  useUploadBookImagesMutation,
+  useDeleteBookImageMutation,
+  useReorderBookImagesMutation,
   useCreateReservationMutation,
   useCancelMyReservationMutation,
   useListMyReservationsQuery,

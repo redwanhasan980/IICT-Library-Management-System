@@ -3,6 +3,7 @@ import { Badge } from '../shared/Badge';
 import { Card } from '../shared/Card';
 import { EmptyState } from '../shared/FeedbackState';
 import type { Book } from '../../types/book.types';
+import { getBookCoverSrc } from '../../utils/bookImage';
 
 type BookCard = Book & { loanCount?: number };
 
@@ -32,7 +33,7 @@ const BookSection = ({ title, description, books = [], emptyMessage, actionTarge
           {books.map((book) => (
             <Card key={book.id} className="flex h-full flex-col gap-4">
               <img
-                src={book.coverImageUrl || '/images/book-cover-placeholder.svg'}
+                src={getBookCoverSrc(book)}
                 alt={`Cover for ${book.title}`}
                 className="h-44 w-full rounded-xl border border-sandy-beige/70 bg-library-mist object-cover"
               />

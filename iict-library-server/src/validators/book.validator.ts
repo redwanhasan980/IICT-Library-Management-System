@@ -93,3 +93,20 @@ export const archiveBookSchema = z.object({
     isArchived: z.boolean(),
   }),
 });
+
+export const bookImageParamSchema = z.object({
+  params: z.object({
+    id: z.string().min(1, 'Book ID is required'),
+    imageId: z.string().min(1, 'Image ID is required'),
+  }),
+});
+
+export const reorderBookImagesSchema = z.object({
+  params: z.object({
+    id: z.string().min(1, 'Book ID is required'),
+  }),
+  body: z.object({
+    imageIds: z.array(z.string().min(1)).min(1, 'At least one image ID is required'),
+    primaryImageId: z.string().min(1).optional(),
+  }),
+});

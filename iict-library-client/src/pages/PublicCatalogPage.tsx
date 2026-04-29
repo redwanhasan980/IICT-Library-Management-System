@@ -9,6 +9,7 @@ import { Input } from '../components/shared/Input';
 import { useAppSelector } from '../store';
 import { useListPublicBooksQuery } from '../services/library.api';
 import { selectCurrentUser } from '../services/auth.slice';
+import { getBookCoverSrc } from '../utils/bookImage';
 
 const PublicCatalogPage = () => {
   const user = useAppSelector(selectCurrentUser);
@@ -55,7 +56,7 @@ const PublicCatalogPage = () => {
             {data.items.map((book) => (
               <Card key={book.id} className="flex h-full flex-col gap-4">
                 <img
-                  src={book.coverImageUrl || '/images/book-cover-placeholder.svg'}
+                  src={getBookCoverSrc(book)}
                   alt={`Cover for ${book.title}`}
                   className="h-44 w-full rounded-xl border border-sandy-beige/70 bg-library-mist object-cover"
                 />

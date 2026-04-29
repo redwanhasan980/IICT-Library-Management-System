@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Card } from '../../components/shared/Card';
@@ -13,10 +13,12 @@ import {
   useGetBookByIdQuery,
   useListBookReservationsQuery,
 } from '../../services/library.api';
+import { getBookCoverSrc } from '../../utils/bookImage';
 
 const BookDetailsPage = () => {
   const { id = '' } = useParams();
   const user = useAppSelector(selectCurrentUser);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const { data: book, isLoading, isError, refetch } = useGetBookByIdQuery(id, { skip: !id });
   const { data: reservationQueue } = useListBookReservationsQuery(id, {
@@ -28,6 +30,12 @@ const BookDetailsPage = () => {
     () => (book?.reservations ? book.reservations.length : 0),
     [book]
   );
+
+  useEffect(() => {
+    setSelectedImageIndex(0);
+  }, [book?.id, book?.images?.length]);
+
+  const activeGalleryImage = book?.images?.[selectedImageIndex];
 
   const handleReserve = async () => {
     if (!id || !book) {
@@ -53,11 +61,59 @@ const BookDetailsPage = () => {
         <>
           <Card className="space-y-4">
             <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
-              <img
-                src={book.coverImageUrl || '/images/book-cover-placeholder.svg'}
-                alt={`Cover for ${book.title}`}
-                className="aspect-[9/13] w-full rounded-2xl border border-sandy-beige/70 bg-library-mist object-cover shadow-sm"
-              />
+              <div className="space-y-3">
+                <img
+                  src={activeGalleryImage?.detailUrl || getBookCoverSrc(book)}
+                  alt={`Cover for ${book.title}`}
+                  className="aspect-[9/13] w-full rounded-2xl border border-sandy-beige/70 bg-library-mist object-cover shadow-sm"
+                />
+                {book.images && book.images.length > 1 ? (
+                  <div className="flex items-center justify-between gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setSelectedImageIndex((index) => Math.max(0, index - 1))}
+                      disabled={selectedImageIndex === 0}
+                    >
+                      Prev
+                    </Button>
+                    <span className="text-xs font-semibold text-warm-taupe">
+                      {selectedImageIndex + 1} / {book.images.length}
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setSelectedImageIndex((index) => Math.min(book.images!.length - 1, index + 1))}
+                      disabled={selectedImageIndex === book.images.length - 1}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                ) : null}
+                {book.images && book.images.length > 1 ? (
+                  <div className="grid grid-cols-4 gap-2">
+                    {book.images.map((image, index) => (
+                      <button
+                        key={image.id}
+                        type="button"
+                        onClick={() => setSelectedImageIndex(index)}
+                        className={`rounded-lg border p-1 transition ${
+                          selectedImageIndex === index
+                            ? 'border-library-gold bg-library-gold/10'
+                            : 'border-sandy-beige bg-white hover:bg-library-mist'
+                        }`}
+                        aria-label={`Show book image ${index + 1}`}
+                      >
+                        <img
+                          src={image.thumbnailUrl}
+                          alt={`Thumbnail ${index + 1} for ${book.title}`}
+                          className="aspect-[9/13] w-full rounded-md object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
               <div className="space-y-4">
                 <div className="flex items-center justify-between gap-4">
                   <h1 className="text-2xl font-bold text-dark-brown">{book.title}</h1>
