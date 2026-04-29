@@ -10,6 +10,10 @@ type NavItem = {
   label: string;
 };
 
+interface HeaderProps {
+  onOpenModules?: () => void;
+}
+
 const publicLinks: NavItem[] = [
   { to: '/', label: 'Home' },
   { to: '/catalog', label: 'Catalog' },
@@ -66,7 +70,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
       : 'text-library-ink/80 hover:bg-library-mist hover:text-library-ink'
   }`;
 
-const Header = () => {
+const Header = ({ onOpenModules }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const user = useAppSelector(selectCurrentUser);
@@ -89,15 +93,31 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-40 border-b border-sandy-beige/70 bg-pale-cream/95 shadow-sm backdrop-blur">
       <div className="mx-auto flex min-h-[72px] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-3" onClick={() => setIsMenuOpen(false)}>
-          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-library-forest text-sm font-bold text-white shadow-sm">
-            IICT
-          </span>
-          <span>
-            <span className="block text-base font-bold text-library-ink sm:text-lg">IICT Library</span>
-            <span className="block text-xs font-medium uppercase tracking-[0.16em] text-warm-taupe">Library Management System</span>
-          </span>
-        </Link>
+        <div className="flex min-w-0 items-center gap-3">
+          {onOpenModules ? (
+            <button
+              type="button"
+              aria-label="Open all dashboard modules"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-sandy-beige bg-white/85 shadow-sm transition hover:bg-library-mist"
+              onClick={onOpenModules}
+            >
+              <span className="grid gap-1" aria-hidden="true">
+                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
+                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
+                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
+              </span>
+            </button>
+          ) : null}
+          <Link to="/" className="flex min-w-0 items-center gap-3" onClick={() => setIsMenuOpen(false)}>
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-library-forest text-sm font-bold text-white shadow-sm">
+              IICT
+            </span>
+            <span className="min-w-0">
+              <span className="block text-base font-bold text-library-ink sm:text-lg">IICT Library</span>
+              <span className="block text-xs font-medium uppercase tracking-[0.16em] text-warm-taupe">Library Management System</span>
+            </span>
+          </Link>
+        </div>
 
         <nav aria-label="Primary navigation" className="hidden items-center gap-1 xl:flex">
           {links.map((link) => (

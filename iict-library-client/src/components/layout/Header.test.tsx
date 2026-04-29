@@ -14,7 +14,7 @@ vi.mock('../../services/auth.api', () => ({
   useLogoutMutation: () => [mocks.logout, { isLoading: false }],
 }));
 
-const renderHeader = (role?: 'ADMIN' | 'STUDENT' | 'TEACHER') => {
+const renderHeader = (role?: 'ADMIN' | 'STUDENT' | 'TEACHER', onOpenModules?: () => void) => {
   const store = configureStore({
     reducer: { auth: authReducer },
     preloadedState: {
@@ -30,7 +30,7 @@ const renderHeader = (role?: 'ADMIN' | 'STUDENT' | 'TEACHER') => {
   return render(
     <Provider store={store}>
       <MemoryRouter>
-        <Header />
+        <Header onOpenModules={onOpenModules} />
       </MemoryRouter>
     </Provider>
   );
@@ -56,6 +56,18 @@ describe('Header', () => {
     renderHeader('ADMIN');
 
     expect(screen.getByText('IICT Library').closest('a')).toHaveAttribute('href', '/');
+  });
+
+  it('renders the dashboard module trigger on the left when provided', () => {
+    const onOpenModules = vi.fn();
+    renderHeader('ADMIN', onOpenModules);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open all dashboard modules' }));
+
+    expect(onOpenModules).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: 'Open all dashboard modules' }).compareDocumentPosition(screen.getByText('IICT Library'))).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING
+    );
   });
 
   it('renders admin links only for admins', () => {
