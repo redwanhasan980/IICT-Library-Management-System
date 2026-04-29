@@ -52,6 +52,12 @@ describe('Header', () => {
     expect(screen.getByText('Register')).toBeInTheDocument();
   });
 
+  it('links the IICT brand to the public home page', () => {
+    renderHeader('ADMIN');
+
+    expect(screen.getByText('IICT Library').closest('a')).toHaveAttribute('href', '/');
+  });
+
   it('renders admin links only for admins', () => {
     renderHeader('ADMIN');
 

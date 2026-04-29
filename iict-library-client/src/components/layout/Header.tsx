@@ -89,7 +89,7 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-40 border-b border-sandy-beige/70 bg-pale-cream/95 shadow-sm backdrop-blur">
       <div className="mx-auto flex min-h-[72px] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <Link to={user ? '/dashboard' : '/'} className="flex items-center gap-3" onClick={() => setIsMenuOpen(false)}>
+        <Link to="/" className="flex items-center gap-3" onClick={() => setIsMenuOpen(false)}>
           <span className="grid h-11 w-11 place-items-center rounded-2xl bg-library-forest text-sm font-bold text-white shadow-sm">
             IICT
           </span>
