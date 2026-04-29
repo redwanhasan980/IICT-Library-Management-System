@@ -94,20 +94,6 @@ const Header = ({ onOpenModules }: HeaderProps) => {
     <header className="sticky top-0 z-40 border-b border-sandy-beige/70 bg-pale-cream/95 shadow-sm backdrop-blur">
       <div className="mx-auto flex min-h-[72px] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
-          {onOpenModules ? (
-            <button
-              type="button"
-              aria-label="Open all dashboard modules"
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-sandy-beige bg-white/85 shadow-sm transition hover:bg-library-mist"
-              onClick={onOpenModules}
-            >
-              <span className="grid gap-1" aria-hidden="true">
-                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
-                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
-                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
-              </span>
-            </button>
-          ) : null}
           <Link to="/" className="flex min-w-0 items-center gap-3" onClick={() => setIsMenuOpen(false)}>
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-library-forest text-sm font-bold text-white shadow-sm">
               IICT
@@ -127,60 +113,77 @@ const Header = ({ onOpenModules }: HeaderProps) => {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 xl:flex">
-          {user ? (
-            <div className="relative">
-              <button
-                type="button"
-                className="flex items-center gap-3 rounded-full border border-sandy-beige bg-white/80 px-3 py-2 text-left shadow-sm transition hover:bg-white"
-                onClick={() => setIsProfileOpen((open) => !open)}
-                aria-expanded={isProfileOpen}
-              >
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-library-mist text-sm font-bold text-library-ink">
-                  {(user.name || user.email).slice(0, 1).toUpperCase()}
-                </span>
-                <span>
-                  <span className="block text-sm font-semibold text-library-ink">{user.name || user.email}</span>
-                  <span className="block text-xs text-warm-taupe">{user.role}</span>
-                </span>
-              </button>
-              {isProfileOpen ? (
-                <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-sandy-beige bg-white p-3 shadow-[0_18px_40px_rgba(22,35,28,0.14)]">
-                  <p className="truncate px-2 text-sm font-semibold text-library-ink">{user.email}</p>
-                  <p className="px-2 text-xs text-warm-taupe">{user.role}</p>
-                  <div className="my-3 h-px bg-sandy-beige/80" />
-                  <NavLink
-                    to="/dashboard/profile"
-                    className="block rounded-xl px-3 py-2 text-sm font-medium text-library-ink hover:bg-library-mist"
-                    onClick={() => setIsProfileOpen(false)}
-                  >
-                    Profile
-                  </NavLink>
-                  <button
-                    type="button"
-                    className="mt-1 w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-rose-700 hover:bg-rose-50 disabled:opacity-60"
-                    onClick={handleLogout}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? 'Signing out...' : 'Logout'}
-                  </button>
-                </div>
-              ) : null}
-            </div>
+        <div className="flex items-center gap-2">
+          <div className="hidden items-center gap-3 xl:flex">
+            {user ? (
+              <div className="relative">
+                <button
+                  type="button"
+                  className="flex items-center gap-3 rounded-full border border-sandy-beige bg-white/80 px-3 py-2 text-left shadow-sm transition hover:bg-white"
+                  onClick={() => setIsProfileOpen((open) => !open)}
+                  aria-expanded={isProfileOpen}
+                >
+                  <span className="grid h-9 w-9 place-items-center rounded-full bg-library-mist text-sm font-bold text-library-ink">
+                    {(user.name || user.email).slice(0, 1).toUpperCase()}
+                  </span>
+                  <span>
+                    <span className="block text-sm font-semibold text-library-ink">{user.name || user.email}</span>
+                    <span className="block text-xs text-warm-taupe">{user.role}</span>
+                  </span>
+                </button>
+                {isProfileOpen ? (
+                  <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-sandy-beige bg-white p-3 shadow-[0_18px_40px_rgba(22,35,28,0.14)]">
+                    <p className="truncate px-2 text-sm font-semibold text-library-ink">{user.email}</p>
+                    <p className="px-2 text-xs text-warm-taupe">{user.role}</p>
+                    <div className="my-3 h-px bg-sandy-beige/80" />
+                    <NavLink
+                      to="/dashboard/profile"
+                      className="block rounded-xl px-3 py-2 text-sm font-medium text-library-ink hover:bg-library-mist"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      Profile
+                    </NavLink>
+                    <button
+                      type="button"
+                      className="mt-1 w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-rose-700 hover:bg-rose-50 disabled:opacity-60"
+                      onClick={handleLogout}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? 'Signing out...' : 'Logout'}
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+
+          <button
+            type="button"
+            className="rounded-full border border-sandy-beige bg-white/80 p-3 shadow-sm transition hover:bg-library-mist xl:hidden"
+            aria-label="Toggle navigation"
+            aria-expanded={isMenuOpen}
+            onClick={() => setIsMenuOpen((open) => !open)}
+          >
+            <span className="block h-0.5 w-6 rounded-full bg-library-ink" />
+            <span className="mt-1.5 block h-0.5 w-6 rounded-full bg-library-ink" />
+            <span className="mt-1.5 block h-0.5 w-6 rounded-full bg-library-ink" />
+          </button>
+
+          {onOpenModules ? (
+            <button
+              type="button"
+              aria-label="Open all dashboard modules"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-sandy-beige bg-white/85 shadow-sm transition hover:bg-library-mist"
+              onClick={onOpenModules}
+            >
+              <span className="grid gap-1" aria-hidden="true">
+                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
+                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
+                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
+              </span>
+            </button>
           ) : null}
         </div>
-
-        <button
-          type="button"
-          className="rounded-full border border-sandy-beige bg-white/80 p-3 shadow-sm transition hover:bg-library-mist xl:hidden"
-          aria-label="Toggle navigation"
-          aria-expanded={isMenuOpen}
-          onClick={() => setIsMenuOpen((open) => !open)}
-        >
-          <span className="block h-0.5 w-6 rounded-full bg-library-ink" />
-          <span className="mt-1.5 block h-0.5 w-6 rounded-full bg-library-ink" />
-          <span className="mt-1.5 block h-0.5 w-6 rounded-full bg-library-ink" />
-        </button>
       </div>
 
       {isMenuOpen ? (

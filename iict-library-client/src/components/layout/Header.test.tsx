@@ -58,14 +58,14 @@ describe('Header', () => {
     expect(screen.getByText('IICT Library').closest('a')).toHaveAttribute('href', '/');
   });
 
-  it('renders the dashboard module trigger on the left when provided', () => {
+  it('renders the dashboard module trigger on the right when provided', () => {
     const onOpenModules = vi.fn();
     renderHeader('ADMIN', onOpenModules);
 
     fireEvent.click(screen.getByRole('button', { name: 'Open all dashboard modules' }));
 
     expect(onOpenModules).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole('button', { name: 'Open all dashboard modules' }).compareDocumentPosition(screen.getByText('IICT Library'))).toBe(
+    expect(screen.getByText('IICT Library').compareDocumentPosition(screen.getByRole('button', { name: 'Open all dashboard modules' }))).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING
     );
   });
