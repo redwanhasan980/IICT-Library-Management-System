@@ -31,7 +31,7 @@ const MyOutsideBooksPage = () => {
     try {
       await markExit(id).unwrap();
       toast.success('Exit recorded. Please wait for admin verification.');
-    } catch (error) {
+    } catch {
       toast.error('Failed to mark exit.');
     }
   };

@@ -41,7 +41,7 @@ const OutsideBookEntryForm = () => {
       await createEntry(values).unwrap();
       toast.success('Entry created successfully!');
       reset();
-    } catch (error) {
+    } catch {
       toast.error('Failed to create entry.');
     }
   };
