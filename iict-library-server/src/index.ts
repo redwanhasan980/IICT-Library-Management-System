@@ -20,24 +20,17 @@ import auditLogRouter from './routes/auditLog.routes';
 import dashboardRouter from './routes/dashboard.routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import { successResponse } from './utils/apiResponse';
+import { isCorsOriginAllowed, resolveAllowedCorsOrigins } from './config/cors';
 
 dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT) || 5000;
-const isTruthy = (value: string | undefined) =>
-  ['1', 'true', 'yes', 'on'].includes(String(value ?? '').trim().toLowerCase());
-const defaultCorsOrigin = isTruthy(process.env.ONLINE)
-  ? 'https://iict-library.onrender.com'
-  : 'http://localhost:5173';
-const allowedCorsOrigins = (process.env.CORS_ORIGIN || defaultCorsOrigin)
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+const allowedCorsOrigins = resolveAllowedCorsOrigins();
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedCorsOrigins.includes(origin)) {
+    if (isCorsOriginAllowed(origin, allowedCorsOrigins)) {
       callback(null, true);
       return;
     }
