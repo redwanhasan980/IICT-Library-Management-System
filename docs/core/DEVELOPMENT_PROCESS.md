@@ -1033,3 +1033,38 @@ This document tracks the development process of the IICT Library Management Syst
 - **What Was Tested**:
   - Server TypeScript build passed.
   - Server Vitest suite passed.
+
+## Phase 29: Unified Online Mode
+
+- **What Was Improved**:
+  - Added a shared `ONLINE=true/false` deployment mode concept for both apps.
+  - Server runtime and Prisma scripts now use `ONLINE=false` for `LOCAL_DATABASE_URL` and `ONLINE=true` for `REMOTE_DATABASE_URL`.
+  - Server CORS defaults now follow `ONLINE` when `CORS_ORIGIN` is omitted.
+  - Client Vite config exposes `ONLINE` to browser code, while keeping `VITE_ONLINE` as a compatibility fallback.
+  - Updated local/Render environment examples and deployment docs.
+
+- **Files Created or Updated**:
+  - `iict-library-server/src/config/databaseUrl.ts`
+  - `iict-library-server/src/config/databaseUrl.test.ts`
+  - `iict-library-server/scripts/with-database-url.cjs`
+  - `iict-library-server/src/index.ts`
+  - `iict-library-server/.env.example`
+  - `iict-library-client/vite.config.ts`
+  - `iict-library-client/src/config/api.ts`
+  - `iict-library-client/src/config/api.test.ts`
+  - `iict-library-client/.env.example`
+  - `render.yaml`
+  - deployment and project documentation
+
+- **Commands Used**:
+  - `npm --prefix iict-library-server run build`
+  - `npm --prefix iict-library-server test`
+  - `npm --prefix iict-library-client run build`
+  - `npm --prefix iict-library-client test`
+  - `npm run build`
+  - `npm test`
+
+- **What Was Tested**:
+  - Server build and tests passed, including online/local database selection tests.
+  - Client build and tests passed, including online/local API selection tests.
+  - Root build and root test suites passed.

@@ -14,7 +14,7 @@ services:
         value: production
       - key: ENABLE_DEV_AUTH
         value: "false"
-      - key: REMOTE_DATABASE
+      - key: ONLINE
         value: "true"
       - key: REMOTE_DATABASE_URL
         sync: false
@@ -36,7 +36,7 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
-      - key: VITE_ONLINE
+      - key: ONLINE
         value: "true"
       - key: VITE_LOCAL_API_BASE_URL
         value: http://localhost:5000/api

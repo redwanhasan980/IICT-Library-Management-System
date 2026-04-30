@@ -19,9 +19,10 @@ const normalizeApiBaseUrl = (value: string | undefined) => {
 };
 
 export const selectApiBaseUrl = (env: ClientEnv) => {
-  const hasOnlineSwitch = env.VITE_ONLINE !== undefined;
+  const onlineValue = env.ONLINE ?? env.VITE_ONLINE;
+  const hasOnlineSwitch = onlineValue !== undefined;
   const selectedUrl = hasOnlineSwitch
-    ? isTruthy(env.VITE_ONLINE)
+    ? isTruthy(onlineValue)
       ? env.VITE_ONLINE_API_BASE_URL
       : env.VITE_LOCAL_API_BASE_URL
     : env.VITE_API_BASE_URL;

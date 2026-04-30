@@ -21,6 +21,7 @@ Set these in the backend runtime:
 - `NODE_ENV=production`
 - `PORT`
 - `CORS_ORIGIN` includes the deployed frontend origin, for example `https://iict-library.onrender.com`
+- `ONLINE=true`
 - `DATABASE_URL`
 - `JWT_SECRET`
 - `JWT_EXPIRES_IN`
@@ -33,7 +34,7 @@ Do not enable development header auth in production.
 
 Set these before building the client:
 
-- `VITE_ONLINE=true`
+- `ONLINE=true`
 - `VITE_ONLINE_API_BASE_URL`
 - `VITE_LOCAL_API_BASE_URL`
 - `VITE_ENABLE_DEV_AUTH=false`

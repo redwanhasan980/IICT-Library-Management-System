@@ -7,13 +7,14 @@
 - Valid `DATABASE_URL`.
 - Production `JWT_SECRET`.
 - `ADMIN_SETUP_TOKEN` for first admin creation.
-- Client API base URL configured with `VITE_API_BASE_URL`.
+- Client API mode configured with `ONLINE=true` and `VITE_ONLINE_API_BASE_URL`.
 
 ## Environment Variables
 
 Server:
 
 - `DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/DATABASE`
+- `ONLINE=true`
 - `JWT_SECRET=strong-production-secret`
 - `JWT_EXPIRES_IN=7d` optional
 - `ADMIN_SETUP_TOKEN=one-time-bootstrap-token`
@@ -24,7 +25,7 @@ Server:
 
 Client:
 
-- `VITE_ONLINE=true`
+- `ONLINE=true`
 - `VITE_LOCAL_API_BASE_URL=http://localhost:5000/api`
 - `VITE_ONLINE_API_BASE_URL=https://your-server-domain/api`
 - `VITE_ENABLE_DEV_AUTH=false`
@@ -55,7 +56,7 @@ Backend Web Service:
 - Root directory: `iict-library-server`
 - Build command: `npm install && npm run prisma:generate && npm run build`
 - Start command: `npm start`
-- Environment variables: server variables listed above, including `DATABASE_URL`/`REMOTE_DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN`, Cloudinary credentials, and `ENABLE_DEV_AUTH=false`.
+- Environment variables: server variables listed above, including `ONLINE=true`, `DATABASE_URL`/`REMOTE_DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN`, Cloudinary credentials, and `ENABLE_DEV_AUTH=false`.
 - Run migrations before or during deployment with `npm run prisma:migrate:deploy`.
 
 Frontend Static Site:
@@ -63,7 +64,7 @@ Frontend Static Site:
 - Root directory: `iict-library-client`
 - Build command: `npm install && npm run build`
 - Publish directory: `dist`
-- Environment variables: `VITE_ONLINE=true`, `VITE_ONLINE_API_BASE_URL=https://your-server-domain/api`, and `VITE_ENABLE_DEV_AUTH=false`.
+- Environment variables: `ONLINE=true`, `VITE_ONLINE_API_BASE_URL=https://your-server-domain/api`, and `VITE_ENABLE_DEV_AUTH=false`.
 - Configure SPA rewrite/fallback to `index.html`.
 
 ## Start Commands

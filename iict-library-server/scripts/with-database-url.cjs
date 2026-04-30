@@ -28,7 +28,9 @@ const normalizeDatabaseUrl = (value) => {
   }
 };
 
-const useRemote = isTruthy(process.env.REMOTE_DATABASE);
+const useRemote = process.env.ONLINE === undefined
+  ? isTruthy(process.env.REMOTE_DATABASE)
+  : isTruthy(process.env.ONLINE);
 const selectedUrl = useRemote
   ? process.env.REMOTE_DATABASE_URL || process.env.DATABASE_URL
   : process.env.LOCAL_DATABASE_URL || process.env.DATABASE_URL;

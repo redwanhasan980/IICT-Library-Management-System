@@ -68,7 +68,8 @@ Required server variables:
 - NODE_ENV: development or production
 - PORT: API port (default 5000)
 - CORS_ORIGIN: comma-separated allowed frontend origins, example http://localhost:5173,https://iict-library.onrender.com
-- REMOTE_DATABASE: set `false` for local XAMPP/MariaDB or `true` for the hosted database.
+- ONLINE: set `false` for local XAMPP/MariaDB + local client defaults or `true` for hosted database + hosted client defaults.
+- REMOTE_DATABASE: compatibility fallback for database selection when `ONLINE` is not set.
 - LOCAL_DATABASE_URL: local MariaDB Prisma URL, example mysql://root:password@localhost:3306/iict_library
 - REMOTE_DATABASE_URL: hosted MySQL/MariaDB Prisma URL, example Aiven MySQL with `sslaccept=accept_invalid_certs` or stricter SSL config if CA certificates are configured.
 - DATABASE_URL: compatibility fallback used only when a selected local/remote URL is missing.
@@ -80,10 +81,11 @@ Required server variables:
 
 Required client variables:
 
-- VITE_ONLINE: `false` uses local backend, `true` uses hosted backend.
+- ONLINE: `false` uses local backend, `true` uses hosted backend.
 - VITE_LOCAL_API_BASE_URL: local backend API URL, example http://localhost:5000/api
 - VITE_ONLINE_API_BASE_URL: hosted backend API URL, example https://iict-library-management-system-server.onrender.com/api
-- VITE_API_BASE_URL: legacy fallback backend API base URL, used only when `VITE_ONLINE` is not set.
+- VITE_ONLINE: compatibility fallback when `ONLINE` is not set.
+- VITE_API_BASE_URL: legacy fallback backend API base URL, used only when `ONLINE`/`VITE_ONLINE` is not set.
 - VITE_ENABLE_DEV_AUTH: false in production
 
 ## Database Migration and Seed
@@ -96,7 +98,7 @@ npm run prisma:generate
 npm run prisma:migrate
 ```
 
-The server and Prisma npm scripts honor `REMOTE_DATABASE` in `iict-library-server/.env`. Use `REMOTE_DATABASE=false` for the local database and `REMOTE_DATABASE=true` for the hosted database.
+The server and Prisma npm scripts honor `ONLINE` in `iict-library-server/.env`. Use `ONLINE=false` for the local database and `ONLINE=true` for the hosted database. `REMOTE_DATABASE` remains as a compatibility fallback only when `ONLINE` is not set.
 
 ### Seed steps
 

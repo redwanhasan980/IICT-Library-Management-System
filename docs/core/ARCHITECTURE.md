@@ -76,7 +76,7 @@ API responses are standardized using a common envelope:
 - Passwords are hashed with bcrypt.
 - RBAC checks are active for route-level authorization.
 - Optional development header auth (`x-user-id`, `x-user-role`) exists only when `ENABLE_DEV_AUTH=true` and `NODE_ENV` is not `production`.
-- Production deployments must set `JWT_SECRET`, `CORS_ORIGIN`, `DATABASE_URL`, and `ADMIN_SETUP_TOKEN`.
+- Production deployments must set `ONLINE=true`, `JWT_SECRET`, `CORS_ORIGIN`, `DATABASE_URL` or `REMOTE_DATABASE_URL`, and `ADMIN_SETUP_TOKEN`.
 
 ## Extension Points
 
