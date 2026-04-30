@@ -46,7 +46,7 @@ The detailed project documents now live under [`docs/`](docs/README.md):
 For Render, create two services from the same Git repo:
 
 - Backend Web Service: root directory `iict-library-server`, build command `npm install && npm run prisma:generate && npm run build`, start command `npm start`.
-- Frontend Static Site: root directory `iict-library-client`, build command `npm install && npm run build`, publish directory `dist`.
+- Frontend Static Site: root directory `iict-library-client`, build command `npm install && npm run build`, publish directory `dist`, env `VITE_ONLINE=true` and `VITE_ONLINE_API_BASE_URL=https://iict-library-management-system-server.onrender.com/api`.
 
 You can also use the root [`render.yaml`](render.yaml) blueprint and fill the secret environment variables in Render.
 

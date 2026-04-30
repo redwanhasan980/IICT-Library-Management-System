@@ -33,7 +33,9 @@ Do not enable development header auth in production.
 
 Set these before building the client:
 
-- `VITE_API_BASE_URL`
+- `VITE_ONLINE=true`
+- `VITE_ONLINE_API_BASE_URL`
+- `VITE_LOCAL_API_BASE_URL`
 - `VITE_ENABLE_DEV_AUTH=false`
 
 ## Database Migration

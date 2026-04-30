@@ -2,8 +2,35 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { RootState } from '../store';
 import { logOut } from '../services/auth.slice';
 
+type ClientEnv = Record<string, string | boolean | undefined>;
+
+const isTruthy = (value: string | boolean | undefined) =>
+  value === true || ['1', 'true', 'yes', 'on'].includes(String(value ?? '').trim().toLowerCase());
+
+const normalizeApiBaseUrl = (value: string | undefined) => {
+  const trimmed = value?.trim();
+
+  if (!trimmed) {
+    return undefined;
+  }
+
+  const withoutTrailingSlash = trimmed.replace(/\/+$/, '');
+  return withoutTrailingSlash.endsWith('/api') ? withoutTrailingSlash : `${withoutTrailingSlash}/api`;
+};
+
+export const selectApiBaseUrl = (env: ClientEnv) => {
+  const hasOnlineSwitch = env.VITE_ONLINE !== undefined;
+  const selectedUrl = hasOnlineSwitch
+    ? isTruthy(env.VITE_ONLINE)
+      ? env.VITE_ONLINE_API_BASE_URL
+      : env.VITE_LOCAL_API_BASE_URL
+    : env.VITE_API_BASE_URL;
+
+  return normalizeApiBaseUrl(typeof selectedUrl === 'string' ? selectedUrl : undefined) ?? 'http://localhost:5000/api';
+};
+
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
+  baseUrl: selectApiBaseUrl(import.meta.env),
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as RootState;
     const token = state.auth.token;

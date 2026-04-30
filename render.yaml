@@ -36,7 +36,11 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
-      - key: VITE_API_BASE_URL
+      - key: VITE_ONLINE
+        value: "true"
+      - key: VITE_LOCAL_API_BASE_URL
+        value: http://localhost:5000/api
+      - key: VITE_ONLINE_API_BASE_URL
         sync: false
       - key: VITE_ENABLE_DEV_AUTH
         value: "false"

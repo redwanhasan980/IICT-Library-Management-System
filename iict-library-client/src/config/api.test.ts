@@ -1,0 +1,28 @@
+import { describe, expect, it } from 'vitest';
+import { selectApiBaseUrl } from './api';
+
+describe('selectApiBaseUrl', () => {
+  it('uses local API when VITE_ONLINE is false', () => {
+    expect(
+      selectApiBaseUrl({
+        VITE_ONLINE: 'false',
+        VITE_LOCAL_API_BASE_URL: 'http://localhost:5000/api',
+        VITE_ONLINE_API_BASE_URL: 'https://iict-library-management-system-server.onrender.com/api',
+      })
+    ).toBe('http://localhost:5000/api');
+  });
+
+  it('uses and normalizes hosted API when VITE_ONLINE is true', () => {
+    expect(
+      selectApiBaseUrl({
+        VITE_ONLINE: 'true',
+        VITE_LOCAL_API_BASE_URL: 'http://localhost:5000/api',
+        VITE_ONLINE_API_BASE_URL: 'https://iict-library-management-system-server.onrender.com/',
+      })
+    ).toBe('https://iict-library-management-system-server.onrender.com/api');
+  });
+
+  it('keeps the legacy VITE_API_BASE_URL fallback', () => {
+    expect(selectApiBaseUrl({ VITE_API_BASE_URL: 'http://localhost:5000' })).toBe('http://localhost:5000/api');
+  });
+});

@@ -23,7 +23,9 @@ Server:
 
 Client:
 
-- `VITE_API_BASE_URL=https://your-server-domain/api`
+- `VITE_ONLINE=true`
+- `VITE_LOCAL_API_BASE_URL=http://localhost:5000/api`
+- `VITE_ONLINE_API_BASE_URL=https://your-server-domain/api`
 - `VITE_ENABLE_DEV_AUTH=false`
 
 ## Build And Migration Steps
@@ -60,7 +62,7 @@ Frontend Static Site:
 - Root directory: `iict-library-client`
 - Build command: `npm install && npm run build`
 - Publish directory: `dist`
-- Environment variables: `VITE_API_BASE_URL=https://your-server-domain/api` and `VITE_ENABLE_DEV_AUTH=false`.
+- Environment variables: `VITE_ONLINE=true`, `VITE_ONLINE_API_BASE_URL=https://your-server-domain/api`, and `VITE_ENABLE_DEV_AUTH=false`.
 - Configure SPA rewrite/fallback to `index.html`.
 
 ## Start Commands

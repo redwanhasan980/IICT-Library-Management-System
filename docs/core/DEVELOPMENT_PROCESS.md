@@ -984,3 +984,29 @@ This document tracks the development process of the IICT Library Management Syst
   - Server build passed from `iict-library-server`.
   - Client build passed from `iict-library-client`.
   - Repository-root build still passed through delegation scripts.
+
+## Phase 27: Client API Environment Switch
+
+- **What Was Improved**:
+  - Added a frontend `VITE_ONLINE` switch so the client can choose between local and hosted API URLs without code edits.
+  - Added `VITE_LOCAL_API_BASE_URL` and `VITE_ONLINE_API_BASE_URL`, with URL normalization that appends `/api` when needed.
+  - Kept `VITE_API_BASE_URL` as a legacy fallback when `VITE_ONLINE` is not set.
+  - Updated Render documentation and blueprint environment variables for the client static site.
+
+- **Files Created or Updated**:
+  - `iict-library-client/.env.example`
+  - `iict-library-client/src/config/api.ts`
+  - `iict-library-client/src/config/api.test.ts`
+  - `README.md`
+  - `docs/PROJECT_README.md`
+  - `docs/deployment/DEPLOYMENT_GUIDE.md`
+  - `docs/deployment/DEPLOYMENT_CHECKLIST.md`
+  - `render.yaml`
+
+- **Commands Used**:
+  - `npm --prefix iict-library-client run build`
+  - `npm --prefix iict-library-client test`
+
+- **What Was Tested**:
+  - Client production build passed.
+  - Client Vitest suite passed, including API URL selection tests.

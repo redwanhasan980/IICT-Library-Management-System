@@ -80,7 +80,10 @@ Required server variables:
 
 Required client variables:
 
-- VITE_API_BASE_URL: backend API base URL, example http://localhost:5000/api
+- VITE_ONLINE: `false` uses local backend, `true` uses hosted backend.
+- VITE_LOCAL_API_BASE_URL: local backend API URL, example http://localhost:5000/api
+- VITE_ONLINE_API_BASE_URL: hosted backend API URL, example https://iict-library-management-system-server.onrender.com/api
+- VITE_API_BASE_URL: legacy fallback backend API base URL, used only when `VITE_ONLINE` is not set.
 - VITE_ENABLE_DEV_AUTH: false in production
 
 ## Database Migration and Seed
