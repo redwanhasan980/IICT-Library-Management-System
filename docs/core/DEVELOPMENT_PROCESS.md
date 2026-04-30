@@ -955,3 +955,32 @@ This document tracks the development process of the IICT Library Management Syst
   - Root build passed.
   - Root backend/frontend Vitest suites passed.
   - Client lint passed.
+
+## Phase 26: Monorepo Deployment Independence Cleanup
+
+- **What Was Improved**:
+  - Removed the unused repository-root Vite scaffold (`src`, `public`, root `index.html`, root Vite/TypeScript/ESLint config).
+  - Simplified the root `package.json` so it only delegates commands into `iict-library-server` and `iict-library-client`.
+  - Regenerated the root lockfile with no root runtime dependencies.
+  - Documented Render deployment with separate backend and frontend root directories.
+  - Added a Render Blueprint template that deploys the backend and frontend as separate services.
+
+- **Files Created, Updated, or Removed**:
+  - `package.json`
+  - `package-lock.json`
+  - `README.md`
+  - `docs/PROJECT_README.md`
+  - `docs/deployment/DEPLOYMENT_GUIDE.md`
+  - `render.yaml`
+  - removed root scaffold files and folders: `src/`, `public/`, `index.html`, `vite.config.ts`, `tsconfig*.json`, `eslint.config.js`
+
+- **Commands Used**:
+  - `npm install --package-lock-only --ignore-scripts`
+  - `npm --prefix iict-library-server run build`
+  - `npm --prefix iict-library-client run build`
+  - `npm run build`
+
+- **What Was Tested**:
+  - Server build passed from `iict-library-server`.
+  - Client build passed from `iict-library-client`.
+  - Repository-root build still passed through delegation scripts.

@@ -2,10 +2,14 @@
 
 Full-stack IICT Library Management System monorepo with a React client and an Express + Prisma server targeting MariaDB/MySQL.
 
+The repository root is only a lightweight command runner and documentation hub. There is no root app, and the deployable projects are independent:
+
+- [`iict-library-client/`](iict-library-client/) contains the complete Vite frontend.
+- [`iict-library-server/`](iict-library-server/) contains the complete Express/Prisma backend.
+
 ## Quick Start
 
 ```bash
-npm install
 npm --prefix iict-library-server install
 npm --prefix iict-library-client install
 
@@ -38,6 +42,13 @@ The detailed project documents now live under [`docs/`](docs/README.md):
 
 - Frontend: [`iict-library-client/`](iict-library-client/)
 - Backend: [`iict-library-server/`](iict-library-server/)
+
+For Render, create two services from the same Git repo:
+
+- Backend Web Service: root directory `iict-library-server`, build command `npm install && npm run prisma:generate && npm run build`, start command `npm start`.
+- Frontend Static Site: root directory `iict-library-client`, build command `npm install && npm run build`, publish directory `dist`.
+
+You can also use the root [`render.yaml`](render.yaml) blueprint and fill the secret environment variables in Render.
 
 Package-level notes remain beside each app:
 

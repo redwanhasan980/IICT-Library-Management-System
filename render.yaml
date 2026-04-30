@@ -1,0 +1,46 @@
+# Render Blueprint for deploying the IICT LMS monorepo as two independent services.
+# Keep secrets as "sync: false" and enter them in the Render dashboard.
+services:
+  - type: web
+    name: iict-library-server
+    runtime: node
+    rootDir: iict-library-server
+    buildCommand: npm install && npm run prisma:generate && npm run build
+    preDeployCommand: npm run prisma:migrate:deploy
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ENABLE_DEV_AUTH
+        value: "false"
+      - key: REMOTE_DATABASE
+        value: "true"
+      - key: REMOTE_DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: ADMIN_SETUP_TOKEN
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: CLOUDINARY_URL
+        sync: false
+
+  - type: web
+    name: iict-library-client
+    runtime: static
+    rootDir: iict-library-client
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
+      - key: VITE_ENABLE_DEV_AUTH
+        value: "false"
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

@@ -2,6 +2,8 @@
 
 IICT Library Management System is a full-stack monorepo with a React client and an Express + Prisma server targeting MariaDB.
 
+The repository root is only a documentation and command-orchestration layer. The frontend and backend do not import files from root-level `src` or `public` folders, and those old scaffold folders have been removed so each app can be deployed independently.
+
 ## Project Structure
 
 - iict-library-client: Frontend (React, TypeScript, Vite, RTK Query, Tailwind CSS)
@@ -166,7 +168,7 @@ npm run build
 npm test
 ```
 
-The repository-root scripts delegate to `iict-library-server` and `iict-library-client`.
+The repository-root scripts delegate to `iict-library-server` and `iict-library-client`. The root package has no runtime dependencies and is not deployed as an application.
 
 ### Manual test checklist
 

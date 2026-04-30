@@ -28,15 +28,40 @@ Client:
 
 ## Build And Migration Steps
 
-From repository root:
+For local final verification from repository root:
 
 ```bash
-npm install
+npm --prefix iict-library-server install
+npm --prefix iict-library-client install
 npm run prisma:generate
 npm run prisma:migrate:deploy
 npm run build
 npm test
 ```
+
+The repository root is not a deployable app. It only delegates commands into the two independent app folders.
+
+## Render Deployment
+
+Create two Render services from the same GitHub repository.
+
+The repository includes a root-level `render.yaml` blueprint with these settings. Render's monorepo `rootDir` setting makes the commands and publish directory relative to the selected app folder.
+
+Backend Web Service:
+
+- Root directory: `iict-library-server`
+- Build command: `npm install && npm run prisma:generate && npm run build`
+- Start command: `npm start`
+- Environment variables: server variables listed above, including `DATABASE_URL`/`REMOTE_DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN`, Cloudinary credentials, and `ENABLE_DEV_AUTH=false`.
+- Run migrations before or during deployment with `npm run prisma:migrate:deploy`.
+
+Frontend Static Site:
+
+- Root directory: `iict-library-client`
+- Build command: `npm install && npm run build`
+- Publish directory: `dist`
+- Environment variables: `VITE_API_BASE_URL=https://your-server-domain/api` and `VITE_ENABLE_DEV_AUTH=false`.
+- Configure SPA rewrite/fallback to `index.html`.
 
 ## Start Commands
 
