@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { RootState } from '../store';
+import { logOut } from '../services/auth.slice';
 
-const baseQuery = fetchBaseQuery({
+const rawBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as RootState;
@@ -23,6 +24,17 @@ const baseQuery = fetchBaseQuery({
     return headers;
   },
 });
+
+const baseQuery: typeof rawBaseQuery = async (args, api, extraOptions) => {
+  const result = await rawBaseQuery(args, api, extraOptions);
+  const state = api.getState() as RootState;
+
+  if (result.error?.status === 401 && state.auth.token) {
+    api.dispatch(logOut());
+  }
+
+  return result;
+};
 
 export const api = createApi({
   reducerPath: 'api',
