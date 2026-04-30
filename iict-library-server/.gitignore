@@ -7,3 +7,7 @@ npm-debug.log
 # Prisma
 *.sqlite
 *.sqlite-journal
+
+# Local database transfer/backups
+/local-data*.sql
+/backups/
