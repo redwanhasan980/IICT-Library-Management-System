@@ -20,7 +20,7 @@ Set these in the backend runtime:
 
 - `NODE_ENV=production`
 - `PORT`
-- `CORS_ORIGIN`
+- `CORS_ORIGIN` includes the deployed frontend origin, for example `https://iict-library.onrender.com`
 - `DATABASE_URL`
 - `JWT_SECRET`
 - `JWT_EXPIRES_IN`

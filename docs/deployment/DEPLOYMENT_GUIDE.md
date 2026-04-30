@@ -18,6 +18,7 @@ Server:
 - `JWT_EXPIRES_IN=7d` optional
 - `ADMIN_SETUP_TOKEN=one-time-bootstrap-token`
 - `CORS_ORIGIN=https://your-client-domain`
+- Multiple CORS origins can be comma-separated, for example `http://localhost:5173,https://iict-library.onrender.com`.
 - `PORT=5000` optional
 - `ENABLE_DEV_AUTH=false` for production
 

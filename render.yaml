@@ -25,7 +25,7 @@ services:
       - key: ADMIN_SETUP_TOKEN
         sync: false
       - key: CORS_ORIGIN
-        sync: false
+        value: https://iict-library.onrender.com
       - key: CLOUDINARY_URL
         sync: false
 

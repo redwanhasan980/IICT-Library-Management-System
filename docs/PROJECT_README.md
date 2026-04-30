@@ -67,7 +67,7 @@ Required server variables:
 
 - NODE_ENV: development or production
 - PORT: API port (default 5000)
-- CORS_ORIGIN: frontend origin, example http://localhost:5173
+- CORS_ORIGIN: comma-separated allowed frontend origins, example http://localhost:5173,https://iict-library.onrender.com
 - REMOTE_DATABASE: set `false` for local XAMPP/MariaDB or `true` for the hosted database.
 - LOCAL_DATABASE_URL: local MariaDB Prisma URL, example mysql://root:password@localhost:3306/iict_library
 - REMOTE_DATABASE_URL: hosted MySQL/MariaDB Prisma URL, example Aiven MySQL with `sslaccept=accept_invalid_certs` or stricter SSL config if CA certificates are configured.
@@ -398,7 +398,7 @@ Latest auth/member migration note: `StudentProfile.phoneNumber` is nullable for 
 - Build both apps before deployment.
 - Use repository-root `npm run build` and `npm test` for final verification.
 - Set NODE_ENV=production on server.
-- Set CORS_ORIGIN to the deployed frontend origin.
+- Set CORS_ORIGIN to the deployed frontend origin. Multiple origins can be comma-separated for local + hosted clients.
 - Ensure MariaDB is reachable from backend runtime environment.
 - Run `npm run prisma:generate` and `npm run prisma:migrate:deploy` in deployment pipeline.
 - Frontend is a static Vite build from iict-library-client/dist.

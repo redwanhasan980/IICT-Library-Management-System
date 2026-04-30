@@ -25,10 +25,20 @@ dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT) || 5000;
-const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
+const allowedCorsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 app.use(cors({
-  origin: corsOrigin,
+  origin: (origin, callback) => {
+    if (!origin || allowedCorsOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(null, false);
+  },
   credentials: true,
 }));
 app.use(express.json());

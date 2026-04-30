@@ -1010,3 +1010,26 @@ This document tracks the development process of the IICT Library Management Syst
 - **What Was Tested**:
   - Client production build passed.
   - Client Vitest suite passed, including API URL selection tests.
+
+## Phase 28: Hosted Client CORS Allowlist
+
+- **What Was Improved**:
+  - Updated server CORS handling to accept comma-separated frontend origins.
+  - Documented and configured the deployed Render client origin `https://iict-library.onrender.com`.
+  - Kept localhost support for local development.
+
+- **Files Created or Updated**:
+  - `iict-library-server/src/index.ts`
+  - `iict-library-server/.env.example`
+  - `render.yaml`
+  - `docs/PROJECT_README.md`
+  - `docs/deployment/DEPLOYMENT_GUIDE.md`
+  - `docs/deployment/DEPLOYMENT_CHECKLIST.md`
+
+- **Commands Used**:
+  - `npm --prefix iict-library-server run build`
+  - `npm --prefix iict-library-server test`
+
+- **What Was Tested**:
+  - Server TypeScript build passed.
+  - Server Vitest suite passed.
