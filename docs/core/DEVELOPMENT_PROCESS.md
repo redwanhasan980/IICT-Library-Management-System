@@ -30,7 +30,7 @@ This document tracks the development process of the IICT Library Management Syst
   - `iict-library-client/src/services/outsideBook.api.ts`
 - **Commands Used**:
   - `npx prisma migrate dev --name init_schema`
-- **Next Steps**: Continue with Phase 3 expansion modules (see `Development Process/Phase-3-Core-Expansion-and-Admin-Operations.md`).
+- **Next Steps**: Continue with Phase 3 expansion modules (see `../development-process/Phase-3-Core-Expansion-and-Admin-Operations.md`).
 
 ## Phase 3: Spine Label Generator
 
@@ -54,7 +54,7 @@ This document tracks the development process of the IICT Library Management Syst
 
 - **Description**: This continuation phase completes what followed after Phase 2 by expanding core modules for practical day-to-day library operations.
 - **Detailed Document**:
-  - `Development Process/Phase-3-Core-Expansion-and-Admin-Operations.md`
+  - `../development-process/Phase-3-Core-Expansion-and-Admin-Operations.md`
 - **Coverage**:
   - Spine label generator
   - Reservation and waitlist flow
@@ -348,7 +348,7 @@ This document tracks the development process of the IICT Library Management Syst
 
 ## Phase 9: Implementation Audit (Current State)
 
-- **Description**: An extensive audit against SRS, BRS, ER diagrams, and roadmap checkpoints revealed incomplete modules. See `IMPLEMENTATION_AUDIT_REPORT.md` for full details.
+- **Description**: An extensive audit against SRS, BRS, ER diagrams, and roadmap checkpoints revealed incomplete modules. See `../reports/IMPLEMENTATION_AUDIT_REPORT.md` for full details.
 - **Key Findings**:
   - **No Real Authentication**: JWT, password hashing, and user registration/seeding flows are entirely absent. Development headers `x-user-role` and `x-user-id` remain in use.
   - **Incomplete Book Management**: Individual CRUD functionality for books (Adding single books, Editing metadata, Archiving/Deleting) is missing from the UI and backend logic.
@@ -368,7 +368,7 @@ This document tracks the development process of the IICT Library Management Syst
 - **What Was Improved**:
   - **Faculty Borrowing Issue:** Added `facultySignatureText` to the frontend `issueLoan` API interface and Admin Circulation page. Fixed the core blockage for Teacher borrowing.
   - **Requirements Mapping:** Established exactly what SRS topics mapped to current modules in `REQUIREMENT_TRACEABILITY.md`.
-  - **Gap Closure Reporting:** Recorded the current progress and scoped priorities safely utilizing `GAP_CLOSURE_REPORT.md` while waiting to completely implement deep system functionalities like Auth and Procurement.
+  - **Gap Closure Reporting:** Recorded the current progress and scoped priorities safely utilizing `../reports/GAP_CLOSURE_REPORT.md` while waiting to completely implement deep system functionalities like Auth and Procurement.
 
 ## Phase 11: Circulation Workflow Hardening
 

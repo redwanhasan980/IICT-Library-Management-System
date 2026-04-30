@@ -6,13 +6,13 @@ This log records decisions made while reconciling implementation with the SRS, u
 
 ## Source-of-Truth Inputs Reviewed
 
-- Requirements Documents/IICT LIBRARY MANAGEMENT SYSTEM SRS.pdf
-- Requirements Documents/IICT Library Management System.pdf
-- Requirements Documents/IICT_Library_Use_Cases.pdf
-- Requirements Documents/IICT_Library_Use_Cases_Tables.pdf
-- Requirements Documents/IICT_Library_Use_Case_Tables.pdf
-- Requirements Documents/library management ER digram (2).pdf
-- Requirements Documents/Library_Attribute_Lists.pdf
+- ../../Requirements Documents/IICT LIBRARY MANAGEMENT SYSTEM SRS.pdf
+- ../../Requirements Documents/IICT Library Management System.pdf
+- ../../Requirements Documents/IICT_Library_Use_Cases.pdf
+- ../../Requirements Documents/IICT_Library_Use_Cases_Tables.pdf
+- ../../Requirements Documents/IICT_Library_Use_Case_Tables.pdf
+- ../../Requirements Documents/library management ER digram (2).pdf
+- ../../Requirements Documents/Library_Attribute_Lists.pdf
 
 ## Decision 1: Borrowing Model (Unified vs Separate Student/Faculty Borrow Tables)
 

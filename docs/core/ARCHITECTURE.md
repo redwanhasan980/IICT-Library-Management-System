@@ -6,7 +6,7 @@ The repository is organized as a practical full-stack monorepo:
 
 - iict-library-client: React + TypeScript application for user interface and role-based navigation.
 - iict-library-server: Express + Prisma API for business logic and data access.
-- Requirements Documents: Requirement and analysis artifacts in PDF format.
+- [Requirements Documents](../../Requirements%20Documents/): Requirement and analysis artifacts in PDF format.
 
 ## Backend Architecture
 

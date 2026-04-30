@@ -32,7 +32,7 @@ The IICT Library Management System now covers the SRS-aligned library workflows 
 
 - MariaDB-compatible Prisma migrations are included.
 - Root build/test scripts run both server and client.
-- Deployment instructions are documented in `DEPLOYMENT_GUIDE.md`.
+- Deployment instructions are documented in `../deployment/DEPLOYMENT_GUIDE.md`.
 - Final QA results are documented in `FINAL_QA_REPORT.md`.
 
 ## Known Limitations
