@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `outsidebookentry` ADD COLUMN `studentSemesterSnapshot` INTEGER NULL;
+ALTER TABLE `OutsideBookEntry` ADD COLUMN `studentSemesterSnapshot` INTEGER NULL;

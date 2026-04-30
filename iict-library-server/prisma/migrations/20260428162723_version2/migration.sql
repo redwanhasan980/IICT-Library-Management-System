@@ -1,12 +1,4 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `phoneNumber` on the `studentprofile` table. All the data in the column will be lost.
-  - You are about to drop the `auditlog` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- AlterTable
-ALTER TABLE `studentprofile` DROP COLUMN `phoneNumber`;
-
--- DropTable
-DROP TABLE `auditlog`;
+-- Historical local-drift repair migration.
+-- Kept as a no-op for fresh cloud deployments because the later migrations add
+-- StudentProfile.phoneNumber and AuditLog in their final supported shape.
+SELECT 1;

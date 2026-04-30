@@ -8,7 +8,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `book` ADD COLUMN `authorEditor` VARCHAR(191) NULL,
+ALTER TABLE `Book` ADD COLUMN `authorEditor` VARCHAR(191) NULL,
     ADD COLUMN `barcode` VARCHAR(191) NULL,
     ADD COLUMN `billDate` DATE NULL,
     ADD COLUMN `billNumber` VARCHAR(191) NULL,
@@ -31,24 +31,24 @@ ALTER TABLE `book` ADD COLUMN `authorEditor` VARCHAR(191) NULL,
     MODIFY `department` ENUM('CSE', 'SWE', 'EEE') NULL;
 
 -- AlterTable
-ALTER TABLE `loan` ADD COLUMN `borrowerRole` ENUM('ADMIN', 'STUDENT', 'TEACHER') NULL,
+ALTER TABLE `Loan` ADD COLUMN `borrowerRole` ENUM('ADMIN', 'STUDENT', 'TEACHER') NULL,
     ADD COLUMN `facultySignatureRecordedAt` DATETIME(3) NULL,
     ADD COLUMN `facultySignatureText` VARCHAR(191) NULL;
 
 -- AlterTable
-ALTER TABLE `outsidebookentry` ADD COLUMN `entryStatus` ENUM('ENTERED', 'EXITED') NOT NULL DEFAULT 'ENTERED',
+ALTER TABLE `OutsideBookEntry` ADD COLUMN `entryStatus` ENUM('ENTERED', 'EXITED') NOT NULL DEFAULT 'ENTERED',
     ADD COLUMN `exitVerifiedAt` DATETIME(3) NULL,
     ADD COLUMN `studentDepartmentSnapshot` ENUM('CSE', 'SWE', 'EEE') NULL,
     ADD COLUMN `studentRegNumberSnapshot` VARCHAR(191) NULL,
     ADD COLUMN `studentStrikeMarkedAt` DATETIME(3) NULL;
 
 -- AlterTable
-ALTER TABLE `studentprofile` ADD COLUMN `currentSemester` INTEGER NULL,
+ALTER TABLE `StudentProfile` ADD COLUMN `currentSemester` INTEGER NULL,
     ADD COLUMN `department` ENUM('CSE', 'SWE', 'EEE') NULL,
     ADD COLUMN `studentRegNumber` VARCHAR(191) NULL;
 
 -- AlterTable
-ALTER TABLE `teacherprofile` ADD COLUMN `department` ENUM('CSE', 'SWE', 'EEE') NULL,
+ALTER TABLE `TeacherProfile` ADD COLUMN `department` ENUM('CSE', 'SWE', 'EEE') NULL,
     ADD COLUMN `designation` VARCHAR(191) NULL,
     ADD COLUMN `signatureData` VARCHAR(191) NULL,
     ADD COLUMN `teacherId` VARCHAR(191) NULL;

@@ -9,11 +9,11 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "vitest run",
-    "prisma:migrate": "npx dotenv -e .env -- prisma migrate dev",
-    "prisma:migrate:deploy": "npx dotenv -e .env -- prisma migrate deploy",
-    "prisma:generate": "npx dotenv -e .env -- prisma generate",
-    "prisma:studio": "npx dotenv -e .env -- prisma studio",
-    "seed:demo": "npx dotenv -e .env -- tsx prisma/seed-demo-data.ts"
+    "prisma:migrate": "node scripts/with-database-url.cjs prisma migrate dev",
+    "prisma:migrate:deploy": "node scripts/with-database-url.cjs prisma migrate deploy",
+    "prisma:generate": "node scripts/with-database-url.cjs prisma generate",
+    "prisma:studio": "node scripts/with-database-url.cjs prisma studio",
+    "seed:demo": "node scripts/with-database-url.cjs tsx prisma/seed-demo-data.ts"
   },
   "keywords": [],
   "author": "",

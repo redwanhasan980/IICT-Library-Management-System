@@ -922,3 +922,36 @@ This document tracks the development process of the IICT Library Management Syst
   - Backend book-image service tests passed for Cloudinary transformation URLs, multi-image upload metadata, delete/promotion behavior, and reorder/primary behavior.
   - Frontend image-manager tests passed for upload previews and image management actions.
   - Migration deploy could not be completed during this phase because MariaDB was not listening on `localhost:3306`; rerun `npm run prisma:migrate:deploy` after starting MariaDB.
+
+## Phase 25: Remote Database Toggle And Aiven Migration Readiness
+
+- **What Was Improved**:
+  - Added a `REMOTE_DATABASE` environment toggle so the server runtime and Prisma npm scripts can switch between local XAMPP/MariaDB and hosted Aiven MySQL without manually rewriting `DATABASE_URL`.
+  - Added `LOCAL_DATABASE_URL` and `REMOTE_DATABASE_URL` support with Prisma-compatible SSL URL normalization.
+  - Repaired historical migration SQL that used Windows-tolerated lowercase table names or MySQL syntax not accepted by Aiven.
+  - Applied all migrations successfully to the hosted Aiven `defaultdb` database.
+
+- **Files Created or Updated**:
+  - `iict-library-server/scripts/with-database-url.cjs`
+  - `iict-library-server/src/config/databaseUrl.ts`
+  - `iict-library-server/src/config/database.ts`
+  - `iict-library-server/package.json`
+  - `iict-library-server/.env.example`
+  - `iict-library-server/prisma/migrations/*`
+  - `README.md`
+  - `DEVELOPMENT_PROCESS.md`
+
+- **Commands Used**:
+  - `npm --prefix iict-library-server run prisma:generate`
+  - `npm --prefix iict-library-server run prisma:migrate:deploy`
+  - `node scripts/with-database-url.cjs npx prisma migrate resolve ...`
+  - `npm run build`
+  - `npm test`
+  - `npm --prefix iict-library-client run lint`
+
+- **What Was Tested**:
+  - Remote Aiven MySQL connection succeeded after using Prisma-compatible SSL.
+  - Hosted Aiven database migrations applied successfully.
+  - Root build passed.
+  - Root backend/frontend Vitest suites passed.
+  - Client lint passed.

@@ -66,7 +66,10 @@ Required server variables:
 - NODE_ENV: development or production
 - PORT: API port (default 5000)
 - CORS_ORIGIN: frontend origin, example http://localhost:5173
-- DATABASE_URL: MariaDB Prisma URL, example mysql://root:password@localhost:3306/iict_library
+- REMOTE_DATABASE: set `false` for local XAMPP/MariaDB or `true` for the hosted database.
+- LOCAL_DATABASE_URL: local MariaDB Prisma URL, example mysql://root:password@localhost:3306/iict_library
+- REMOTE_DATABASE_URL: hosted MySQL/MariaDB Prisma URL, example Aiven MySQL with `sslaccept=accept_invalid_certs` or stricter SSL config if CA certificates are configured.
+- DATABASE_URL: compatibility fallback used only when a selected local/remote URL is missing.
 - JWT_SECRET: long random secret for signing auth tokens
 - JWT_EXPIRES_IN: token lifetime, default 7d
 - ADMIN_SETUP_TOKEN: one-time token for first admin bootstrap
@@ -87,6 +90,8 @@ cd iict-library-server
 npm run prisma:generate
 npm run prisma:migrate
 ```
+
+The server and Prisma npm scripts honor `REMOTE_DATABASE` in `iict-library-server/.env`. Use `REMOTE_DATABASE=false` for the local database and `REMOTE_DATABASE=true` for the hosted database.
 
 ### Seed steps
 
