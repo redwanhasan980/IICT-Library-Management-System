@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Backend for IICT Library Management System",
   "main": "dist/index.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
