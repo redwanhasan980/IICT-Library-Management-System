@@ -24,6 +24,45 @@ const metadataText = (metadata: unknown) => {
   return JSON.stringify(metadata);
 };
 
+const humanizeKey = (key: string) =>
+  key.replace(/([A-Z])/g, ' $1').replace(/[_-]/g, ' ').replace(/^./, (char) => char.toUpperCase());
+
+const shortValue = (value: unknown) => {
+  if (value === null || value === undefined || value === '') {
+    return '-';
+  }
+  if (typeof value === 'object') {
+    return Object.keys(value as Record<string, unknown>).join(', ') || 'Details';
+  }
+  return String(value);
+};
+
+const MetadataSummary = ({ metadata }: { metadata: unknown }) => {
+  if (!metadata) {
+    return <span className="text-warm-taupe">-</span>;
+  }
+
+  if (typeof metadata === 'string') {
+    return <span className="text-library-ink">{metadata}</span>;
+  }
+
+  const entries = Object.entries(metadata as Record<string, unknown>).slice(0, 4);
+
+  if (entries.length === 0) {
+    return <span className="text-warm-taupe">No metadata</span>;
+  }
+
+  return (
+    <div className="flex max-w-md flex-wrap gap-1.5">
+      {entries.map(([key, value]) => (
+        <span key={key} className="rounded-full bg-library-mist px-2.5 py-1 text-xs text-library-ink">
+          <span className="font-semibold">{humanizeKey(key)}:</span> {shortValue(value)}
+        </span>
+      ))}
+    </div>
+  );
+};
+
 const csvEscape = (value: unknown) => {
   const text = String(value ?? '');
   if (/[",\r\n]/.test(text)) {
@@ -100,37 +139,37 @@ const AdminAuditLogsPage = () => {
 
       <Card className="space-y-4">
         <h2 className="text-lg font-semibold text-dark-brown">Filters</h2>
-        <form onSubmit={applyFilters} className="grid gap-4 lg:grid-cols-7 lg:items-end">
-          <div>
+        <form onSubmit={applyFilters} className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="min-w-0">
             <label className="text-sm text-warm-taupe">Search</label>
             <Input value={filters.q} onChange={(e) => setFilters((prev) => ({ ...prev, q: e.target.value }))} placeholder="Action, actor, entity" />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="text-sm text-warm-taupe">Actor ID</label>
             <Input value={filters.actorId} onChange={(e) => setFilters((prev) => ({ ...prev, actorId: e.target.value }))} placeholder="User ID" />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="text-sm text-warm-taupe">Action</label>
             <Input value={filters.action} onChange={(e) => setFilters((prev) => ({ ...prev, action: e.target.value }))} placeholder="loan.issue" />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="text-sm text-warm-taupe">Entity</label>
             <Input value={filters.entityType} onChange={(e) => setFilters((prev) => ({ ...prev, entityType: e.target.value }))} placeholder="Loan" />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="text-sm text-warm-taupe">Entity ID</label>
             <Input value={filters.entityId} onChange={(e) => setFilters((prev) => ({ ...prev, entityId: e.target.value }))} placeholder="Record ID" />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="text-sm text-warm-taupe">From</label>
             <Input type="datetime-local" value={filters.from} onChange={(e) => setFilters((prev) => ({ ...prev, from: e.target.value }))} />
           </div>
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <label className="text-sm text-warm-taupe">To</label>
-              <Input type="datetime-local" value={filters.to} onChange={(e) => setFilters((prev) => ({ ...prev, to: e.target.value }))} />
-            </div>
-            <Button type="submit" className="self-end">Apply</Button>
+          <div className="min-w-0">
+            <label className="text-sm text-warm-taupe">To</label>
+            <Input type="datetime-local" value={filters.to} onChange={(e) => setFilters((prev) => ({ ...prev, to: e.target.value }))} />
+          </div>
+          <div className="flex items-end sm:col-span-2 xl:col-span-3 2xl:col-span-1">
+            <Button type="submit" className="w-full sm:w-auto">Apply Filters</Button>
           </div>
         </form>
       </Card>
@@ -178,7 +217,9 @@ const AdminAuditLogsPage = () => {
                         <p>{row.entityType || '-'}</p>
                         <p className="font-mono text-xs text-warm-taupe">{row.entityId || '-'}</p>
                       </TableCell>
-                      <TableCell className="max-w-sm truncate font-mono text-xs">{metadataText(row.metadata)}</TableCell>
+                      <TableCell className="min-w-[16rem] align-top">
+                        <MetadataSummary metadata={row.metadata} />
+                      </TableCell>
                       <TableCell>
                         <p className="text-xs">{row.ipAddress || '-'}</p>
                         <p className="max-w-xs truncate text-xs text-warm-taupe">{row.userAgent || '-'}</p>

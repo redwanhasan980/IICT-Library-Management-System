@@ -38,10 +38,10 @@ const teacherLinks: NavItem[] = [
 ];
 
 const adminLinks: NavItem[] = [
-  { to: '/dashboard/admin', label: 'Admin Dashboard' },
-  { to: '/dashboard/admin/catalog', label: 'Book Management' },
+  { to: '/dashboard/admin', label: 'Admin' },
+  { to: '/dashboard/admin/catalog', label: 'Books' },
   { to: '/dashboard/admin/circulation', label: 'Circulation' },
-  { to: '/dashboard/admin/outside-book-logs', label: 'Outside Book Logs' },
+  { to: '/dashboard/admin/outside-book-logs', label: 'Outside Logs' },
   { to: '/dashboard/admin/reports', label: 'Reports' },
   { to: '/dashboard/admin/procurement', label: 'Procurement' },
   { to: '/dashboard/admin/users', label: 'Members' },
@@ -64,7 +64,7 @@ const getLinksForRole = (role?: Role) => {
 };
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `rounded-full px-3 py-2 text-sm font-semibold transition ${
+  `rounded-full px-3 py-2 text-sm font-semibold leading-none transition ${
     isActive
       ? 'bg-library-forest text-white shadow-sm'
       : 'text-library-ink/80 hover:bg-library-mist hover:text-library-ink'
@@ -98,14 +98,14 @@ const Header = ({ onOpenModules }: HeaderProps) => {
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-library-forest text-sm font-bold text-white shadow-sm">
               IICT
             </span>
-            <span className="min-w-0">
+            <span className="min-w-0 max-w-[220px] sm:max-w-none">
               <span className="block text-base font-bold text-library-ink sm:text-lg">IICT Library</span>
-              <span className="block text-xs font-medium uppercase tracking-[0.16em] text-warm-taupe">Library Management System</span>
+              <span className="block truncate text-xs font-medium uppercase tracking-[0.16em] text-warm-taupe">Library Management System</span>
             </span>
           </Link>
         </div>
 
-        <nav aria-label="Primary navigation" className="hidden items-center gap-1 xl:flex">
+        <nav aria-label="Primary navigation" className="hidden items-center gap-1 2xl:flex">
           {links.map((link) => (
             <NavLink key={link.to} to={link.to} className={navLinkClass}>
               {link.label}
@@ -114,7 +114,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
         </nav>
 
         <div className="flex items-center gap-2">
-          <div className="hidden items-center gap-3 xl:flex">
+          <div className="hidden items-center gap-3 2xl:flex">
             {user ? (
               <div className="relative">
                 <button
@@ -159,7 +159,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
 
           <button
             type="button"
-            className="rounded-full border border-sandy-beige bg-white/80 p-3 shadow-sm transition hover:bg-library-mist xl:hidden"
+            className="rounded-full border border-sandy-beige bg-white/80 p-3 shadow-sm transition hover:bg-library-mist 2xl:hidden"
             aria-label="Toggle navigation"
             aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((open) => !open)}
@@ -187,7 +187,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
       </div>
 
       {isMenuOpen ? (
-        <div className="border-t border-sandy-beige/70 bg-pale-cream px-4 py-4 shadow-sm xl:hidden">
+        <div className="border-t border-sandy-beige/70 bg-pale-cream px-4 py-4 shadow-sm 2xl:hidden">
           <nav aria-label="Mobile navigation" className="mx-auto grid max-w-7xl gap-2 sm:grid-cols-2">
             {links.map((link) => (
               <NavLink key={link.to} to={link.to} className={navLinkClass} onClick={() => setIsMenuOpen(false)}>

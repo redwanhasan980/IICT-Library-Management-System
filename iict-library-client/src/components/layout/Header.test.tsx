@@ -73,7 +73,7 @@ describe('Header', () => {
   it('renders admin links only for admins', () => {
     renderHeader('ADMIN');
 
-    expect(screen.getByText('Admin Dashboard')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/dashboard/admin');
     expect(screen.getByText('Circulation')).toBeInTheDocument();
     expect(screen.getByText('Audit')).toBeInTheDocument();
     expect(screen.queryByText('My Borrowing')).not.toBeInTheDocument();
@@ -84,7 +84,7 @@ describe('Header', () => {
 
     expect(screen.getByText('My Borrowing')).toBeInTheDocument();
     expect(screen.getByText('Outside Book Entry')).toBeInTheDocument();
-    expect(screen.queryByText('Admin Dashboard')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
     expect(screen.queryByText('Circulation')).not.toBeInTheDocument();
   });
 
@@ -93,7 +93,7 @@ describe('Header', () => {
 
     expect(screen.getByText('My Borrowing')).toBeInTheDocument();
     expect(screen.queryByText('Outside Book Entry')).not.toBeInTheDocument();
-    expect(screen.queryByText('Admin Dashboard')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
   });
 
   it('uses the existing logout flow from the profile menu', async () => {

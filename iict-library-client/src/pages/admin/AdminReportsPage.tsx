@@ -53,7 +53,7 @@ const reportLabels: Record<ReportType, string> = {
 };
 
 const selectClass =
-  'mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30';
+  'mt-1 block min-h-10 w-full min-w-0 max-w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30';
 
 const statusVariant: Record<LoanStatus, 'success' | 'warning' | 'danger' | 'info'> = {
   ACTIVE: 'info',
@@ -103,6 +103,28 @@ const downloadCsv = (reportType: ReportType, rows: unknown[]) => {
 };
 
 const summaryLabel = (key: string) => key.replace(/([A-Z])/g, ' $1').replace(/^./, (char) => char.toUpperCase());
+
+const readableMetadata = (metadata: unknown) => {
+  if (!metadata) {
+    return '-';
+  }
+  if (typeof metadata === 'string') {
+    return metadata;
+  }
+  const entries = Object.entries(metadata as Record<string, unknown>).slice(0, 3);
+  if (entries.length === 0) {
+    return 'No metadata';
+  }
+  return entries
+    .map(([key, value]) => {
+      const label = summaryLabel(key.replace(/[_-]/g, ' '));
+      const text = typeof value === 'object' && value !== null
+        ? Object.keys(value as Record<string, unknown>).join(', ') || 'Details'
+        : String(value ?? '-');
+      return `${label}: ${text}`;
+    })
+    .join(' | ');
+};
 
 const AdminReportsPage = () => {
   const [reportType, setReportType] = useState<ReportType>('issued');
@@ -349,7 +371,7 @@ const AdminReportsPage = () => {
             <TableCell className="font-mono text-xs">{row.action}</TableCell>
             <TableCell className="font-mono text-xs">{row.actorId || '-'}</TableCell>
             <TableCell>{row.entityType || '-'} <span className="font-mono text-xs text-warm-taupe">{row.entityId || ''}</span></TableCell>
-            <TableCell className="max-w-sm truncate font-mono text-xs">{row.metadata ? JSON.stringify(row.metadata) : '-'}</TableCell>
+            <TableCell className="min-w-[14rem] text-xs text-library-ink">{readableMetadata(row.metadata)}</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -389,8 +411,8 @@ const AdminReportsPage = () => {
 
       <Card className="space-y-4">
         <h2 className="text-lg font-semibold text-dark-brown">Report Filters</h2>
-        <form onSubmit={applyFilters} className="grid gap-4 lg:grid-cols-6 lg:items-end">
-          <div>
+        <form onSubmit={applyFilters} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
+          <div className="min-w-0">
             <label className="text-sm text-warm-taupe">Report Type</label>
             <select value={reportType} onChange={(e) => { setReportType(e.target.value as ReportType); setPage(1); }} className={selectClass}>
               {Object.entries(reportLabels).map(([value, label]) => (
@@ -401,11 +423,11 @@ const AdminReportsPage = () => {
 
           {reportType !== 'inventory' && reportType !== 'procurement' && (
             <>
-              <div>
+              <div className="min-w-0">
                 <label className="text-sm text-warm-taupe">From</label>
                 <Input type={reportType === 'audit' ? 'datetime-local' : 'date'} value={filters.from} onChange={(e) => setFilters((prev) => ({ ...prev, from: e.target.value }))} />
               </div>
-              <div>
+              <div className="min-w-0">
                 <label className="text-sm text-warm-taupe">To</label>
                 <Input type={reportType === 'audit' ? 'datetime-local' : 'date'} value={filters.to} onChange={(e) => setFilters((prev) => ({ ...prev, to: e.target.value }))} />
               </div>
@@ -413,7 +435,7 @@ const AdminReportsPage = () => {
           )}
 
           {reportType === 'issued' && (
-            <div>
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">Status</label>
               <select value={filters.status} onChange={(e) => setFilters((prev) => ({ ...prev, status: e.target.value as ReportStatusFilter }))} className={selectClass}>
                 <option value="ALL">All status</option>
@@ -425,7 +447,7 @@ const AdminReportsPage = () => {
           )}
 
           {['issued', 'returned', 'overdue'].includes(reportType) && (
-            <div>
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">Borrower Role</label>
               <select value={filters.borrowerRole} onChange={(e) => setFilters((prev) => ({ ...prev, borrowerRole: e.target.value as Role | '' }))} className={selectClass}>
                 <option value="">All roles</option>
@@ -436,7 +458,7 @@ const AdminReportsPage = () => {
           )}
 
           {reportType === 'outside' && (
-            <div>
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">Entry Status</label>
               <select value={filters.status} onChange={(e) => setFilters((prev) => ({ ...prev, status: e.target.value as ReportStatusFilter }))} className={selectClass}>
                 <option value="ALL">All status</option>
@@ -447,7 +469,7 @@ const AdminReportsPage = () => {
           )}
 
           {(reportType === 'outside' || reportType === 'inventory') && (
-            <div>
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">Department</label>
               <select value={filters.department} onChange={(e) => setFilters((prev) => ({ ...prev, department: e.target.value as 'CSE' | 'SWE' | 'EEE' | '' }))} className={selectClass}>
                 <option value="">All departments</option>
@@ -467,7 +489,7 @@ const AdminReportsPage = () => {
 
           {reportType === 'procurement' && (
             <>
-              <div>
+              <div className="min-w-0">
                 <label className="text-sm text-warm-taupe">Procurement Status</label>
                 <select value={filters.procurementStatus} onChange={(e) => setFilters((prev) => ({ ...prev, procurementStatus: e.target.value as 'NOT_STARTED' | 'ONGOING' | 'COMPLETED' | 'CANCELLED' | '' }))} className={selectClass}>
                   <option value="">All status</option>
@@ -477,7 +499,7 @@ const AdminReportsPage = () => {
                   <option value="CANCELLED">Cancelled</option>
                 </select>
               </div>
-              <div>
+              <div className="min-w-0">
                 <label className="text-sm text-warm-taupe">Shelving</label>
                 <select value={filters.shelvingStatus} onChange={(e) => setFilters((prev) => ({ ...prev, shelvingStatus: e.target.value as 'PENDING' | 'IN_PROGRESS' | 'SHELVED' | '' }))} className={selectClass}>
                   <option value="">All shelving</option>
@@ -491,26 +513,28 @@ const AdminReportsPage = () => {
 
           {reportType === 'audit' && (
             <>
-              <div>
+              <div className="min-w-0">
                 <label className="text-sm text-warm-taupe">Action</label>
                 <Input value={filters.action} onChange={(e) => setFilters((prev) => ({ ...prev, action: e.target.value }))} placeholder="loan.issue" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <label className="text-sm text-warm-taupe">Entity</label>
                 <Input value={filters.entityType} onChange={(e) => setFilters((prev) => ({ ...prev, entityType: e.target.value }))} placeholder="Loan" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <label className="text-sm text-warm-taupe">Actor ID</label>
                 <Input value={filters.actorId} onChange={(e) => setFilters((prev) => ({ ...prev, actorId: e.target.value }))} placeholder="User ID" />
               </div>
             </>
           )}
 
-          <div>
+          <div className="min-w-0">
             <label className="text-sm text-warm-taupe">Search</label>
             <Input value={filters.q} onChange={(e) => setFilters((prev) => ({ ...prev, q: e.target.value }))} placeholder="Search report" />
           </div>
-          <Button type="submit">Generate</Button>
+          <div className="flex items-end">
+            <Button type="submit" className="w-full sm:w-auto">Generate</Button>
+          </div>
         </form>
       </Card>
 
@@ -528,7 +552,7 @@ const AdminReportsPage = () => {
 
           <div className="grid gap-3 md:grid-cols-5">
             {Object.entries(data.summary).map(([key, value]) => (
-              <div key={key} className="rounded-md border border-sandy-beige p-3">
+              <div key={key} className="rounded-2xl border border-sandy-beige bg-library-mist/30 p-3">
                 <p className="text-xs text-warm-taupe">{summaryLabel(key)}</p>
                 <p className="text-xl font-bold text-dark-brown">{String(value ?? 0)}</p>
               </div>

@@ -25,30 +25,39 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-dark-brown">Admin Dashboard</h1>
+      <div className="rounded-3xl border border-sandy-beige/70 bg-gradient-to-r from-library-forest via-library-forest to-library-gold p-5 text-white shadow-[0_18px_45px_rgba(22,35,28,0.18)] sm:p-7">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/70">Library Operations</p>
+        <h1 className="mt-2 text-2xl font-bold sm:text-3xl">Admin Dashboard</h1>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-white/80">
+          Monitor circulation, pending requests, fines, and borrower activity from one workspace.
+        </p>
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <Card>
-          <p className="text-xs text-warm-taupe">Active Loans</p>
-          <p className="text-2xl font-semibold text-dark-brown">{activeLoans?.total ?? 0}</p>
+        <Card className="bg-library-mist/40">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-warm-taupe">Active Loans</p>
+          <p className="mt-2 text-3xl font-bold text-dark-brown">{activeLoans?.total ?? 0}</p>
         </Card>
-        <Card>
-          <p className="text-xs text-warm-taupe">Overdue Loans</p>
-          <p className="text-2xl font-semibold text-dark-brown">{overdueLoans?.total ?? 0}</p>
+        <Card className="bg-rose-50/70">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">Overdue Loans</p>
+          <p className="mt-2 text-3xl font-bold text-rose-800">{overdueLoans?.total ?? 0}</p>
         </Card>
-        <Card>
-          <p className="text-xs text-warm-taupe">Pending Reservations</p>
-          <p className="text-2xl font-semibold text-dark-brown">{reservations?.length ?? 0}</p>
+        <Card className="bg-amber-50/80">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">Pending Reservations</p>
+          <p className="mt-2 text-3xl font-bold text-amber-800">{reservations?.length ?? 0}</p>
         </Card>
-        <Card>
-          <p className="text-xs text-warm-taupe">Fine Transactions</p>
-          <p className="text-2xl font-semibold text-dark-brown">{unpaidFines?.length ?? 0}</p>
+        <Card className="bg-white">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-warm-taupe">Fine Transactions</p>
+          <p className="mt-2 text-3xl font-bold text-dark-brown">{unpaidFines?.length ?? 0}</p>
         </Card>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="space-y-3">
-          <h2 className="text-lg font-semibold text-dark-brown">Most Borrowed Books</h2>
+        <Card className="space-y-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-warm-taupe">Circulation</p>
+            <h2 className="text-lg font-semibold text-dark-brown">Most Borrowed Books</h2>
+          </div>
           {!analytics?.mostBorrowedBooks.length ? (
             <EmptyState message="No borrowing data found." />
           ) : (
@@ -73,8 +82,11 @@ const AdminDashboard = () => {
           )}
         </Card>
 
-        <Card className="space-y-3">
-          <h2 className="text-lg font-semibold text-dark-brown">Most Active Borrowers</h2>
+        <Card className="space-y-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-warm-taupe">Members</p>
+            <h2 className="text-lg font-semibold text-dark-brown">Most Active Borrowers</h2>
+          </div>
           {!analytics?.mostActiveBorrowers.length ? (
             <EmptyState message="No borrower data found." />
           ) : (

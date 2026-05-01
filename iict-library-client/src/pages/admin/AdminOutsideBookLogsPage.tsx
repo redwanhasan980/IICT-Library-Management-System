@@ -125,16 +125,16 @@ const AdminOutsideBookLogsPage = () => {
 
       <Card>
         <form onSubmit={handleApplyFilters} className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">Search title/author/student</label>
               <Input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search..." />
             </div>
-            <div>
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">Student Reg Number</label>
               <Input value={studentRegNumber} onChange={(e) => setStudentRegNumber(e.target.value)} placeholder="Reg number" />
             </div>
-            <div>
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">Department</label>
               <select
                 value={department}
@@ -147,7 +147,7 @@ const AdminOutsideBookLogsPage = () => {
                 <option value="EEE">EEE</option>
               </select>
             </div>
-            <div>
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">Status</label>
               <select
                 value={status}
@@ -159,7 +159,7 @@ const AdminOutsideBookLogsPage = () => {
                 <option value="EXITED">Exited</option>
               </select>
             </div>
-            <div>
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">Entry Verified</label>
               <select
                 value={verifiedEntry}
@@ -171,7 +171,7 @@ const AdminOutsideBookLogsPage = () => {
                 <option value="false">Unverified</option>
               </select>
             </div>
-            <div>
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">Exit Verified</label>
               <select
                 value={verifiedExit}
@@ -183,18 +183,18 @@ const AdminOutsideBookLogsPage = () => {
                 <option value="false">Unverified</option>
               </select>
             </div>
-            <div>
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">From</label>
               <Input type="datetime-local" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
             </div>
-            <div>
+            <div className="min-w-0">
               <label className="text-sm text-warm-taupe">To</label>
               <Input type="datetime-local" value={toDate} onChange={(e) => setToDate(e.target.value)} />
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button type="submit" variant="secondary">Apply Filters</Button>
-            <Button type="button" variant="ghost" onClick={handleResetFilters}>Reset</Button>
+            <Button type="submit" variant="secondary" className="w-full sm:w-auto">Apply Filters</Button>
+            <Button type="button" variant="ghost" className="w-full sm:w-auto" onClick={handleResetFilters}>Reset</Button>
           </div>
         </form>
       </Card>
@@ -242,7 +242,8 @@ const AdminOutsideBookLogsPage = () => {
                         <Badge variant="warning">Pending Entry</Badge>
                       )}
                     </TableCell>
-                    <TableCell className="space-x-2">
+                    <TableCell>
+                      <div className="flex flex-wrap gap-2">
                       {!entry.isVerifiedEntry && entry.entryStatus === 'ENTERED' && (
                         <Button size="sm" onClick={() => handleVerifyEntry(entry.id)} disabled={isVerifyingEntry}>
                           Verify Entry
@@ -258,6 +259,7 @@ const AdminOutsideBookLogsPage = () => {
                           Verify Exit
                         </Button>
                       )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

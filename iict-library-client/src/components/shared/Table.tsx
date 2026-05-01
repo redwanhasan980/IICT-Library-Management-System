@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode, TableHTMLAttributes, ThHTMLAttributes, TdHTMLAttributes } from 'react';
 
 export const Table = ({ children, className = '', ...props }: TableHTMLAttributes<HTMLTableElement>) => (
-  <div className="overflow-x-auto">
+  <div className="w-full overflow-x-auto rounded-2xl border border-sandy-beige/60">
     <table className={`min-w-full divide-y divide-sandy-beige/70 ${className}`} {...props}>
       {children}
     </table>
