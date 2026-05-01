@@ -4,8 +4,21 @@ import { logOut } from '../services/auth.slice';
 
 type ClientEnv = Record<string, string | boolean | undefined>;
 
+const DEFAULT_LOCAL_API_BASE_URL = 'http://localhost:5000/api';
+const DEFAULT_ONLINE_API_BASE_URL = 'https://iict-library-management-system-server.onrender.com/api';
+
 const isTruthy = (value: string | boolean | undefined) =>
   value === true || ['1', 'true', 'yes', 'on'].includes(String(value ?? '').trim().toLowerCase());
+
+const isLocalOrigin = (origin: string | undefined) =>
+  !origin ||
+  origin.startsWith('http://localhost') ||
+  origin.startsWith('http://127.0.0.1') ||
+  origin.startsWith('https://localhost') ||
+  origin.startsWith('https://127.0.0.1');
+
+const isLocalApiUrl = (value: string | undefined) =>
+  Boolean(value?.includes('://localhost') || value?.includes('://127.0.0.1'));
 
 const normalizeApiBaseUrl = (value: string | undefined) => {
   const trimmed = value?.trim();
@@ -18,7 +31,10 @@ const normalizeApiBaseUrl = (value: string | undefined) => {
   return withoutTrailingSlash.endsWith('/api') ? withoutTrailingSlash : `${withoutTrailingSlash}/api`;
 };
 
-export const selectApiBaseUrl = (env: ClientEnv) => {
+const getBrowserOrigin = () =>
+  typeof window === 'undefined' ? undefined : window.location.origin;
+
+export const selectApiBaseUrl = (env: ClientEnv, browserOrigin = getBrowserOrigin()) => {
   const onlineValue = env.ONLINE ?? env.VITE_ONLINE;
   const hasOnlineSwitch = onlineValue !== undefined;
   const selectedUrl = hasOnlineSwitch
@@ -26,8 +42,15 @@ export const selectApiBaseUrl = (env: ClientEnv) => {
       ? env.VITE_ONLINE_API_BASE_URL
       : env.VITE_LOCAL_API_BASE_URL
     : env.VITE_API_BASE_URL;
+  const normalizedSelectedUrl = normalizeApiBaseUrl(typeof selectedUrl === 'string' ? selectedUrl : undefined);
 
-  return normalizeApiBaseUrl(typeof selectedUrl === 'string' ? selectedUrl : undefined) ?? 'http://localhost:5000/api';
+  if (!isLocalOrigin(browserOrigin) && (!normalizedSelectedUrl || isLocalApiUrl(normalizedSelectedUrl))) {
+    return normalizeApiBaseUrl(
+      typeof env.VITE_ONLINE_API_BASE_URL === 'string' ? env.VITE_ONLINE_API_BASE_URL : DEFAULT_ONLINE_API_BASE_URL
+    ) as string;
+  }
+
+  return normalizedSelectedUrl ?? DEFAULT_LOCAL_API_BASE_URL;
 };
 
 const rawBaseQuery = fetchBaseQuery({
