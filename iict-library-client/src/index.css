@@ -8,7 +8,8 @@
   --ink: #1a1c1a;
   --ink-soft: #5e4447;
   --paper: #FDFFF5;
-  --paper-strong: #f7f8ec;
+  --paper-strong: #fcfce3;
+  --paper-muted: #fcfccf;
   --accent: #5e4447;
   --accent-strong: #3b2a2d;
   --leaf: #5e4447;
@@ -36,11 +37,11 @@ body {
   min-height: 100svh;
   background:
     radial-gradient(1100px 520px at 12% -8%, rgba(253, 255, 245, 0.96), transparent 58%),
-    radial-gradient(900px 520px at 95% 4%, rgba(197, 171, 157, 0.13), transparent 60%),
-    radial-gradient(760px 460px at 8% 95%, rgba(94, 68, 71, 0.08), transparent 62%),
+    radial-gradient(900px 520px at 95% 4%, rgba(252, 252, 207, 0.36), transparent 60%),
+    radial-gradient(760px 460px at 8% 95%, rgba(197, 171, 157, 0.15), transparent 62%),
     repeating-linear-gradient(0deg, rgba(26, 28, 26, 0.012) 0 1px, transparent 1px 7px),
     repeating-linear-gradient(90deg, rgba(94, 68, 71, 0.012) 0 1px, transparent 1px 9px),
-    linear-gradient(180deg, #FDFFF5 0%, #fbfcf0 48%, #f4f5e8 100%);
+    linear-gradient(180deg, #FDFFF5 0%, #fcfce3 54%, #f7f8ec 100%);
   background-attachment: fixed;
   background-color: var(--paper);
   color: var(--ink);
@@ -116,7 +117,7 @@ input,
 select,
 textarea {
   border: 2px solid var(--ink) !important;
-  background-color: rgba(253, 255, 245, 0.96) !important;
+  background-color: rgba(253, 255, 245, 0.98) !important;
   color: var(--ink) !important;
   box-shadow: inset 2px 2px 0 rgba(26, 28, 26, 0.08);
 }
@@ -134,7 +135,7 @@ textarea:focus {
 
 .paper-surface {
   border: 2px solid var(--ink);
-  background-color: rgba(253, 255, 245, 0.95);
+  background-color: rgba(253, 255, 245, 0.96);
   box-shadow: var(--shadow-soft);
 }
 

@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode, TableHTMLAttributes, ThHTMLAttributes, TdHTMLAttributes } from 'react';
 
 export const Table = ({ children, className = '', ...props }: TableHTMLAttributes<HTMLTableElement>) => (
-  <div className="w-full overflow-x-auto border-2 border-library-ink bg-pale-cream shadow-[4px_4px_0_#1a1c1a]">
+  <div className="w-full overflow-x-auto border-2 border-library-ink bg-paper-soft shadow-[4px_4px_0_#1a1c1a]">
     <table className={`min-w-full divide-y-2 divide-library-ink ${className}`} {...props}>
       {children}
     </table>
@@ -21,7 +21,7 @@ export const TableBody = ({ children, className = '', ...props }: HTMLAttributes
 );
 
 export const TableRow = ({ children, className = '', ...props }: HTMLAttributes<HTMLTableRowElement>) => (
-  <tr className={`transition-colors hover:bg-paper-soft ${className}`} {...props}>
+  <tr className={`transition-colors hover:bg-paper-muted ${className}`} {...props}>
     {children}
   </tr>
 );

@@ -91,7 +91,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b-2 border-library-ink bg-pale-cream/95 shadow-[4px_4px_0_#1a1c1a]">
+    <header className="sticky top-0 z-40 border-b-2 border-library-ink bg-paper-soft/95 shadow-[4px_4px_0_#1a1c1a]">
       <div className="mx-auto flex min-h-[72px] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
           <Link to="/" className="flex min-w-0 items-center gap-3" onClick={() => setIsMenuOpen(false)}>
@@ -132,7 +132,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
                   </span>
                 </button>
                 {isProfileOpen ? (
-                  <div className="absolute right-0 mt-2 w-64 border-2 border-library-ink bg-pale-cream p-3 shadow-[6px_6px_0_#1a1c1a]">
+                  <div className="absolute right-0 mt-2 w-64 border-2 border-library-ink bg-paper-soft p-3 shadow-[6px_6px_0_#1a1c1a]">
                     <p className="truncate px-2 text-sm font-semibold text-library-ink">{user.email}</p>
                     <p className="px-2 text-xs text-warm-taupe">{user.role}</p>
                     <div className="my-3 h-px bg-sandy-beige/80" />
@@ -187,7 +187,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
       </div>
 
       {isMenuOpen ? (
-        <div className="border-t-2 border-library-ink bg-pale-cream px-4 py-4 shadow-[4px_4px_0_#1a1c1a] 2xl:hidden">
+        <div className="border-t-2 border-library-ink bg-paper-soft px-4 py-4 shadow-[4px_4px_0_#1a1c1a] 2xl:hidden">
           <nav aria-label="Mobile navigation" className="mx-auto grid max-w-7xl gap-2 sm:grid-cols-2">
             {links.map((link) => (
               <NavLink key={link.to} to={link.to} className={navLinkClass} onClick={() => setIsMenuOpen(false)}>

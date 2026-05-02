@@ -16,7 +16,8 @@ export default {
         'library-mist': '#c5ab9d',
         'library-ink': '#1a1c1a',
         'paper': '#FDFFF5',
-        'paper-soft': '#f7f8ec',
+        'paper-soft': '#fcfce3',
+        'paper-muted': '#fcfccf',
         'plum': '#5e4447',
         'taupe': '#c5ab9d',
       }

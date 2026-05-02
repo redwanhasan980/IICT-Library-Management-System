@@ -20,7 +20,7 @@ const QuickActions = ({ title = 'Quick Actions', actions }: QuickActionsProps) =
           <Link
             key={action.to}
             to={action.to}
-            className="border-2 border-library-ink bg-pale-cream/95 p-5 shadow-[5px_5px_0_#1a1c1a] transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-library-mist active:translate-x-1 active:translate-y-1 active:shadow-none"
+            className="border-2 border-library-ink bg-paper-soft/95 p-5 shadow-[5px_5px_0_#1a1c1a] transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-paper-muted active:translate-x-1 active:translate-y-1 active:shadow-none"
           >
             <h3 className="text-lg font-semibold text-library-ink">{action.label}</h3>
             <p className="mt-2 text-sm leading-6 text-warm-taupe">{action.description}</p>

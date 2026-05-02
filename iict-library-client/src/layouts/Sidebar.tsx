@@ -80,7 +80,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         onClick={onClose}
       />
       <aside
-        className={`fixed right-4 top-4 z-50 h-[calc(100vh-2rem)] w-72 border-2 border-library-ink bg-pale-cream p-6 shadow-[8px_8px_0_#1a1c1a] transition-transform ${
+        className={`fixed right-4 top-4 z-50 h-[calc(100vh-2rem)] w-72 border-2 border-library-ink bg-paper-soft p-6 shadow-[8px_8px_0_#1a1c1a] transition-transform ${
           isOpen ? 'translate-x-0' : 'translate-x-[calc(100%+2rem)]'
         }`}
       >
