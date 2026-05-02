@@ -13,6 +13,9 @@ import { Input } from '../../components/shared/Input';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 
+const selectClass =
+  'mt-1 w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40';
+
 const AdminOutsideBookLogsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [studentRegNumber, setStudentRegNumber] = useState('');
@@ -139,7 +142,7 @@ const AdminOutsideBookLogsPage = () => {
               <select
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30"
+                className={selectClass}
               >
                 <option value="">All</option>
                 <option value="CSE">CSE</option>
@@ -152,7 +155,7 @@ const AdminOutsideBookLogsPage = () => {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30"
+                className={selectClass}
               >
                 <option value="">All</option>
                 <option value="ENTERED">Entered</option>
@@ -164,7 +167,7 @@ const AdminOutsideBookLogsPage = () => {
               <select
                 value={verifiedEntry}
                 onChange={(e) => setVerifiedEntry(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30"
+                className={selectClass}
               >
                 <option value="">All</option>
                 <option value="true">Verified</option>
@@ -176,7 +179,7 @@ const AdminOutsideBookLogsPage = () => {
               <select
                 value={verifiedExit}
                 onChange={(e) => setVerifiedExit(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30"
+                className={selectClass}
               >
                 <option value="">All</option>
                 <option value="true">Verified</option>
@@ -267,7 +270,7 @@ const AdminOutsideBookLogsPage = () => {
             </Table>
 
             {data.totalPages > 1 && (
-              <div className="flex items-center justify-between border-t border-sandy-beige/70 mt-4 pt-4">
+              <div className="mt-4 flex items-center justify-between border-t-2 border-library-ink pt-4">
                 <span className="text-sm text-warm-taupe">Page {data.page} of {data.totalPages}</span>
                 <div className="flex gap-2">
                   <Button

@@ -151,7 +151,7 @@ const AdminCatalogPage = () => {
                         </Button>
                         <Button
                           variant={book.isArchived ? 'secondary' : 'outline'}
-                          className={!book.isArchived ? 'text-red-600 hover:bg-red-50' : ''}
+                          className={!book.isArchived ? 'border-rose-950 bg-rose-50 text-rose-800 hover:bg-rose-100' : ''}
                           size="sm"
                           onClick={() => handleToggleArchive(book.id, book.isArchived)}
                         >

@@ -93,7 +93,7 @@ const AdminFineManagementPage = () => {
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value as 'STUDENT' | 'TEACHER' | '')}
-            className="rounded-md border border-sandy-beige px-3 py-2 text-sm"
+            className="w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40"
           >
             <option value="">All roles</option>
             <option value="STUDENT">Student</option>

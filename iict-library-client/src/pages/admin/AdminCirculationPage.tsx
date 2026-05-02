@@ -35,6 +35,9 @@ const displayStatus = (loan: Loan) => loan.effectiveStatus ?? loan.status;
 
 const formatDate = (value?: string) => (value ? format(new Date(value), 'PPp') : '-');
 
+const selectClass =
+  'mt-1 w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40';
+
 const borrowerLabel = (loan?: Loan) => {
   if (!loan?.user) {
     return '-';
@@ -201,7 +204,8 @@ const AdminCirculationPage = () => {
               <TableCell>
                 <Badge variant={statusVariantMap[status]}>{status}</Badge>
               </TableCell>
-              <TableCell className="space-x-2">
+              <TableCell>
+                <div className="flex flex-wrap gap-2">
                 {loan.status === 'ACTIVE' && (
                   <Button size="sm" variant="secondary" disabled={isReturning} onClick={() => handleReturn(loan.id)}>
                     Return
@@ -213,6 +217,7 @@ const AdminCirculationPage = () => {
                 <Button size="sm" variant="ghost" onClick={() => setSelectedBookId(loan.bookId)}>
                   Book
                 </Button>
+                </div>
               </TableCell>
             </TableRow>
           );
@@ -247,7 +252,7 @@ const AdminCirculationPage = () => {
               <select
                 value={borrowerMode}
                 onChange={(e) => setBorrowerMode(e.target.value as 'userId' | 'studentRegNumber' | 'teacherId')}
-                className="mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30"
+                className={selectClass}
               >
                 <option value="userId">User ID</option>
                 <option value="studentRegNumber">Student Reg No.</option>
@@ -280,7 +285,7 @@ const AdminCirculationPage = () => {
         {isFetching && <p className="text-sm text-warm-taupe">Looking up accession...</p>}
 
         {lookupData?.book && (
-          <div className="rounded-md border border-sandy-beige p-4 text-sm">
+          <div className="border-2 border-library-ink bg-pale-cream p-4 text-sm shadow-[3px_3px_0_#1a1c1a]">
             <p className="font-semibold text-dark-brown">{lookupData.book.title}</p>
             <p className="font-mono text-xs text-warm-taupe">Accession: {lookupData.book.accessionNumber}</p>
             <p className="text-warm-taupe">{lookupData.book.author}</p>
@@ -300,7 +305,7 @@ const AdminCirculationPage = () => {
               )}
             </div>
             {lookupData.reservationHold && (
-              <div className="mt-3 rounded-md border border-sandy-beige bg-library-cream/60 p-3">
+              <div className="mt-3 border-2 border-library-ink bg-paper-soft p-3">
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant={reservationStatusVariantMap[lookupData.reservationHold.status] || 'warning'}>
                     Reserved: {lookupData.reservationHold.status}
@@ -316,7 +321,7 @@ const AdminCirculationPage = () => {
         )}
 
         {lookupData?.reservationHold && (
-          <div className="grid gap-3 rounded-md border border-sandy-beige p-4">
+          <div className="grid gap-3 border-2 border-library-ink bg-pale-cream p-4 shadow-[3px_3px_0_#1a1c1a]">
             <label className="flex items-center gap-2 text-sm text-warm-taupe">
               <input
                 type="checkbox"
@@ -380,7 +385,7 @@ const AdminCirculationPage = () => {
           <>
             {renderLoanRows(loans.items)}
             {loans.totalPages > 1 && (
-              <div className="flex items-center justify-between border-t border-sandy-beige/70 pt-4">
+              <div className="flex items-center justify-between border-t-2 border-library-ink pt-4">
                 <span className="text-sm text-warm-taupe">Page {loans.page} of {loans.totalPages}</span>
                 <div className="flex gap-2">
                   <Button size="sm" variant="ghost" disabled={loans.page === 1} onClick={() => setPage((prev) => prev - 1)}>

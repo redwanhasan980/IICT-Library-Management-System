@@ -25,6 +25,9 @@ const statusBadgeVariant: Record<InventoryAuditResultStatus, 'success' | 'warnin
   INACTIVE_OR_ARCHIVED: 'info',
 };
 
+const compactSelectClass =
+  'border-2 border-library-ink bg-paper-soft px-2 py-1 text-sm font-semibold text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40';
+
 const AdminInventoryAuditPage = () => {
   const [title, setTitle] = useState('');
   const [notes, setNotes] = useState('');
@@ -187,7 +190,7 @@ const AdminInventoryAuditPage = () => {
                 key={session.id}
                 type="button"
                 onClick={() => setSelectedSessionId(session.id)}
-                className={`rounded-md border p-4 text-left ${activeSession?.id === session.id ? 'border-dark-brown bg-pale-cream' : 'border-sandy-beige bg-white'}`}
+                className={`border-2 p-4 text-left shadow-[3px_3px_0_#1a1c1a] transition-transform hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ${activeSession?.id === session.id ? 'border-library-ink bg-pale-cream' : 'border-library-ink bg-paper-soft'}`}
               >
                 <div className="mb-2 flex items-center justify-between">
                   <p className="font-medium text-dark-brown">{session.title}</p>
@@ -217,7 +220,7 @@ const AdminInventoryAuditPage = () => {
 
           {activeSession.status === 'OPEN' && (
             <div className="grid gap-4 lg:grid-cols-2">
-              <div className="space-y-2 rounded-md border border-sandy-beige p-3">
+              <div className="space-y-2 border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
                 <p className="text-sm font-medium text-dark-brown">Fast Single Entry</p>
                 <Input
                   autoFocus
@@ -228,10 +231,10 @@ const AdminInventoryAuditPage = () => {
                 <Button onClick={handleAddScan} disabled={addingScan}>{addingScan ? 'Adding...' : 'Add Scan'}</Button>
               </div>
 
-              <div className="space-y-2 rounded-md border border-sandy-beige p-3">
+              <div className="space-y-2 border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
                 <p className="text-sm font-medium text-dark-brown">Bulk Entry</p>
                 <textarea
-                  className="min-h-24 w-full rounded-md border border-sandy-beige p-2 text-sm"
+                  className="min-h-24 w-full border-2 border-library-ink bg-paper-soft p-2 text-sm text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40"
                   value={bulkText}
                   onChange={(e) => setBulkText(e.target.value)}
                   placeholder="Paste accession numbers (newline/comma/space separated)"
@@ -259,7 +262,7 @@ const AdminInventoryAuditPage = () => {
               <div className="flex items-center gap-2">
                 <label className="text-sm text-warm-taupe">Filter:</label>
                 <select
-                  className="rounded-md border border-sandy-beige px-2 py-1 text-sm"
+                  className={compactSelectClass}
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as InventoryAuditResultStatus | '')}
                 >

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Card } from '../../components/shared/Card';
+import { Button } from '../../components/shared/Button';
 import { EmptyState, ErrorState, LoadingState } from '../../components/shared/FeedbackState';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/shared/Table';
 import { useGetAnalyticsDashboardQuery } from '../../services/library.api';
@@ -23,17 +24,17 @@ const AdminAnalyticsPage = () => {
             type="datetime-local"
             value={from}
             onChange={(e) => setFrom(e.target.value ? new Date(e.target.value).toISOString() : '')}
-            className="rounded-md border border-sandy-beige px-3 py-2 text-sm"
+            className="w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40"
           />
           <input
             type="datetime-local"
             value={to}
             onChange={(e) => setTo(e.target.value ? new Date(e.target.value).toISOString() : '')}
-            className="rounded-md border border-sandy-beige px-3 py-2 text-sm"
+            className="w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40"
           />
-          <button className="rounded-md bg-sandy-beige px-4 py-2 text-sm font-medium text-dark-brown" onClick={() => refetch()}>
+          <Button variant="secondary" onClick={() => refetch()}>
             Apply Filter
-          </button>
+          </Button>
         </div>
       </Card>
 
@@ -75,8 +76,8 @@ const AdminAnalyticsPage = () => {
               {data.borrowingTrendsByMonth.map((row) => (
                 <div key={row.month} className="flex items-center gap-3">
                   <span className="w-28 text-xs text-warm-taupe">{row.month}</span>
-                  <div className="h-3 flex-1 rounded bg-sandy-beige">
-                    <div className="h-3 rounded bg-dark-brown" style={{ width: `${Math.min(100, row.count * 5)}%` }} />
+                  <div className="h-3 flex-1 border border-library-ink bg-library-mist">
+                    <div className="h-full bg-library-ink" style={{ width: `${Math.min(100, row.count * 5)}%` }} />
                   </div>
                   <span className="w-8 text-right text-sm text-dark-brown">{row.count}</span>
                 </div>

@@ -53,7 +53,7 @@ const reportLabels: Record<ReportType, string> = {
 };
 
 const selectClass =
-  'mt-1 block min-h-10 w-full min-w-0 max-w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30';
+  'mt-1 block min-h-10 w-full min-w-0 max-w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40';
 
 const statusVariant: Record<LoanStatus, 'success' | 'warning' | 'danger' | 'info'> = {
   ACTIVE: 'info',
@@ -552,7 +552,7 @@ const AdminReportsPage = () => {
 
           <div className="grid gap-3 md:grid-cols-5">
             {Object.entries(data.summary).map(([key, value]) => (
-              <div key={key} className="rounded-2xl border border-sandy-beige bg-library-mist/30 p-3">
+              <div key={key} className="border-2 border-library-ink bg-library-mist p-3 shadow-[3px_3px_0_#1a1c1a]">
                 <p className="text-xs text-warm-taupe">{summaryLabel(key)}</p>
                 <p className="text-xl font-bold text-dark-brown">{String(value ?? 0)}</p>
               </div>
@@ -565,7 +565,7 @@ const AdminReportsPage = () => {
             <>
               {renderTable()}
               {data.totalPages > 1 && (
-                <div className="flex items-center justify-between border-t border-sandy-beige/70 pt-4">
+                <div className="flex items-center justify-between border-t-2 border-library-ink pt-4">
                   <span className="text-sm text-warm-taupe">Page {data.page} of {data.totalPages}</span>
                   <div className="flex gap-2">
                     <Button size="sm" variant="ghost" disabled={data.page === 1} onClick={() => setPage((prev) => prev - 1)}>Prev</Button>

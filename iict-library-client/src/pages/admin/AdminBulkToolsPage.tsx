@@ -50,13 +50,13 @@ const AdminBulkToolsPage = () => {
           Template columns: accessionNumber, title, author, isbn, department, totalCopies
         </p>
         <textarea
-          className="min-h-52 w-full rounded-md border border-sandy-beige p-3 font-mono text-sm"
+          className="min-h-52 w-full border-2 border-library-ink bg-paper-soft p-3 font-mono text-sm text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40"
           value={csvText}
           onChange={(e) => setCsvText(e.target.value)}
         />
         <Button onClick={handleImport} disabled={isImporting}>{isImporting ? 'Importing...' : 'Import Books CSV'}</Button>
         {importSummary && (
-          <div className="rounded-md bg-pale-cream p-3 text-sm text-dark-brown">
+          <div className="border-2 border-library-ink bg-pale-cream p-3 text-sm font-semibold text-dark-brown shadow-[2px_2px_0_#1a1c1a]">
             Rows: {importSummary.rowsProcessed} | Created: {importSummary.created} | Updated: {importSummary.updated} | Errors: {importSummary.errors.length}
           </div>
         )}

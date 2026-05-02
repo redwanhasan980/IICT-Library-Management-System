@@ -7,7 +7,7 @@ interface SpineLabelPreviewProps {
 
 const SpineLabelPreview: React.FC<SpineLabelPreviewProps> = ({ label }) => {
   return (
-    <div className="w-[2in] h-[1in] border border-dashed border-gray-400 p-2 flex flex-col justify-center items-center bg-white text-black font-mono text-sm">
+    <div className="flex h-[1in] w-[2in] flex-col items-center justify-center border-2 border-dashed border-library-ink bg-paper-soft p-2 font-mono text-sm text-library-ink">
       <div className="text-center">
         <p>{label.classificationNumber}</p>
         <p>{label.authorCode}</p>

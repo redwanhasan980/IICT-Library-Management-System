@@ -23,7 +23,7 @@ import {
 import type { Department, ProcurementStatus, ShelvingStatus } from '../../types/procurement.types';
 
 const selectClass =
-  'mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30 disabled:bg-library-mist/60';
+  'mt-1 w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40 disabled:bg-library-mist/60';
 
 const statusVariant: Record<ProcurementStatus, 'info' | 'warning' | 'success' | 'danger'> = {
   NOT_STARTED: 'info',
@@ -273,35 +273,35 @@ const AdminProcurementPage = () => {
         {summaryError && <ErrorState message="Failed to load procurement summary." onRetry={refetchSummary} />}
         {!summaryLoading && !summaryError && summary && (
           <div className="grid gap-3 md:grid-cols-4">
-            <div className="rounded-md border border-sandy-beige p-3">
+            <div className="border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
               <p className="text-xs text-warm-taupe">Applications</p>
               <p className="text-xl font-bold text-dark-brown">{summary.totalApplications}</p>
             </div>
-            <div className="rounded-md border border-sandy-beige p-3">
+            <div className="border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
               <p className="text-xs text-warm-taupe">Requisitions</p>
               <p className="text-xl font-bold text-dark-brown">{summary.totalRequisitions}</p>
             </div>
-            <div className="rounded-md border border-sandy-beige p-3">
+            <div className="border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
               <p className="text-xs text-warm-taupe">Vendors</p>
               <p className="text-xl font-bold text-dark-brown">{summary.totalVendors}</p>
             </div>
-            <div className="rounded-md border border-sandy-beige p-3">
+            <div className="border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
               <p className="text-xs text-warm-taupe">Orders</p>
               <p className="text-xl font-bold text-dark-brown">{summary.totalOrders}</p>
             </div>
-            <div className="rounded-md border border-sandy-beige p-3">
+            <div className="border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
               <p className="text-xs text-warm-taupe">Allocated Budget</p>
               <p className="text-xl font-bold text-dark-brown">{money(summary.totalAllocatedBudget)}</p>
             </div>
-            <div className="rounded-md border border-sandy-beige p-3">
+            <div className="border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
               <p className="text-xs text-warm-taupe">Estimated Cost</p>
               <p className="text-xl font-bold text-dark-brown">{money(summary.totalEstimatedCost)}</p>
             </div>
-            <div className="rounded-md border border-sandy-beige p-3">
+            <div className="border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
               <p className="text-xs text-warm-taupe">Requested Quantity</p>
               <p className="text-xl font-bold text-dark-brown">{summary.totalRequestedQuantity}</p>
             </div>
-            <div className="rounded-md border border-sandy-beige p-3">
+            <div className="border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
               <p className="text-xs text-warm-taupe">Completed Orders</p>
               <p className="text-xl font-bold text-dark-brown">{summary.completedOrders}</p>
             </div>

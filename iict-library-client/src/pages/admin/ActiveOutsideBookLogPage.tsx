@@ -79,7 +79,8 @@ const ActiveOutsideBookLogPage = () => {
                       <Badge variant="warning">Pending Entry</Badge>
                     )}
                   </TableCell>
-                  <TableCell className="space-x-2">
+                  <TableCell>
+                    <div className="flex flex-wrap gap-2">
                     {!entry.isVerifiedEntry && (
                       <Button
                         size="sm"
@@ -99,6 +100,7 @@ const ActiveOutsideBookLogPage = () => {
                         Verify Exit
                       </Button>
                     )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

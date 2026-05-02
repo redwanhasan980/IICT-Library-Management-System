@@ -55,7 +55,7 @@ const MetadataSummary = ({ metadata }: { metadata: unknown }) => {
   return (
     <div className="flex max-w-md flex-wrap gap-1.5">
       {entries.map(([key, value]) => (
-        <span key={key} className="rounded-full bg-library-mist px-2.5 py-1 text-xs text-library-ink">
+        <span key={key} className="border border-library-ink bg-library-mist px-2.5 py-1 text-xs text-library-ink">
           <span className="font-semibold">{humanizeKey(key)}:</span> {shortValue(value)}
         </span>
       ))}
@@ -230,7 +230,7 @@ const AdminAuditLogsPage = () => {
               </Table>
 
               {data.totalPages > 1 && (
-                <div className="flex items-center justify-between border-t border-sandy-beige/70 pt-4">
+                <div className="flex items-center justify-between border-t-2 border-library-ink pt-4">
                   <span className="text-sm text-warm-taupe">Page {data.page} of {data.totalPages}</span>
                   <div className="flex gap-2">
                     <Button size="sm" variant="ghost" disabled={data.page === 1} onClick={() => setPage((prev) => prev - 1)}>Prev</Button>
