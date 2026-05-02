@@ -8,6 +8,7 @@ import { Role } from '../../types/user.types';
 type NavItem = {
   to: string;
   label: string;
+  end?: boolean;
 };
 
 interface HeaderProps {
@@ -15,7 +16,7 @@ interface HeaderProps {
 }
 
 const publicLinks: NavItem[] = [
-  { to: '/', label: 'Home' },
+  { to: '/', label: 'Home', end: true },
   { to: '/catalog', label: 'Catalog' },
   { to: '/about', label: 'About Library' },
   { to: '/login', label: 'Login' },
@@ -23,7 +24,7 @@ const publicLinks: NavItem[] = [
 ];
 
 const studentLinks: NavItem[] = [
-  { to: '/dashboard/student', label: 'Dashboard' },
+  { to: '/dashboard/student', label: 'Dashboard', end: true },
   { to: '/dashboard/books', label: 'Catalog' },
   { to: '/dashboard/student/borrowing', label: 'My Borrowing' },
   { to: '/dashboard/add-outside-book', label: 'Outside Book Entry' },
@@ -31,14 +32,14 @@ const studentLinks: NavItem[] = [
 ];
 
 const teacherLinks: NavItem[] = [
-  { to: '/dashboard/teacher', label: 'Dashboard' },
+  { to: '/dashboard/teacher', label: 'Dashboard', end: true },
   { to: '/dashboard/books', label: 'Catalog' },
   { to: '/dashboard/teacher/borrowing', label: 'My Borrowing' },
   { to: '/dashboard/profile', label: 'Profile' },
 ];
 
 const adminLinks: NavItem[] = [
-  { to: '/dashboard/admin', label: 'Admin' },
+  { to: '/dashboard/admin', label: 'Admin', end: true },
   { to: '/dashboard/admin/catalog', label: 'Books' },
   { to: '/dashboard/admin/circulation', label: 'Circulation' },
   { to: '/dashboard/admin/outside-book-logs', label: 'Outside Logs' },
@@ -107,7 +108,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
 
         <nav aria-label="Primary navigation" className="hidden items-center gap-1 2xl:flex">
           {links.map((link) => (
-            <NavLink key={link.to} to={link.to} className={navLinkClass}>
+            <NavLink key={link.to} to={link.to} end={link.end} className={navLinkClass}>
               {link.label}
             </NavLink>
           ))}
@@ -190,7 +191,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
         <div className="border-t-2 border-library-ink bg-paper-soft px-4 py-4 shadow-[4px_4px_0_#1a1c1a] 2xl:hidden">
           <nav aria-label="Mobile navigation" className="mx-auto grid max-w-7xl gap-2 sm:grid-cols-2">
             {links.map((link) => (
-              <NavLink key={link.to} to={link.to} className={navLinkClass} onClick={() => setIsMenuOpen(false)}>
+              <NavLink key={link.to} to={link.to} end={link.end} className={navLinkClass} onClick={() => setIsMenuOpen(false)}>
                 {link.label}
               </NavLink>
             ))}
