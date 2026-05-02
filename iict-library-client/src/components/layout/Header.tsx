@@ -64,10 +64,10 @@ const getLinksForRole = (role?: Role) => {
 };
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `rounded-full px-3 py-2 text-sm font-semibold leading-none transition ${
+  `border-2 px-3 py-2 text-sm font-extrabold uppercase leading-none tracking-[0.08em] transition ${
     isActive
-      ? 'bg-library-forest text-white shadow-sm'
-      : 'text-library-ink/80 hover:bg-library-mist hover:text-library-ink'
+      ? 'border-library-ink bg-library-ink text-pale-cream shadow-[3px_3px_0_#5e4447]'
+      : 'border-transparent text-library-ink hover:border-library-ink hover:bg-library-mist'
   }`;
 
 const Header = ({ onOpenModules }: HeaderProps) => {
@@ -91,11 +91,11 @@ const Header = ({ onOpenModules }: HeaderProps) => {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-sandy-beige/70 bg-pale-cream/95 shadow-sm backdrop-blur">
+    <header className="sticky top-0 z-40 border-b-2 border-library-ink bg-pale-cream/95 shadow-[0_4px_0_#1a1c1a]">
       <div className="mx-auto flex min-h-[72px] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
           <Link to="/" className="flex min-w-0 items-center gap-3" onClick={() => setIsMenuOpen(false)}>
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-library-forest text-sm font-bold text-white shadow-sm">
+            <span className="grid h-11 w-11 shrink-0 place-items-center border-2 border-library-ink bg-library-ink text-sm font-extrabold text-pale-cream shadow-[3px_3px_0_#5e4447]">
               IICT
             </span>
             <span className="min-w-0 max-w-[220px] sm:max-w-none">
@@ -119,11 +119,11 @@ const Header = ({ onOpenModules }: HeaderProps) => {
               <div className="relative">
                 <button
                   type="button"
-                  className="flex items-center gap-3 rounded-full border border-sandy-beige bg-white/80 px-3 py-2 text-left shadow-sm transition hover:bg-white"
+                  className="flex items-center gap-3 border-2 border-library-ink bg-paper-soft px-3 py-2 text-left transition hover:bg-library-mist"
                   onClick={() => setIsProfileOpen((open) => !open)}
                   aria-expanded={isProfileOpen}
                 >
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-library-mist text-sm font-bold text-library-ink">
+                  <span className="grid h-9 w-9 place-items-center border-2 border-library-ink bg-library-mist text-sm font-bold text-library-ink">
                     {(user.name || user.email).slice(0, 1).toUpperCase()}
                   </span>
                   <span>
@@ -132,20 +132,20 @@ const Header = ({ onOpenModules }: HeaderProps) => {
                   </span>
                 </button>
                 {isProfileOpen ? (
-                  <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-sandy-beige bg-white p-3 shadow-[0_18px_40px_rgba(22,35,28,0.14)]">
+                  <div className="absolute right-0 mt-2 w-64 border-2 border-library-ink bg-pale-cream p-3 shadow-[6px_6px_0_#1a1c1a]">
                     <p className="truncate px-2 text-sm font-semibold text-library-ink">{user.email}</p>
                     <p className="px-2 text-xs text-warm-taupe">{user.role}</p>
                     <div className="my-3 h-px bg-sandy-beige/80" />
                     <NavLink
                       to="/dashboard/profile"
-                      className="block rounded-xl px-3 py-2 text-sm font-medium text-library-ink hover:bg-library-mist"
+                      className="block border-2 border-transparent px-3 py-2 text-sm font-bold text-library-ink hover:border-library-ink hover:bg-library-mist"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       Profile
                     </NavLink>
                     <button
                       type="button"
-                      className="mt-1 w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-rose-700 hover:bg-rose-50 disabled:opacity-60"
+                      className="mt-1 w-full border-2 border-library-ink bg-rose-50 px-3 py-2 text-left text-sm font-bold text-rose-800 disabled:opacity-60"
                       onClick={handleLogout}
                       disabled={isLoading}
                     >
@@ -159,7 +159,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
 
           <button
             type="button"
-            className="rounded-full border border-sandy-beige bg-white/80 p-3 shadow-sm transition hover:bg-library-mist 2xl:hidden"
+            className="border-2 border-library-ink bg-paper-soft p-3 transition hover:bg-library-mist 2xl:hidden"
             aria-label="Toggle navigation"
             aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((open) => !open)}
@@ -173,7 +173,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
             <button
               type="button"
               aria-label="Open all dashboard modules"
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-sandy-beige bg-white/85 shadow-sm transition hover:bg-library-mist"
+              className="grid h-11 w-11 shrink-0 place-items-center border-2 border-library-ink bg-paper-soft transition hover:bg-library-mist"
               onClick={onOpenModules}
             >
               <span className="grid gap-1" aria-hidden="true">
@@ -187,7 +187,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
       </div>
 
       {isMenuOpen ? (
-        <div className="border-t border-sandy-beige/70 bg-pale-cream px-4 py-4 shadow-sm 2xl:hidden">
+        <div className="border-t-2 border-library-ink bg-pale-cream px-4 py-4 shadow-[0_4px_0_#1a1c1a] 2xl:hidden">
           <nav aria-label="Mobile navigation" className="mx-auto grid max-w-7xl gap-2 sm:grid-cols-2">
             {links.map((link) => (
               <NavLink key={link.to} to={link.to} className={navLinkClass} onClick={() => setIsMenuOpen(false)}>
@@ -197,7 +197,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
             {user ? (
               <button
                 type="button"
-                className="rounded-full px-3 py-2 text-left text-sm font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-60"
+                className="border-2 border-library-ink bg-rose-50 px-3 py-2 text-left text-sm font-bold text-rose-800 disabled:opacity-60"
                 onClick={handleLogout}
                 disabled={isLoading}
               >

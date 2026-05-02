@@ -74,26 +74,26 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   return (
     <>
       <div
-        className={`fixed inset-0 z-40 bg-black/30 backdrop-blur-sm transition-opacity ${
+        className={`fixed inset-0 z-40 bg-library-ink/45 transition-opacity ${
           isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         onClick={onClose}
       />
       <aside
-        className={`fixed right-4 top-4 z-50 h-[calc(100vh-2rem)] w-72 rounded-3xl border border-sandy-beige/70 bg-white/90 p-6 shadow-[0_20px_40px_rgba(22,35,28,0.12)] backdrop-blur transition-transform ${
+        className={`fixed right-4 top-4 z-50 h-[calc(100vh-2rem)] w-72 border-2 border-library-ink bg-pale-cream p-6 shadow-[8px_8px_0_#1a1c1a] transition-transform ${
           isOpen ? 'translate-x-0' : 'translate-x-[calc(100%+2rem)]'
         }`}
       >
         <div className="mb-8 flex items-start justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-warm-taupe">IICT</p>
-            <h2 className="text-2xl font-semibold text-library-ink">Library Suite</h2>
-            <div className="mt-3 h-[3px] w-16 rounded-full bg-gradient-to-r from-library-forest to-library-gold" />
+            <h2 className="text-2xl font-bold text-library-ink">Library Suite</h2>
+            <div className="mt-3 h-[3px] w-16 bg-library-ink" />
           </div>
           <button
             type="button"
             aria-label="Close navigation"
-            className="rounded-full border border-sandy-beige/70 bg-white p-2 text-library-ink shadow-sm"
+            className="border-2 border-library-ink bg-paper-soft px-3 py-1 text-sm font-extrabold text-library-ink"
             onClick={onClose}
           >
             X
@@ -107,10 +107,10 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                   to={link.to}
                   onClick={onClose}
                   className={({ isActive }) =>
-                    `block rounded-2xl px-4 py-2.5 text-sm font-medium transition-all ${
+                    `block border-2 px-4 py-2.5 text-sm font-bold transition-all ${
                       isActive
-                        ? 'bg-library-mist text-library-ink shadow-sm'
-                        : 'text-warm-taupe hover:bg-library-mist/70 hover:text-library-ink'
+                        ? 'border-library-ink bg-library-ink text-pale-cream shadow-[3px_3px_0_#5e4447]'
+                        : 'border-transparent text-warm-taupe hover:border-library-ink hover:bg-library-mist hover:text-library-ink'
                     }`
                   }
                 >
@@ -122,7 +122,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         </nav>
 
         {user ? (
-          <div className="mt-8 border-t border-sandy-beige/70 pt-5">
+          <div className="mt-8 border-t-2 border-library-ink pt-5">
             <p className="mb-3 text-xs text-warm-taupe">Signed in as {user.email}</p>
             <Button
               variant="ghost"
