@@ -1,5 +1,4 @@
 import BookSection from '../components/home/BookSection';
-import QuickActions from '../components/home/QuickActions';
 import StatsGrid from '../components/home/StatsGrid';
 import { Badge } from '../components/shared/Badge';
 import { Card } from '../components/shared/Card';
@@ -7,33 +6,6 @@ import { EmptyState, ErrorState, LoadingState } from '../components/shared/Feedb
 import { useGetDashboardHomeQuery, useGetDashboardSummaryQuery } from '../services/dashboard.api';
 import { useListRecommendedBooksQuery } from '../services/library.api';
 import { Role } from '../types/user.types';
-
-const quickActionsForRole = (role?: string) => {
-  if (role === Role.ADMIN) {
-    return [
-      { to: '/dashboard/admin/catalog/new', label: 'Add Book', description: 'Create a catalog record.' },
-      { to: '/dashboard/admin/circulation', label: 'Issue or Return', description: 'Open the circulation desk.' },
-      { to: '/dashboard/admin/reports', label: 'Reports', description: 'Review library reports.' },
-      { to: '/dashboard/admin/outside-book-logs', label: 'Outside Book Logs', description: 'Monitor outside-book entries.' },
-      { to: '/dashboard/admin/procurement', label: 'Procurement', description: 'Manage procurement records.' },
-    ];
-  }
-
-  if (role === Role.STUDENT) {
-    return [
-      { to: '/dashboard/books', label: 'Search Books', description: 'Browse available books.' },
-      { to: '/dashboard/student/borrowing', label: 'My Borrowing', description: 'View current and returned books.' },
-      { to: '/dashboard/add-outside-book', label: 'Register Outside Book', description: 'Add personal book entry.' },
-      { to: '/dashboard/profile', label: 'Profile', description: 'Review account details.' },
-    ];
-  }
-
-  return [
-    { to: '/dashboard/books', label: 'Search Books', description: 'Browse available books.' },
-    { to: '/dashboard/teacher/borrowing', label: 'My Borrowing', description: 'View current and returned books.' },
-    { to: '/dashboard/profile', label: 'Profile', description: 'Review account details.' },
-  ];
-};
 
 const formatDate = (value?: string) => (value ? new Date(value).toLocaleDateString() : '-');
 
@@ -87,8 +59,6 @@ const DashboardHomePage = () => {
       </div>
 
       <StatsGrid stats={adminStats} />
-
-      <QuickActions actions={quickActionsForRole(summary.role)} />
 
       {summary.role === Role.ADMIN ? (
         <section className="grid gap-4 xl:grid-cols-2">

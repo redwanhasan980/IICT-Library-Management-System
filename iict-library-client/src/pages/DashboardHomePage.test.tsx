@@ -60,7 +60,7 @@ describe('DashboardHomePage', () => {
     cleanup();
   });
 
-  it('renders borrower dashboard stats, activity, recommendations, and quick actions', () => {
+  it('renders borrower dashboard stats, activity, recommendations, and book sections', () => {
     render(
       <MemoryRouter>
         <DashboardHomePage />
@@ -71,7 +71,7 @@ describe('DashboardHomePage', () => {
     expect(screen.getByText('Recent Borrowing Activity')).toBeInTheDocument();
     expect(screen.getByText('Overdue')).toBeInTheDocument();
     expect(screen.getByText('You May Like')).toBeInTheDocument();
-    expect(screen.getByText('My Borrowing')).toBeInTheDocument();
+    expect(screen.getByText('New Arrivals')).toBeInTheDocument();
     expect(screen.getAllByText('Database Systems').length).toBeGreaterThan(0);
   });
 });

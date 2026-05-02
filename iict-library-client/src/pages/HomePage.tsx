@@ -1,7 +1,6 @@
 import HeroCarousel from '../components/home/HeroCarousel';
 import StatsGrid from '../components/home/StatsGrid';
 import BookSection from '../components/home/BookSection';
-import QuickActions from '../components/home/QuickActions';
 import { Card } from '../components/shared/Card';
 import { ErrorState, LoadingState } from '../components/shared/FeedbackState';
 import { useAppSelector } from '../store';
@@ -18,40 +17,6 @@ const borrowingPath = (role?: string) => {
     return '/dashboard/teacher/borrowing';
   }
   return '/login';
-};
-
-const quickActionsForRole = (role?: string) => {
-  if (role === Role.ADMIN) {
-    return [
-      { to: '/dashboard/admin/catalog/new', label: 'Add Book', description: 'Create a catalog record with accession and classification details.' },
-      { to: '/dashboard/admin/circulation', label: 'Issue Book', description: 'Issue or return books from the circulation desk.' },
-      { to: '/dashboard/admin/catalog', label: 'Manage Catalog', description: 'Update, archive, and search catalog records.' },
-      { to: '/dashboard/admin/reports', label: 'View Reports', description: 'Open database-backed circulation and inventory reports.' },
-    ];
-  }
-
-  if (role === Role.STUDENT) {
-    return [
-      { to: '/dashboard/books', label: 'Search Books', description: 'Find active IICT library books and availability.' },
-      { to: '/dashboard/student/borrowing', label: 'My Borrowing', description: 'Review current loans, due dates, and borrowing history.' },
-      { to: '/dashboard/add-outside-book', label: 'Register Outside Book', description: 'Record personal books before entering the library.' },
-      { to: '/dashboard/profile', label: 'View Profile', description: 'Review your student library account details.' },
-    ];
-  }
-
-  if (role === Role.TEACHER) {
-    return [
-      { to: '/dashboard/books', label: 'Search Books', description: 'Find active IICT library books and availability.' },
-      { to: '/dashboard/teacher/borrowing', label: 'My Borrowing', description: 'Review current loans, due dates, and borrowing history.' },
-      { to: '/dashboard/profile', label: 'View Profile', description: 'Review your teacher library account details.' },
-    ];
-  }
-
-  return [
-    { to: '/catalog', label: 'Search Catalog', description: 'Browse active IICT library books before signing in.' },
-    { to: '/login', label: 'Login', description: 'Access borrowing history and protected library workflows.' },
-    { to: '/register', label: 'Register', description: 'Create a student or teacher account for library services.' },
-  ];
 };
 
 const HomePage = () => {
@@ -132,8 +97,6 @@ const HomePage = () => {
             ) : null}
           </>
         ) : null}
-
-        <QuickActions actions={quickActionsForRole(user?.role)} />
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[
