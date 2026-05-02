@@ -11,13 +11,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-gradient-to-r from-library-forest to-library-gold text-white shadow-[0_10px_20px_rgba(58,90,64,0.25)] hover:brightness-110',
+    'border-library-ink bg-library-ink text-pale-cream hover:bg-library-forest',
   secondary:
-    'bg-library-mist text-library-ink border border-sandy-beige shadow-sm hover:bg-white',
+    'border-library-ink bg-library-mist text-library-ink hover:bg-pale-cream',
   ghost:
-    'bg-transparent text-library-ink hover:bg-library-mist',
+    'border-library-ink bg-pale-cream text-library-ink hover:bg-library-mist',
   outline:
-    'bg-white text-library-ink border border-sandy-beige shadow-sm hover:bg-library-mist',
+    'border-library-ink bg-paper-soft text-library-ink hover:bg-library-mist',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -36,7 +36,7 @@ export const Button = ({
   return (
     <button
       type={type}
-      className={`inline-flex max-w-full items-center justify-center rounded-full text-center font-semibold leading-snug tracking-wide transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-library-gold/60 focus-visible:ring-offset-2 focus-visible:ring-offset-pale-cream disabled:cursor-not-allowed disabled:opacity-60 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`inline-flex max-w-full items-center justify-center border-2 text-center font-extrabold uppercase leading-snug tracking-[0.08em] shadow-[4px_4px_0_#1a1c1a] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-library-forest/50 focus-visible:ring-offset-2 focus-visible:ring-offset-pale-cream disabled:cursor-not-allowed disabled:opacity-60 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       {...props}
     >
       {children}

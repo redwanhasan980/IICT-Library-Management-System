@@ -1,24 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --ink: #1f2a24;
-  --ink-soft: #4b5b54;
-  --paper: #f7f1e7;
-  --paper-strong: #efe5d6;
-  --accent: #b68a3a;
-  --accent-strong: #8f6a1f;
-  --leaf: #3a5a40;
-  --leaf-strong: #2d4732;
-  --mist: #e7ece7;
-  --border: #ded6c8;
-  --shadow-soft: 0 12px 30px rgba(22, 35, 28, 0.12);
-  --shadow-tight: 0 6px 16px rgba(22, 35, 28, 0.16);
+  --ink: #1a1c1a;
+  --ink-soft: #5e4447;
+  --paper: #ecddae;
+  --paper-strong: #f4e8bd;
+  --accent: #5e4447;
+  --accent-strong: #3b2a2d;
+  --leaf: #5e4447;
+  --leaf-strong: #1a1c1a;
+  --mist: #c5ab9d;
+  --border: #1a1c1a;
+  --shadow-soft: 5px 5px 0 rgba(26, 28, 26, 0.95);
+  --shadow-tight: 3px 3px 0 rgba(26, 28, 26, 0.95);
 
-  font-family: 'Work Sans', system-ui, sans-serif;
+  font-family: 'Source Sans 3', system-ui, sans-serif;
   color: var(--ink);
   background: var(--paper);
   text-rendering: optimizeLegibility;
@@ -28,16 +28,34 @@
 
 * {
   box-sizing: border-box;
+  border-radius: 0 !important;
 }
 
 body {
   margin: 0;
   min-height: 100svh;
   background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(182, 138, 58, 0.22), transparent 60%),
-    radial-gradient(1000px 500px at 110% 10%, rgba(58, 90, 64, 0.2), transparent 55%),
-    linear-gradient(180deg, #faf6f0 0%, #f4ece1 40%, #f3efe6 100%);
+    radial-gradient(1100px 520px at 12% -8%, rgba(255, 246, 201, 0.58), transparent 58%),
+    radial-gradient(900px 520px at 95% 4%, rgba(94, 68, 71, 0.16), transparent 60%),
+    radial-gradient(760px 460px at 8% 95%, rgba(197, 171, 157, 0.34), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(26, 28, 26, 0.018) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(90deg, rgba(94, 68, 71, 0.018) 0 1px, transparent 1px 9px),
+    linear-gradient(180deg, #f2e5b9 0%, #ecddae 42%, #e8d7a2 100%);
+  background-attachment: fixed;
+  background-color: var(--paper);
   color: var(--ink);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.28;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.10 0 0 0 0 0.11 0 0 0 0 0.10 0 0 0 0.34 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
 }
 
 #root {
@@ -53,10 +71,11 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Fraunces', 'Work Sans', serif;
+  font-family: 'Libre Baskerville', Georgia, serif;
   color: var(--ink);
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   margin: 0;
+  font-weight: 700;
 }
 
 p {
@@ -73,9 +92,53 @@ button,
 input,
 select,
 textarea {
-  font-family: 'Work Sans', system-ui, sans-serif;
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+}
+
+button {
+  border: 2px solid var(--ink) !important;
+  box-shadow: var(--shadow-tight);
+  transform: translate(0, 0);
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease, color 120ms ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+button:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+input,
+select,
+textarea {
+  border: 2px solid var(--ink) !important;
+  background-color: rgba(244, 232, 189, 0.92) !important;
+  color: var(--ink) !important;
+  box-shadow: inset 2px 2px 0 rgba(26, 28, 26, 0.08);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 3px solid rgba(94, 68, 71, 0.28) !important;
+  outline-offset: 2px;
 }
 
 ::selection {
-  background: rgba(182, 138, 58, 0.28);
+  background: rgba(94, 68, 71, 0.24);
+}
+
+.paper-surface {
+  border: 2px solid var(--ink);
+  background-color: rgba(236, 221, 174, 0.92);
+  box-shadow: var(--shadow-soft);
+}
+
+.pressed-surface {
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow-tight);
 }
