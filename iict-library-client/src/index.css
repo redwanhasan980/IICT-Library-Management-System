@@ -143,3 +143,26 @@ textarea:focus {
   border: 2px solid var(--ink);
   box-shadow: var(--shadow-tight);
 }
+
+.header-menu-panel {
+  animation: header-menu-slide 180ms ease-out both;
+  transform-origin: top center;
+}
+
+@keyframes header-menu-slide {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) scaleY(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-menu-panel {
+    animation: none;
+  }
+}

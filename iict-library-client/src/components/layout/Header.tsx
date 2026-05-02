@@ -11,10 +11,6 @@ type NavItem = {
   end?: boolean;
 };
 
-interface HeaderProps {
-  onOpenModules?: () => void;
-}
-
 const publicLinks: NavItem[] = [
   { to: '/', label: 'Home', end: true },
   { to: '/catalog', label: 'Catalog' },
@@ -71,7 +67,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
       : 'border-transparent text-library-ink hover:border-library-ink hover:bg-library-mist'
   }`;
 
-const Header = ({ onOpenModules }: HeaderProps) => {
+const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const user = useAppSelector(selectCurrentUser);
@@ -169,26 +165,11 @@ const Header = ({ onOpenModules }: HeaderProps) => {
             <span className="mt-1.5 block h-0.5 w-6 bg-library-ink" />
             <span className="mt-1.5 block h-0.5 w-6 bg-library-ink" />
           </button>
-
-          {onOpenModules ? (
-            <button
-              type="button"
-              aria-label="Open all dashboard modules"
-              className="grid h-11 w-11 shrink-0 place-items-center border-2 border-library-ink bg-paper-soft transition hover:bg-library-mist"
-              onClick={onOpenModules}
-            >
-              <span className="grid gap-1" aria-hidden="true">
-                <span className="block h-1.5 w-1.5 bg-library-ink" />
-                <span className="block h-1.5 w-1.5 bg-library-ink" />
-                <span className="block h-1.5 w-1.5 bg-library-ink" />
-              </span>
-            </button>
-          ) : null}
         </div>
       </div>
 
       {isMenuOpen ? (
-        <div className="border-t-2 border-library-ink bg-paper-soft px-4 py-4 shadow-[4px_4px_0_#1a1c1a] min-[1800px]:hidden">
+        <div className="header-menu-panel border-t-2 border-library-ink bg-paper-soft px-4 py-4 shadow-[4px_4px_0_#1a1c1a] min-[1800px]:hidden">
           <nav aria-label="Mobile navigation" className="mx-auto grid max-w-7xl gap-2 sm:grid-cols-2">
             {links.map((link) => (
               <NavLink key={link.to} to={link.to} end={link.end} className={navLinkClass} onClick={() => setIsMenuOpen(false)}>
