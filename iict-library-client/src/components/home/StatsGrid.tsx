@@ -9,10 +9,10 @@ interface StatsGridProps {
 }
 
 const toneClasses: Record<NonNullable<StatItem['tone']>, string> = {
-  forest: 'bg-library-forest text-pale-cream',
-  gold: 'bg-library-gold text-library-ink',
-  ink: 'bg-library-ink text-pale-cream',
-  mist: 'bg-library-mist text-library-ink',
+  forest: 'bg-[#FDFFF5] text-library-ink',
+  gold: 'bg-[#fcfce3] text-library-ink',
+  ink: 'bg-[#fcfccf] text-library-ink',
+  mist: 'bg-[#fffbe8] text-library-ink',
 };
 
 const StatsGrid = ({ stats }: StatsGridProps) => {
