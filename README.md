@@ -7,6 +7,8 @@ The repository root is only a lightweight command runner and documentation hub. 
 - [`iict-library-client/`](iict-library-client/) contains the complete Vite frontend.
 - [`iict-library-server/`](iict-library-server/) contains the complete Express/Prisma backend.
 
+The client uses a consistent professional library-style interface with layered paper-toned surfaces, square controls, and role-aware navigation for public, student, teacher, and admin workflows.
+
 ## Quick Start
 
 ```bash
