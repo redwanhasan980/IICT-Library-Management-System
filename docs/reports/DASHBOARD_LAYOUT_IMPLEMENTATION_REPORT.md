@@ -35,7 +35,6 @@
 - You May Like section.
 - New Arrivals section.
 - Popular Books section from loan counts when available.
-- Role-based Quick Actions.
 - Library Services section.
 - Recent Activity on protected dashboard.
 - Help/Rules section using general policy-safe wording.
