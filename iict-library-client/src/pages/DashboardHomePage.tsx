@@ -79,7 +79,7 @@ const DashboardHomePage = () => {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-library-gold">Dashboard</p>
+        <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-library-forest">Dashboard</p>
         <h1 className="mt-2 text-3xl font-semibold text-library-ink">Library Home</h1>
         <p className="mt-2 text-sm text-warm-taupe">
           Role-aware library summary with real catalog, circulation, and activity data.

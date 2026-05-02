@@ -28,7 +28,7 @@ const PublicCatalogPage = () => {
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-library-gold">Catalog Search</p>
+          <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-library-forest">Catalog Search</p>
           <h1 className="mt-2 text-4xl font-semibold text-library-ink">Search IICT Library Books</h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-warm-taupe">
             Browse active catalog records by title, author, accession number, subject, and call number.

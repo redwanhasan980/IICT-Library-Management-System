@@ -7,8 +7,8 @@
 :root {
   --ink: #1a1c1a;
   --ink-soft: #5e4447;
-  --paper: #ecddae;
-  --paper-strong: #f4e8bd;
+  --paper: #FDFFF5;
+  --paper-strong: #f7f8ec;
   --accent: #5e4447;
   --accent-strong: #3b2a2d;
   --leaf: #5e4447;
@@ -35,12 +35,12 @@ body {
   margin: 0;
   min-height: 100svh;
   background:
-    radial-gradient(1100px 520px at 12% -8%, rgba(255, 246, 201, 0.58), transparent 58%),
-    radial-gradient(900px 520px at 95% 4%, rgba(94, 68, 71, 0.16), transparent 60%),
-    radial-gradient(760px 460px at 8% 95%, rgba(197, 171, 157, 0.34), transparent 62%),
-    repeating-linear-gradient(0deg, rgba(26, 28, 26, 0.018) 0 1px, transparent 1px 7px),
-    repeating-linear-gradient(90deg, rgba(94, 68, 71, 0.018) 0 1px, transparent 1px 9px),
-    linear-gradient(180deg, #f2e5b9 0%, #ecddae 42%, #e8d7a2 100%);
+    radial-gradient(1100px 520px at 12% -8%, rgba(253, 255, 245, 0.96), transparent 58%),
+    radial-gradient(900px 520px at 95% 4%, rgba(197, 171, 157, 0.13), transparent 60%),
+    radial-gradient(760px 460px at 8% 95%, rgba(94, 68, 71, 0.08), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(26, 28, 26, 0.012) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(90deg, rgba(94, 68, 71, 0.012) 0 1px, transparent 1px 9px),
+    linear-gradient(180deg, #FDFFF5 0%, #fbfcf0 48%, #f4f5e8 100%);
   background-attachment: fixed;
   background-color: var(--paper);
   color: var(--ink);
@@ -52,7 +52,7 @@ body::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.28;
+  opacity: 0.12;
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.10 0 0 0 0 0.11 0 0 0 0 0.10 0 0 0 0.34 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
   mix-blend-mode: multiply;
@@ -116,7 +116,7 @@ input,
 select,
 textarea {
   border: 2px solid var(--ink) !important;
-  background-color: rgba(244, 232, 189, 0.92) !important;
+  background-color: rgba(253, 255, 245, 0.96) !important;
   color: var(--ink) !important;
   box-shadow: inset 2px 2px 0 rgba(26, 28, 26, 0.08);
 }
@@ -134,7 +134,7 @@ textarea:focus {
 
 .paper-surface {
   border: 2px solid var(--ink);
-  background-color: rgba(236, 221, 174, 0.92);
+  background-color: rgba(253, 255, 245, 0.95);
   box-shadow: var(--shadow-soft);
 }
 

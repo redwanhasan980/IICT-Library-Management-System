@@ -4,7 +4,7 @@ const AboutLibraryPage = () => {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-library-gold">About Library</p>
+        <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-library-forest">About Library</p>
         <h1 className="mt-2 text-4xl font-semibold text-library-ink">IICT Library</h1>
         <p className="mt-3 max-w-3xl text-base leading-7 text-warm-taupe">
           The IICT Library Management System supports catalog discovery, circulation tracking, outside-book monitoring,
