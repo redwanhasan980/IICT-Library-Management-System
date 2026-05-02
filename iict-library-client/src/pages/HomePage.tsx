@@ -70,7 +70,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="bg-pale-cream/40">
+    <div>
       <HeroCarousel
         title="Welcome to IICT Library"
         subtitle="Search, borrow, and manage academic resources digitally through the IICT Library Management System."
@@ -151,7 +151,7 @@ const HomePage = () => {
           ))}
         </section>
 
-        <Card className="bg-library-mist/70">
+        <Card className="bg-library-mist">
           <h2 className="text-2xl font-semibold text-library-ink">Help and Library Rules</h2>
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             <p className="text-sm leading-6 text-warm-taupe">Borrowing limits and due dates are controlled by library policy.</p>

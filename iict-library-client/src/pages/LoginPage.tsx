@@ -45,7 +45,7 @@ const LoginPage = () => {
           <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required disabled={isLoading} />
         </div>
         {formError && (
-          <p role="alert" className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700">
+          <p role="alert" className="border-2 border-rose-950 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-800">
             {formError}
           </p>
         )}

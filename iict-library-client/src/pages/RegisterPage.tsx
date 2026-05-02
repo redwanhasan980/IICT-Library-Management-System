@@ -76,7 +76,7 @@ const RegisterPage = () => {
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as 'STUDENT' | 'TEACHER')}
-              className="mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30"
+              className="mt-1 w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink focus:outline-none focus:ring-2 focus:ring-library-forest/40"
               disabled={isLoading}
             >
               <option value="STUDENT">Student</option>
@@ -88,7 +88,7 @@ const RegisterPage = () => {
             <select
               value={formData.department}
               onChange={(e) => updateField('department', e.target.value)}
-              className="mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30"
+              className="mt-1 w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink focus:outline-none focus:ring-2 focus:ring-library-forest/40"
               disabled={isLoading}
             >
               <option value="CSE">CSE</option>
@@ -129,7 +129,7 @@ const RegisterPage = () => {
           )}
         </div>
         {formError && (
-          <p role="alert" className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700">
+          <p role="alert" className="border-2 border-rose-950 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-800">
             {formError}
           </p>
         )}

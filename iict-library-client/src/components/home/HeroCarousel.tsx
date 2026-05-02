@@ -59,7 +59,7 @@ const HeroCarousel = ({ title, subtitle, actions }: HeroCarouselProps) => {
 
   return (
     <section
-      className="relative min-h-[520px] overflow-hidden bg-library-ink"
+      className="relative min-h-[520px] overflow-hidden border-b-2 border-library-ink bg-library-ink"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}
@@ -76,13 +76,13 @@ const HeroCarousel = ({ title, subtitle, actions }: HeroCarouselProps) => {
           }`}
         />
       ))}
-      <div className="absolute inset-0 bg-gradient-to-r from-library-ink/90 via-library-ink/60 to-library-ink/20" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(26,28,26,0.94),rgba(26,28,26,0.72),rgba(26,28,26,0.32))]" />
 
       <div className="relative z-10 mx-auto flex min-h-[520px] max-w-7xl flex-col justify-center px-4 py-16 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-library-gold">IICT Library</p>
-          <h1 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">{title}</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-white/80">{subtitle}</p>
+          <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-library-gold">IICT Library</p>
+          <h1 className="mt-4 text-4xl font-bold leading-tight text-pale-cream sm:text-5xl lg:text-6xl">{title}</h1>
+          <p className="mt-5 max-w-2xl text-lg font-semibold leading-8 text-pale-cream/85">{subtitle}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             {actions.map((action) => (
               <Link
@@ -90,8 +90,8 @@ const HeroCarousel = ({ title, subtitle, actions }: HeroCarouselProps) => {
                 to={action.to}
                 className={
                   action.variant === 'secondary'
-                    ? 'rounded-full border border-white/40 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20'
-                    : 'rounded-full bg-library-gold px-5 py-3 text-sm font-semibold text-library-ink shadow-lg transition hover:bg-white'
+                    ? 'inline-flex border-2 border-pale-cream bg-transparent px-5 py-3 text-sm font-extrabold uppercase tracking-[0.08em] text-pale-cream shadow-[4px_4px_0_#ecddae] transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-pale-cream hover:text-library-ink active:translate-x-1 active:translate-y-1 active:shadow-none'
+                    : 'inline-flex border-2 border-library-ink bg-library-gold px-5 py-3 text-sm font-extrabold uppercase tracking-[0.08em] text-library-ink shadow-[4px_4px_0_#1a1c1a] transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-pale-cream active:translate-x-1 active:translate-y-1 active:shadow-none'
                 }
               >
                 {action.label}
@@ -107,8 +107,8 @@ const HeroCarousel = ({ title, subtitle, actions }: HeroCarouselProps) => {
             key={slide.src}
             type="button"
             aria-label={`Show slide ${index + 1}`}
-            className={`h-2.5 rounded-full transition-all ${
-              index === activeIndex ? 'w-8 bg-white' : 'w-2.5 bg-white/50 hover:bg-white/80'
+            className={`h-3 transition-all ${
+              index === activeIndex ? 'w-8 bg-pale-cream' : 'w-3 bg-pale-cream/50 hover:bg-pale-cream/80'
             }`}
             onClick={() => setActiveIndex(index)}
           />
@@ -118,14 +118,14 @@ const HeroCarousel = ({ title, subtitle, actions }: HeroCarouselProps) => {
       <div className="absolute bottom-5 right-4 z-20 flex gap-2 sm:right-8">
         <button
           type="button"
-          className="rounded-full border border-white/40 bg-library-ink/40 px-3 py-2 text-xs font-semibold text-white backdrop-blur transition hover:bg-library-ink/70"
+          className="border-2 border-pale-cream bg-library-ink/70 px-3 py-2 text-xs font-extrabold uppercase text-pale-cream transition hover:bg-library-ink"
           onClick={showPrevious}
         >
           Prev
         </button>
         <button
           type="button"
-          className="rounded-full border border-white/40 bg-library-ink/40 px-3 py-2 text-xs font-semibold text-white backdrop-blur transition hover:bg-library-ink/70"
+          className="border-2 border-pale-cream bg-library-ink/70 px-3 py-2 text-xs font-extrabold uppercase text-pale-cream transition hover:bg-library-ink"
           onClick={showNext}
         >
           Next

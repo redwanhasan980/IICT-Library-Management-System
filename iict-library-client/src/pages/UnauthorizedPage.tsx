@@ -7,7 +7,7 @@ const UnauthorizedPage = () => {
       <p className="mt-3 text-warm-taupe">
         Your account does not have permission to access this page.
       </p>
-      <Link to="/dashboard" className="mt-6 inline-block rounded-md bg-dark-brown px-4 py-2 text-sm font-medium text-white">
+      <Link to="/dashboard" className="mt-6 inline-block border-2 border-library-ink bg-library-ink px-4 py-2 text-sm font-extrabold uppercase tracking-[0.08em] text-pale-cream shadow-[4px_4px_0_#5e4447]">
         Go to Dashboard
       </Link>
     </div>

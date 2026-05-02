@@ -58,7 +58,7 @@ const PublicCatalogPage = () => {
                 <img
                   src={getBookCoverSrc(book)}
                   alt={`Cover for ${book.title}`}
-                  className="h-44 w-full rounded-xl border border-sandy-beige/70 bg-library-mist object-cover"
+                  className="h-44 w-full border-2 border-library-ink bg-library-mist object-cover"
                 />
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -86,7 +86,7 @@ const PublicCatalogPage = () => {
                 <div className="mt-auto">
                   <Link
                     to={detailTarget}
-                    className="inline-flex rounded-full border border-sandy-beige bg-white px-4 py-2 text-sm font-semibold text-library-ink shadow-sm transition hover:bg-library-mist"
+                    className="inline-flex border-2 border-library-ink bg-paper-soft px-4 py-2 text-sm font-extrabold uppercase tracking-[0.08em] text-library-ink shadow-[4px_4px_0_#1a1c1a] transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-library-mist active:translate-x-1 active:translate-y-1 active:shadow-none"
                   >
                     {user ? 'Open Catalog' : 'Login for Details'}
                   </Link>

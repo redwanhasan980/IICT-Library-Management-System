@@ -9,9 +9,9 @@ interface StatsGridProps {
 }
 
 const toneClasses: Record<NonNullable<StatItem['tone']>, string> = {
-  forest: 'bg-library-forest text-white',
+  forest: 'bg-library-forest text-pale-cream',
   gold: 'bg-library-gold text-library-ink',
-  ink: 'bg-library-ink text-white',
+  ink: 'bg-library-ink text-pale-cream',
   mist: 'bg-library-mist text-library-ink',
 };
 
@@ -21,7 +21,7 @@ const StatsGrid = ({ stats }: StatsGridProps) => {
       {stats.map((item) => (
         <div
           key={item.label}
-          className={`rounded-2xl border border-sandy-beige/70 p-5 shadow-sm ${toneClasses[item.tone ?? 'mist']}`}
+          className={`border-2 border-library-ink p-5 shadow-[5px_5px_0_#1a1c1a] ${toneClasses[item.tone ?? 'mist']}`}
         >
           <p className="text-sm font-semibold uppercase tracking-[0.14em] opacity-80">{item.label}</p>
           <p className="mt-3 text-3xl font-bold">{item.value}</p>
