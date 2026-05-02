@@ -144,6 +144,16 @@ textarea:focus {
   box-shadow: var(--shadow-tight);
 }
 
+.book-card-paper {
+  background-color: rgba(253, 255, 245, 0.94);
+  background-image:
+    linear-gradient(180deg, rgba(253, 255, 245, 0.82), rgba(252, 252, 227, 0.9)),
+    url('../assets/book_page.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .header-menu-panel {
   animation: header-menu-slide 180ms ease-out both;
   transform-origin: top center;

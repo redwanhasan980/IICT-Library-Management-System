@@ -31,7 +31,7 @@ const BookSection = ({ title, description, books = [], emptyMessage, actionTarge
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {books.map((book) => (
-            <Card key={book.id} className="flex h-full flex-col gap-4">
+            <Card key={book.id} className="book-card-paper flex h-full flex-col gap-4">
               <img
                 src={getBookCoverSrc(book)}
                 alt={`Cover for ${book.title}`}
