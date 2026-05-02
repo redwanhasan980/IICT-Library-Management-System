@@ -25,16 +25,16 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-sandy-beige/70 bg-gradient-to-r from-library-forest via-library-forest to-library-gold p-5 text-white shadow-[0_18px_45px_rgba(22,35,28,0.18)] sm:p-7">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/70">Library Operations</p>
-        <h1 className="mt-2 text-2xl font-bold sm:text-3xl">Admin Dashboard</h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-white/80">
+      <div className="border-2 border-library-ink bg-library-ink p-5 text-pale-cream shadow-[6px_6px_0_#5e4447] sm:p-7">
+        <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-library-gold">Library Operations</p>
+        <h1 className="mt-2 text-2xl font-bold text-pale-cream sm:text-3xl">Admin Dashboard</h1>
+        <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-pale-cream/85">
           Monitor circulation, pending requests, fines, and borrower activity from one workspace.
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <Card className="bg-library-mist/40">
+        <Card className="bg-library-mist">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-warm-taupe">Active Loans</p>
           <p className="mt-2 text-3xl font-bold text-dark-brown">{activeLoans?.total ?? 0}</p>
         </Card>
@@ -46,7 +46,7 @@ const AdminDashboard = () => {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">Pending Reservations</p>
           <p className="mt-2 text-3xl font-bold text-amber-800">{reservations?.length ?? 0}</p>
         </Card>
-        <Card className="bg-white">
+        <Card className="bg-paper-soft">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-warm-taupe">Fine Transactions</p>
           <p className="mt-2 text-3xl font-bold text-dark-brown">{unpaidFines?.length ?? 0}</p>
         </Card>

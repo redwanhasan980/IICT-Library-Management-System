@@ -82,7 +82,7 @@ const AdminCatalogPage = () => {
                   setIncludeArchived(e.target.checked);
                   setPage(1);
                 }}
-                className="rounded border-sandy-beige text-dark-brown focus:ring-dark-brown"
+                className="border-2 border-library-ink text-dark-brown focus:ring-dark-brown"
               />
               Show Archived
             </label>
@@ -125,7 +125,7 @@ const AdminCatalogPage = () => {
                         <img
                           src={getBookThumbnailSrc(book)}
                           alt={`Cover for ${book.title}`}
-                          className="h-14 w-10 rounded border border-sandy-beige bg-library-mist object-cover"
+                          className="h-14 w-10 border-2 border-library-ink bg-library-mist object-cover"
                         />
                       </TableCell>
                       <TableCell className="font-mono text-xs">{book.accessionNumber}</TableCell>
@@ -137,10 +137,11 @@ const AdminCatalogPage = () => {
                         ) : book.availableCopies > 0 ? (
                           <Badge variant="success">Available</Badge>
                         ) : (
-                          <Badge variant="error" className="bg-red-100 text-red-800">Checkout</Badge>
+                          <Badge variant="error">Checkout</Badge>
                         )}
                       </TableCell>
-                      <TableCell className="text-right space-x-2">
+                      <TableCell className="text-right">
+                        <div className="flex flex-wrap justify-end gap-2">
                         <Button
                           variant="outline"
                           size="sm"
@@ -156,6 +157,7 @@ const AdminCatalogPage = () => {
                         >
                           {book.isArchived ? 'Restore' : 'Archive'}
                         </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
@@ -164,7 +166,7 @@ const AdminCatalogPage = () => {
             </Table>
 
             {data.totalPages > 1 && (
-              <div className="flex items-center justify-between border-t border-sandy-beige mt-4 pt-4 px-4">
+              <div className="mt-4 flex items-center justify-between border-t-2 border-library-ink px-4 pt-4">
                 <span className="text-sm text-warm-taupe">
                   Page {data.page} of {data.totalPages}
                 </span>

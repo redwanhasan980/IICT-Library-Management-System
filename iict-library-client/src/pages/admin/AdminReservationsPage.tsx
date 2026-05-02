@@ -50,7 +50,8 @@ const AdminReservationsPage = () => {
                   <TableCell>
                     <Badge variant="warning">{reservation.status}</Badge>
                   </TableCell>
-                  <TableCell className="space-x-2">
+                  <TableCell>
+                    <div className="flex flex-wrap gap-2">
                     <Button
                       size="sm"
                       onClick={() => handleUpdate(reservation.id, 'FULFILLED')}
@@ -74,6 +75,7 @@ const AdminReservationsPage = () => {
                     >
                       Expire
                     </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

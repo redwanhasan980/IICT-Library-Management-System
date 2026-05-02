@@ -138,7 +138,7 @@ const AdminBookFormPage = () => {
       </div>
 
       <Card className="p-6">
-        {errorDesc && <div className="mb-4 text-red-600 bg-red-50 p-3 rounded">{errorDesc}</div>}
+        {errorDesc && <div className="mb-4 border-2 border-rose-950 bg-rose-50 p-3 text-sm font-semibold text-rose-800">{errorDesc}</div>}
         
         <form onSubmit={handleSubmit} className="space-y-6">
           
@@ -190,7 +190,7 @@ const AdminBookFormPage = () => {
             <div className="md:col-span-2 text-lg font-semibold border-b pb-2 mt-4">Classification & Physical</div>
             <div>
               <label className="text-sm">Department *</label>
-              <select name="department" value={formData.department} onChange={handleChange} className="w-full mt-1 border border-gray-300 rounded p-2 text-sm text-dark-brown focus:border-dark-brown focus:outline-none focus:ring-1 focus:ring-dark-brown">
+              <select name="department" value={formData.department} onChange={handleChange} className="mt-1 w-full border-2 border-library-ink bg-paper-soft p-2 text-sm font-semibold text-dark-brown focus:outline-none focus:ring-2 focus:ring-library-forest/40">
                 <option value="SWE">SWE</option>
                 <option value="CSE">CSE</option>
                 <option value="EEE">EEE</option>
@@ -228,7 +228,7 @@ const AdminBookFormPage = () => {
             <div className="md:col-span-2 text-lg font-semibold border-b pb-2 mt-4">Procurement & Source</div>
             <div>
               <label className="text-sm">Source</label>
-              <select name="source" value={formData.source} onChange={handleChange} className="w-full mt-1 border border-gray-300 rounded p-2 text-sm text-dark-brown focus:border-dark-brown focus:outline-none focus:ring-1 focus:ring-dark-brown">
+              <select name="source" value={formData.source} onChange={handleChange} className="mt-1 w-full border-2 border-library-ink bg-paper-soft p-2 text-sm font-semibold text-dark-brown focus:outline-none focus:ring-2 focus:ring-library-forest/40">
                 <option value="PURCHASE">Purchase</option>
                 <option value="DONATION">Donation</option>
                 <option value="GIFT">Gift</option>
@@ -252,7 +252,7 @@ const AdminBookFormPage = () => {
             isSaving={isSaving}
           />
 
-          <div className="flex justify-end gap-4 border-t pt-6">
+          <div className="flex justify-end gap-4 border-t-2 border-library-ink pt-6">
             <Button type="button" variant="outline" onClick={() => navigate('/dashboard/admin/catalog')}>Cancel</Button>
             <Button type="submit" variant="primary" disabled={isSaving}>{isSaving ? 'Saving...' : 'Save Book'}</Button>
           </div>

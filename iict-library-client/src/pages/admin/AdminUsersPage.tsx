@@ -123,7 +123,7 @@ const AdminUsersPage = () => {
               <select
                 value={formData.role}
                 onChange={(e) => updateField('role', e.target.value)}
-                className="mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30"
+                className="mt-1 w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink focus:outline-none focus:ring-2 focus:ring-library-forest/40"
                 disabled={isCreating}
               >
                 <option value="STUDENT">Student</option>
@@ -137,7 +137,7 @@ const AdminUsersPage = () => {
                 <select
                   value={formData.department}
                   onChange={(e) => updateField('department', e.target.value)}
-                  className="mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30"
+                  className="mt-1 w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink focus:outline-none focus:ring-2 focus:ring-library-forest/40"
                   disabled={isCreating}
                 >
                   <option value="CSE">CSE</option>
@@ -194,7 +194,7 @@ const AdminUsersPage = () => {
                 setRoleFilter(e.target.value as Role | '');
                 setPage(1);
               }}
-              className="mt-1 rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30"
+              className="mt-1 border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink focus:outline-none focus:ring-2 focus:ring-library-forest/40"
             >
               <option value="">All roles</option>
               <option value="STUDENT">Students</option>
@@ -254,7 +254,7 @@ const AdminUsersPage = () => {
               </TableBody>
             </Table>
             {data.totalPages > 1 && (
-              <div className="flex items-center justify-between border-t border-sandy-beige/70 pt-4">
+              <div className="flex items-center justify-between border-t-2 border-library-ink pt-4">
                 <span className="text-sm text-warm-taupe">Page {data.page} of {data.totalPages}</span>
                 <div className="flex gap-2">
                   <Button size="sm" variant="ghost" disabled={data.page === 1} onClick={() => setPage((prev) => prev - 1)}>Prev</Button>
