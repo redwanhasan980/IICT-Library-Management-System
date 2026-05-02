@@ -16,6 +16,9 @@ const spineLabelSchema = z.object({
 
 type SpineLabelFormValues = z.infer<typeof spineLabelSchema>;
 
+const inputClass =
+  'mt-1 w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40';
+
 const SpineLabelGeneratorForm: React.FC = () => {
   const [generatedLabel, setGeneratedLabel] = useState<SpineLabel | null>(null);
   const [generateSpineLabel, { isLoading, error }] = useGenerateSpineLabelMutation();
@@ -54,40 +57,40 @@ const SpineLabelGeneratorForm: React.FC = () => {
 
       <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="form-control">
-          <label htmlFor="classificationNumber" className="label">
-            <span className="label-text">Classification Number (DDC)</span>
+          <label htmlFor="classificationNumber" className="block text-sm font-medium text-warm-taupe">
+            <span>Classification Number (DDC)</span>
           </label>
           <input
             id="classificationNumber"
             type="text"
             {...register('classificationNumber')}
-            className={`input input-bordered w-full ${errors.classificationNumber ? 'input-error' : ''}`}
+            className={inputClass}
           />
           {errors.classificationNumber && <p className="mt-1 text-xs font-semibold text-rose-800">{errors.classificationNumber.message}</p>}
         </div>
 
         <div className="form-control">
-          <label htmlFor="authorCode" className="label">
-            <span className="label-text">Author Code</span>
+          <label htmlFor="authorCode" className="block text-sm font-medium text-warm-taupe">
+            <span>Author Code</span>
           </label>
           <input
             id="authorCode"
             type="text"
             {...register('authorCode')}
-            className={`input input-bordered w-full ${errors.authorCode ? 'input-error' : ''}`}
+            className={inputClass}
           />
           {errors.authorCode && <p className="mt-1 text-xs font-semibold text-rose-800">{errors.authorCode.message}</p>}
         </div>
 
         <div className="form-control md:col-span-2">
-          <label htmlFor="accessionNumber" className="label">
-            <span className="label-text">Accession Number</span>
+          <label htmlFor="accessionNumber" className="block text-sm font-medium text-warm-taupe">
+            <span>Accession Number</span>
           </label>
           <input
             id="accessionNumber"
             type="text"
             {...register('accessionNumber')}
-            className={`input input-bordered w-full ${errors.accessionNumber ? 'input-error' : ''}`}
+            className={inputClass}
           />
           {errors.accessionNumber && <p className="mt-1 text-xs font-semibold text-rose-800">{errors.accessionNumber.message}</p>}
         </div>
