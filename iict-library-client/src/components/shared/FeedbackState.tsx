@@ -23,7 +23,7 @@ export const ErrorState = ({
 }: ErrorStateProps) => {
   return (
     <div className="space-y-3 py-6 text-center">
-      <p className="text-red-600">{message}</p>
+      <p className="font-semibold text-rose-800">{message}</p>
       {onRetry ? (
         <Button variant="secondary" onClick={onRetry}>
           Retry

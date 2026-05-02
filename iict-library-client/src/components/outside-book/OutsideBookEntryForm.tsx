@@ -18,6 +18,10 @@ const entrySchema = z.object({
 type EntryFormInput = z.input<typeof entrySchema>;
 type EntryFormValues = z.output<typeof entrySchema>;
 
+const fieldErrorClass = 'mt-1 text-xs font-semibold text-rose-800';
+const selectClass =
+  'mt-1 w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40';
+
 const OutsideBookEntryForm = () => {
   const [createEntry, { isLoading }] = useCreateOutsideBookEntryMutation();
 
@@ -63,7 +67,7 @@ const OutsideBookEntryForm = () => {
             disabled={isLoading}
             {...register('title')}
           />
-          {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title.message}</p>}
+          {errors.title && <p className={fieldErrorClass}>{errors.title.message}</p>}
         </div>
         <div>
           <label htmlFor="author" className="block text-sm font-medium text-warm-taupe">
@@ -76,7 +80,7 @@ const OutsideBookEntryForm = () => {
             disabled={isLoading}
             {...register('author')}
           />
-          {errors.author && <p className="mt-1 text-xs text-red-600">{errors.author.message}</p>}
+          {errors.author && <p className={fieldErrorClass}>{errors.author.message}</p>}
         </div>
         <div>
           <label htmlFor="studentRegNumber" className="block text-sm font-medium text-warm-taupe">
@@ -89,7 +93,7 @@ const OutsideBookEntryForm = () => {
             disabled={isLoading}
             {...register('studentRegNumber')}
           />
-          {errors.studentRegNumber && <p className="mt-1 text-xs text-red-600">{errors.studentRegNumber.message}</p>}
+          {errors.studentRegNumber && <p className={fieldErrorClass}>{errors.studentRegNumber.message}</p>}
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
@@ -98,7 +102,7 @@ const OutsideBookEntryForm = () => {
             </label>
             <select
               id="department"
-              className="mt-1 w-full rounded-xl border border-sandy-beige/80 bg-white/80 px-3 py-2 text-sm text-library-ink focus:border-library-gold focus:outline-none focus:ring-2 focus:ring-library-gold/30"
+              className={selectClass}
               disabled={isLoading}
               {...register('department')}
             >
@@ -106,7 +110,7 @@ const OutsideBookEntryForm = () => {
               <option value="SWE">SWE</option>
               <option value="EEE">EEE</option>
             </select>
-            {errors.department && <p className="mt-1 text-xs text-red-600">{errors.department.message}</p>}
+            {errors.department && <p className={fieldErrorClass}>{errors.department.message}</p>}
           </div>
           <div>
             <label htmlFor="currentSemester" className="block text-sm font-medium text-warm-taupe">
@@ -120,7 +124,7 @@ const OutsideBookEntryForm = () => {
               disabled={isLoading}
               {...register('currentSemester')}
             />
-            {errors.currentSemester && <p className="mt-1 text-xs text-red-600">{errors.currentSemester.message}</p>}
+            {errors.currentSemester && <p className={fieldErrorClass}>{errors.currentSemester.message}</p>}
           </div>
         </div>
         <div className="flex justify-end">

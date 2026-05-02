@@ -45,7 +45,7 @@ const ProfilePage = () => {
       </div>
 
       {isError ? (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="border-2 border-library-ink bg-library-mist px-4 py-3 text-sm font-semibold text-library-ink shadow-[3px_3px_0_#1a1c1a]">
           Live profile refresh failed, so the saved signed-in profile is shown. Use Retry to refresh from the server.
           <button type="button" className="ml-2 font-semibold underline" onClick={refetch}>
             Retry
@@ -56,7 +56,7 @@ const ProfilePage = () => {
       <Card>
         <dl className="grid gap-4 md:grid-cols-2">
           {profileRows.map(([label, value]) => (
-            <div key={label} className="rounded-2xl border border-sandy-beige/70 bg-pale-cream/40 p-4">
+            <div key={label} className="border-2 border-library-ink bg-pale-cream p-4 shadow-[3px_3px_0_#1a1c1a]">
               <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-warm-taupe">{label}</dt>
               <dd className="mt-1 text-sm font-semibold text-library-ink">{value}</dd>
             </div>

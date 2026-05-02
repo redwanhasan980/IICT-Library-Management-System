@@ -29,11 +29,11 @@ const BookCatalogPage = () => {
             {data.items.map((book) => {
               const unavailable = book.availableCopies < 1;
               return (
-                <article key={book.id} className="rounded-md border border-sandy-beige p-4">
+                <article key={book.id} className="border-2 border-library-ink bg-pale-cream p-4 shadow-[3px_3px_0_#1a1c1a]">
                   <img
                     src={getBookCoverSrc(book)}
                     alt={`Cover for ${book.title}`}
-                    className="mb-3 h-44 w-full rounded-xl border border-sandy-beige/70 bg-library-mist object-cover"
+                    className="mb-3 h-44 w-full border-2 border-library-ink bg-library-mist object-cover"
                   />
                   <div className="mb-3 flex items-center justify-between gap-2">
                     <h2 className="text-base font-semibold text-dark-brown">{book.title}</h2>

@@ -65,7 +65,7 @@ const BookDetailsPage = () => {
                 <img
                   src={activeGalleryImage?.detailUrl || getBookCoverSrc(book)}
                   alt={`Cover for ${book.title}`}
-                  className="aspect-[9/13] w-full rounded-2xl border border-sandy-beige/70 bg-library-mist object-cover shadow-sm"
+                  className="aspect-[9/13] w-full border-2 border-library-ink bg-library-mist object-cover shadow-[4px_4px_0_#1a1c1a]"
                 />
                 {book.images && book.images.length > 1 ? (
                   <div className="flex items-center justify-between gap-2">
@@ -97,17 +97,17 @@ const BookDetailsPage = () => {
                         key={image.id}
                         type="button"
                         onClick={() => setSelectedImageIndex(index)}
-                        className={`rounded-lg border p-1 transition ${
+                        className={`border-2 p-1 transition hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] ${
                           selectedImageIndex === index
-                            ? 'border-library-gold bg-library-gold/10'
-                            : 'border-sandy-beige bg-white hover:bg-library-mist'
+                            ? 'border-library-ink bg-library-mist shadow-[2px_2px_0_#1a1c1a]'
+                            : 'border-library-ink bg-paper-soft hover:bg-library-mist'
                         }`}
                         aria-label={`Show book image ${index + 1}`}
                       >
                         <img
                           src={image.thumbnailUrl}
                           alt={`Thumbnail ${index + 1} for ${book.title}`}
-                          className="aspect-[9/13] w-full rounded-md object-cover"
+                          className="aspect-[9/13] w-full border border-library-ink object-cover"
                         />
                       </button>
                     ))}
@@ -147,17 +147,17 @@ const BookDetailsPage = () => {
             <h2 className="text-lg font-semibold text-dark-brown">Barcode and QR Preview</h2>
             <p className="text-sm text-warm-taupe">Use this for label printing and scanner-friendly accession handling.</p>
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="rounded border border-sandy-beige p-4">
+              <div className="border-2 border-library-ink bg-pale-cream p-4 shadow-[3px_3px_0_#1a1c1a]">
                 <p className="mb-2 text-xs uppercase tracking-wide text-warm-taupe">Barcode-like label</p>
                 <div className="font-mono text-2xl tracking-[0.35em] text-dark-brown">*{book.accessionNumber}*</div>
                 <p className="mt-2 font-mono text-sm">{book.accessionNumber}</p>
               </div>
-              <div className="rounded border border-sandy-beige p-4">
+              <div className="border-2 border-library-ink bg-pale-cream p-4 shadow-[3px_3px_0_#1a1c1a]">
                 <p className="mb-2 text-xs uppercase tracking-wide text-warm-taupe">QR preview</p>
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(book.accessionNumber)}`}
                   alt={`QR for ${book.accessionNumber}`}
-                  className="h-36 w-36 border border-sandy-beige"
+                  className="h-36 w-36 border-2 border-library-ink"
                 />
               </div>
             </div>
@@ -172,7 +172,7 @@ const BookDetailsPage = () => {
               ) : (
                 <ul className="space-y-2 text-sm">
                   {reservationQueue.map((row) => (
-                    <li key={row.id} className="rounded border border-sandy-beige px-3 py-2">
+                    <li key={row.id} className="border-2 border-library-ink bg-pale-cream px-3 py-2 shadow-[2px_2px_0_#1a1c1a]">
                       #{row.queueNumber} - {row.user?.name || row.user?.email || row.userId} ({row.status})
                     </li>
                   ))}

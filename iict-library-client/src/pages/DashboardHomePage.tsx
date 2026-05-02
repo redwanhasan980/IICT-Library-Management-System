@@ -99,7 +99,7 @@ const DashboardHomePage = () => {
             ) : (
               <div className="mt-4 space-y-3">
                 {summary.recentActivity.recentLoans.map((loan) => (
-                  <div key={loan.id} className="rounded-2xl border border-sandy-beige/70 bg-pale-cream/40 p-4">
+                  <div key={loan.id} className="border-2 border-library-ink bg-pale-cream p-4 shadow-[3px_3px_0_#1a1c1a]">
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="font-semibold text-library-ink">{loan.book?.title || 'Book'}</p>
@@ -121,7 +121,7 @@ const DashboardHomePage = () => {
             ) : (
               <div className="mt-4 space-y-3">
                 {summary.recentActivity.recentReturns.map((loan) => (
-                  <div key={loan.id} className="rounded-2xl border border-sandy-beige/70 bg-pale-cream/40 p-4">
+                  <div key={loan.id} className="border-2 border-library-ink bg-pale-cream p-4 shadow-[3px_3px_0_#1a1c1a]">
                     <p className="font-semibold text-library-ink">{loan.book?.title || 'Book'}</p>
                     <p className="text-sm text-warm-taupe">{loan.user?.name || loan.user?.email || 'Borrower'}</p>
                     <p className="mt-2 text-xs text-warm-taupe">Returned {formatDate(loan.returnedAt)}</p>
@@ -139,7 +139,7 @@ const DashboardHomePage = () => {
           ) : (
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {recentBorrowing.map((loan) => (
-                <div key={loan.id} className="rounded-2xl border border-sandy-beige/70 bg-pale-cream/40 p-4">
+                <div key={loan.id} className="border-2 border-library-ink bg-pale-cream p-4 shadow-[3px_3px_0_#1a1c1a]">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="font-semibold text-library-ink">{loan.book?.title || 'Book'}</p>

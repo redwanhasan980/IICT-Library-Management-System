@@ -91,7 +91,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b-2 border-library-ink bg-pale-cream/95 shadow-[0_4px_0_#1a1c1a]">
+    <header className="sticky top-0 z-40 border-b-2 border-library-ink bg-pale-cream/95 shadow-[4px_4px_0_#1a1c1a]">
       <div className="mx-auto flex min-h-[72px] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
           <Link to="/" className="flex min-w-0 items-center gap-3" onClick={() => setIsMenuOpen(false)}>
@@ -164,9 +164,9 @@ const Header = ({ onOpenModules }: HeaderProps) => {
             aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((open) => !open)}
           >
-            <span className="block h-0.5 w-6 rounded-full bg-library-ink" />
-            <span className="mt-1.5 block h-0.5 w-6 rounded-full bg-library-ink" />
-            <span className="mt-1.5 block h-0.5 w-6 rounded-full bg-library-ink" />
+            <span className="block h-0.5 w-6 bg-library-ink" />
+            <span className="mt-1.5 block h-0.5 w-6 bg-library-ink" />
+            <span className="mt-1.5 block h-0.5 w-6 bg-library-ink" />
           </button>
 
           {onOpenModules ? (
@@ -177,9 +177,9 @@ const Header = ({ onOpenModules }: HeaderProps) => {
               onClick={onOpenModules}
             >
               <span className="grid gap-1" aria-hidden="true">
-                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
-                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
-                <span className="block h-1.5 w-1.5 rounded-full bg-library-ink" />
+                <span className="block h-1.5 w-1.5 bg-library-ink" />
+                <span className="block h-1.5 w-1.5 bg-library-ink" />
+                <span className="block h-1.5 w-1.5 bg-library-ink" />
               </span>
             </button>
           ) : null}
@@ -187,7 +187,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
       </div>
 
       {isMenuOpen ? (
-        <div className="border-t-2 border-library-ink bg-pale-cream px-4 py-4 shadow-[0_4px_0_#1a1c1a] 2xl:hidden">
+        <div className="border-t-2 border-library-ink bg-pale-cream px-4 py-4 shadow-[4px_4px_0_#1a1c1a] 2xl:hidden">
           <nav aria-label="Mobile navigation" className="mx-auto grid max-w-7xl gap-2 sm:grid-cols-2">
             {links.map((link) => (
               <NavLink key={link.to} to={link.to} className={navLinkClass} onClick={() => setIsMenuOpen(false)}>
