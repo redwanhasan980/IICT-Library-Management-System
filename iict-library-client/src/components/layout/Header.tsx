@@ -65,7 +65,7 @@ const getLinksForRole = (role?: Role) => {
 };
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `border-2 px-3 py-2 text-sm font-extrabold uppercase leading-none tracking-[0.08em] transition ${
+  `whitespace-nowrap border-2 px-2.5 py-2 text-[13px] font-extrabold uppercase leading-none tracking-[0.08em] transition ${
     isActive
       ? 'border-library-ink bg-library-ink text-pale-cream shadow-[3px_3px_0_#5e4447]'
       : 'border-transparent text-library-ink hover:border-library-ink hover:bg-library-mist'
@@ -93,20 +93,20 @@ const Header = ({ onOpenModules }: HeaderProps) => {
 
   return (
     <header className="sticky top-0 z-40 border-b-2 border-library-ink bg-paper-soft/95 shadow-[4px_4px_0_#1a1c1a]">
-      <div className="mx-auto flex min-h-[72px] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 items-center gap-3">
+      <div className="mx-auto flex min-h-[72px] w-full max-w-[1880px] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+        <div className="flex min-w-0 flex-1 items-center gap-3 min-[1800px]:w-[230px] min-[1800px]:flex-none">
           <Link to="/" className="flex min-w-0 items-center gap-3" onClick={() => setIsMenuOpen(false)}>
             <span className="grid h-11 w-11 shrink-0 place-items-center border-2 border-library-ink bg-library-ink text-sm font-extrabold text-pale-cream shadow-[3px_3px_0_#5e4447]">
               IICT
             </span>
-            <span className="min-w-0 max-w-[220px] sm:max-w-none">
+            <span className="min-w-0 max-w-[220px] min-[1800px]:max-w-[155px]">
               <span className="block text-base font-bold text-library-ink sm:text-lg">IICT Library</span>
               <span className="block truncate text-xs font-medium uppercase tracking-[0.16em] text-warm-taupe">Library Management System</span>
             </span>
           </Link>
         </div>
 
-        <nav aria-label="Primary navigation" className="hidden items-center gap-1 2xl:flex">
+        <nav aria-label="Primary navigation" className="hidden min-w-0 flex-1 items-center justify-center gap-1 min-[1800px]:flex">
           {links.map((link) => (
             <NavLink key={link.to} to={link.to} end={link.end} className={navLinkClass}>
               {link.label}
@@ -115,7 +115,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
         </nav>
 
         <div className="flex items-center gap-2">
-          <div className="hidden items-center gap-3 2xl:flex">
+          <div className="hidden items-center gap-3 min-[1800px]:flex">
             {user ? (
               <div className="relative">
                 <button
@@ -160,7 +160,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
 
           <button
             type="button"
-            className="border-2 border-library-ink bg-paper-soft p-3 transition hover:bg-library-mist 2xl:hidden"
+            className="border-2 border-library-ink bg-paper-soft p-3 transition hover:bg-library-mist min-[1800px]:hidden"
             aria-label="Toggle navigation"
             aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((open) => !open)}
@@ -188,7 +188,7 @@ const Header = ({ onOpenModules }: HeaderProps) => {
       </div>
 
       {isMenuOpen ? (
-        <div className="border-t-2 border-library-ink bg-paper-soft px-4 py-4 shadow-[4px_4px_0_#1a1c1a] 2xl:hidden">
+        <div className="border-t-2 border-library-ink bg-paper-soft px-4 py-4 shadow-[4px_4px_0_#1a1c1a] min-[1800px]:hidden">
           <nav aria-label="Mobile navigation" className="mx-auto grid max-w-7xl gap-2 sm:grid-cols-2">
             {links.map((link) => (
               <NavLink key={link.to} to={link.to} end={link.end} className={navLinkClass} onClick={() => setIsMenuOpen(false)}>
