@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { registerSchema } from './auth.validator';
+import { changePasswordSchema, registerSchema, updateProfileSchema } from './auth.validator';
 
 describe('auth validation', () => {
   it('requires student phone number during registration', () => {
@@ -31,5 +31,29 @@ describe('auth validation', () => {
 
     expect(result.success).toBe(false);
     expect(result.success ? '' : result.error.errors[0].message).toBe('Teacher ID is required');
+  });
+
+  it('validates profile update fields', () => {
+    const result = updateProfileSchema.safeParse({
+      body: {
+        name: 'Updated User',
+        email: 'updated@example.com',
+        department: 'CSE',
+        currentSemester: '5',
+      },
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('requires current password when changing password', () => {
+    const result = changePasswordSchema.safeParse({
+      body: {
+        newPassword: 'password123',
+      },
+    });
+
+    expect(result.success).toBe(false);
+    expect(result.success ? '' : result.error.errors[0].message).toBe('Current password is required');
   });
 });
