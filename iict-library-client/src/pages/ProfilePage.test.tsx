@@ -62,11 +62,21 @@ describe('ProfilePage', () => {
     vi.clearAllMocks();
   });
 
-  it('renders profile edit and password change forms', () => {
+  it('shows profile action buttons and keeps forms collapsed by default', () => {
     renderProfile();
 
-    expect(screen.getByText('Edit Profile')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Change Password' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Edit Profile' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Change Password' })).toBeInTheDocument();
+    expect(screen.queryByDisplayValue('Student One')).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue('01700000000')).not.toBeInTheDocument();
+  });
+
+  it('reveals profile edit form after clicking edit profile', () => {
+    renderProfile();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit Profile' }));
+
+    expect(screen.getByRole('heading', { name: 'Edit Profile' })).toBeInTheDocument();
     expect(screen.getByDisplayValue('Student One')).toBeInTheDocument();
     expect(screen.getByDisplayValue('01700000000')).toBeInTheDocument();
   });
@@ -75,6 +85,7 @@ describe('ProfilePage', () => {
     mocks.updateProfile.mockReturnValue({ unwrap: vi.fn().mockResolvedValue(studentUser) });
     renderProfile();
 
+    fireEvent.click(screen.getByRole('button', { name: 'Edit Profile' }));
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Student Updated' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save Profile' }));
 
@@ -93,10 +104,11 @@ describe('ProfilePage', () => {
     mocks.changePassword.mockReturnValue({ unwrap: vi.fn().mockResolvedValue(null) });
     renderProfile();
 
+    fireEvent.click(screen.getByRole('button', { name: 'Change Password' }));
     fireEvent.change(screen.getByLabelText('Current Password'), { target: { value: 'old-password' } });
     fireEvent.change(screen.getByLabelText('New Password'), { target: { value: 'new-password' } });
     fireEvent.change(screen.getByLabelText('Confirm New Password'), { target: { value: 'new-password' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Change Password' }));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Change Password' }).at(-1)!);
 
     await waitFor(() => {
       expect(mocks.changePassword).toHaveBeenCalledWith({

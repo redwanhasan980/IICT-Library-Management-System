@@ -44,6 +44,8 @@ const ProfilePage = () => {
     newPassword: '',
     confirmPassword: '',
   });
+  const [isProfileFormOpen, setIsProfileFormOpen] = useState(false);
+  const [isPasswordFormOpen, setIsPasswordFormOpen] = useState(false);
   const profileUser = user ?? cachedUser;
 
   useEffect(() => {
@@ -101,6 +103,7 @@ const ProfilePage = () => {
 
     try {
       await updateProfile(payload).unwrap();
+      setIsProfileFormOpen(false);
       toast.success('Profile updated.');
     } catch (error) {
       toast.error(getApiErrorMessage(error, 'Failed to update profile.'));
@@ -126,6 +129,7 @@ const ProfilePage = () => {
         newPassword: passwordForm.newPassword,
       }).unwrap();
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setIsPasswordFormOpen(false);
       toast.success('Password changed.');
     } catch (error) {
       toast.error(getApiErrorMessage(error, 'Failed to change password.'));
@@ -185,8 +189,17 @@ const ProfilePage = () => {
             </div>
           ))}
         </dl>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Button type="button" variant="secondary" onClick={() => setIsProfileFormOpen((open) => !open)}>
+            {isProfileFormOpen ? 'Close Edit Profile' : 'Edit Profile'}
+          </Button>
+          <Button type="button" variant="outline" onClick={() => setIsPasswordFormOpen((open) => !open)}>
+            {isPasswordFormOpen ? 'Close Password Form' : 'Change Password'}
+          </Button>
+        </div>
       </Card>
 
+      {isProfileFormOpen ? (
       <Card>
         <form onSubmit={handleProfileSubmit} className="space-y-5">
           <div>
@@ -295,7 +308,9 @@ const ProfilePage = () => {
           </Button>
         </form>
       </Card>
+      ) : null}
 
+      {isPasswordFormOpen ? (
       <Card>
         <form onSubmit={handlePasswordSubmit} className="space-y-5">
           <div>
@@ -343,6 +358,7 @@ const ProfilePage = () => {
           </Button>
         </form>
       </Card>
+      ) : null}
     </div>
   );
 };
