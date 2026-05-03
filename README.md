@@ -5,7 +5,7 @@ Full-stack IICT Library Management System monorepo with a React client and an Ex
 The repository root is only a lightweight command runner and documentation hub. There is no root app, and the deployable projects are independent:
 
 - [`iict-library-client/`](iict-library-client/) contains the complete Vite frontend.
-- [`iict-library-server/`](iict-library-server/) contains the complete Express/Prisma backend.
+- [`iict-library-server/`](iict-library-server/) contains the complete Express/Prisma backend. Done
 
 The client uses a consistent professional library-style interface with layered paper-toned surfaces, square controls, and role-aware navigation for public, student, teacher, and admin workflows.
 
