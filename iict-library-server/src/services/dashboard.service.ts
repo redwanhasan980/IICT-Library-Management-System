@@ -6,13 +6,16 @@ class DashboardService {
   private async getCoreStats() {
     const now = new Date();
     const [
-      totalBooks,
+      totalAggregate,
       availableAggregate,
       issuedBooks,
       overdueLoans,
       activeOutsideBookEntries,
     ] = await Promise.all([
-      prisma.book.count({ where: { isArchived: false } }),
+      prisma.book.aggregate({
+        where: { isArchived: false },
+        _sum: { totalCopies: true },
+      }),
       prisma.book.aggregate({
         where: { isArchived: false },
         _sum: { availableCopies: true },
@@ -36,7 +39,7 @@ class DashboardService {
     ]);
 
     return {
-      totalBooks,
+      totalBooks: totalAggregate._sum.totalCopies ?? 0,
       availableBooks: availableAggregate._sum.availableCopies ?? 0,
       issuedBooks,
       overdueLoans,
