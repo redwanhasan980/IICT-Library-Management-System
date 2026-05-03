@@ -37,6 +37,7 @@ const baseBookSchema = z.object({
   coverImageUrl: coverImageSchema,
   procurementId: z.string().optional(),
   totalCopies: z.number().int().positive().optional(),
+  availableCopies: z.number().int().min(0, 'Available copies cannot be negative').optional(),
 });
 
 export const listBooksSchema = z.object({

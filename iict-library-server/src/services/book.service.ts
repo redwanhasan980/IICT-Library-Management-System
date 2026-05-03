@@ -1,4 +1,4 @@
-import type { BookImage } from '@prisma/client';
+import { LoanStatus, type BookImage } from '@prisma/client';
 import prisma from '../config/database';
 import AppError from '../utils/AppError';
 import { logAuditEvent } from '../utils/auditLog';
@@ -32,6 +32,7 @@ interface CreateBookInput {
   coverImageUrl?: string;
   procurementId?: string;
   totalCopies?: number;
+  availableCopies?: number;
 }
 
 interface ListBooksQuery {
@@ -127,6 +128,11 @@ class BookService {
     }
 
     const totalCopies = payload.totalCopies ?? 1;
+    const availableCopies = payload.availableCopies ?? totalCopies;
+
+    if (availableCopies > totalCopies) {
+      throw new AppError('Available copies cannot be greater than total copies', 400);
+    }
 
     const created = await prisma.book.create({
       data: {
@@ -157,7 +163,7 @@ class BookService {
         coverImageUrl: payload.coverImageUrl,
         procurementId: payload.procurementId,
         totalCopies,
-        availableCopies: totalCopies,
+        availableCopies,
       },
     });
 
@@ -397,6 +403,37 @@ class BookService {
       }
     }
 
+    const activeLoanCount = await prisma.loan.count({
+      where: {
+        bookId: id,
+        status: { in: [LoanStatus.ACTIVE, LoanStatus.OVERDUE] },
+      },
+    });
+
+    const nextTotalCopies = payload.totalCopies ?? book.totalCopies;
+    const nextAvailableCopies = payload.availableCopies ?? book.availableCopies;
+    const maxAvailableCopies = nextTotalCopies - activeLoanCount;
+
+    if (nextTotalCopies < 1) {
+      throw new AppError('Total copies must be at least 1', 400);
+    }
+
+    if (nextTotalCopies < activeLoanCount) {
+      throw new AppError('Total copies cannot be less than copies currently on loan', 400);
+    }
+
+    if (nextAvailableCopies < 0) {
+      throw new AppError('Available copies cannot be negative', 400);
+    }
+
+    if (nextAvailableCopies > nextTotalCopies) {
+      throw new AppError('Available copies cannot be greater than total copies', 400);
+    }
+
+    if (nextAvailableCopies > maxAvailableCopies) {
+      throw new AppError('Available copies cannot be greater than total copies minus active loans', 400);
+    }
+
     const updated = await prisma.book.update({
       where: { id },
       data: {
@@ -427,7 +464,7 @@ class BookService {
         coverImageUrl: payload.coverImageUrl,
         procurementId: payload.procurementId,
         totalCopies: payload.totalCopies,
-        availableCopies: payload.totalCopies, // We might need to handle this more intelligently if loans are active, but for basic single-copy modeling this works
+        availableCopies: payload.availableCopies
       },
     });
 

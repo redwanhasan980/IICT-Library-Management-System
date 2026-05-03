@@ -50,6 +50,7 @@ const AdminBookFormPage = () => {
     coverImageUrl: '',
     locationCode: '',
     totalCopies: 1,
+    availableCopies: 1,
   });
 
   const [errorDesc, setErrorDesc] = useState('');
@@ -81,6 +82,7 @@ const AdminBookFormPage = () => {
         coverImageUrl: bookDetails.coverImageUrl || '',
         locationCode: bookDetails.locationCode || '',
         totalCopies: bookDetails.totalCopies || 1,
+        availableCopies: bookDetails.availableCopies ?? 0,
       });
     }
   }, [isEditing, bookDetails]);
@@ -94,10 +96,29 @@ const AdminBookFormPage = () => {
     e.preventDefault();
     setErrorDesc('');
 
+    const totalCopies = parseInt(String(formData.totalCopies), 10);
+    const availableCopies = parseInt(String(formData.availableCopies), 10);
+
+    if (Number.isNaN(totalCopies) || totalCopies < 1) {
+      setErrorDesc('Total copies must be at least 1.');
+      return;
+    }
+
+    if (Number.isNaN(availableCopies) || availableCopies < 0) {
+      setErrorDesc('Available copies cannot be negative.');
+      return;
+    }
+
+    if (availableCopies > totalCopies) {
+      setErrorDesc('Available copies cannot be greater than total copies.');
+      return;
+    }
+
     const payload = {
       ...formData,
       pagination: formData.pagination ? parseInt(formData.pagination as string, 10) : undefined,
-      totalCopies: parseInt(String(formData.totalCopies), 10),
+      totalCopies,
+      availableCopies,
       deweyDecimalNumber: formData.deweyDecimalNumber ? parseFloat(formData.deweyDecimalNumber as string) : undefined,
     } as Partial<Book>;
 
@@ -223,6 +244,20 @@ const AdminBookFormPage = () => {
             <div>
               <label className="text-sm">Total Copies *</label>
               <Input name="totalCopies" type="number" min={1} value={formData.totalCopies} onChange={handleChange} required />
+              <p className="mt-1 text-xs text-warm-taupe">Total physical copies owned by the library. This should not be 0.</p>
+            </div>
+            <div>
+              <label className="text-sm">Available Copies *</label>
+              <Input
+                name="availableCopies"
+                type="number"
+                min={0}
+                max={formData.totalCopies}
+                value={formData.availableCopies}
+                onChange={handleChange}
+                required
+              />
+              <p className="mt-1 text-xs text-warm-taupe">Set this to 0 to make the book unavailable for new borrowing.</p>
             </div>
             
             <div className="md:col-span-2 text-lg font-semibold border-b pb-2 mt-4">Procurement & Source</div>
