@@ -49,7 +49,7 @@ describe('Header', () => {
     expect(screen.getByText('Catalog')).toBeInTheDocument();
     expect(screen.getByText('About Library')).toBeInTheDocument();
     expect(screen.getByText('Login')).toBeInTheDocument();
-    expect(screen.getByText('Register')).toBeInTheDocument();
+    expect(screen.queryByText('Register')).not.toBeInTheDocument();
   });
 
   it('links the IICT brand to the public home page', () => {

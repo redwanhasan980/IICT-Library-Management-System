@@ -16,7 +16,8 @@ const publicLinks: NavItem[] = [
   { to: '/catalog', label: 'Catalog' },
   { to: '/about', label: 'About Library' },
   { to: '/login', label: 'Login' },
-  { to: '/register', label: 'Register' },
+  // Institution-only deployment: keep /register implemented, but hide this link.
+  // { to: '/register', label: 'Register' },
 ];
 
 const studentLinks: NavItem[] = [

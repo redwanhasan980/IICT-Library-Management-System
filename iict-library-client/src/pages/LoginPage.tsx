@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Card } from '../components/shared/Card';
 import { Input } from '../components/shared/Input';
@@ -12,6 +12,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
+  const [showPasswordHelp, setShowPasswordHelp] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -54,11 +55,29 @@ const LoginPage = () => {
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
       </form>
-      <div className="mt-4 text-center text-sm text-warm-taupe">
-        <span>New here? </span>
-        <Link to="/register" className="font-semibold text-library-forest hover:text-library-gold">
-          Create an account
-        </Link>
+      <div className="mt-4 space-y-3 text-center text-sm text-warm-taupe">
+        <button
+          type="button"
+          className="inline-flex bg-paper-soft px-3 py-1.5 text-sm font-extrabold uppercase tracking-[0.08em] text-library-ink hover:bg-library-mist"
+          aria-expanded={showPasswordHelp}
+          onClick={() => setShowPasswordHelp((visible) => !visible)}
+        >
+          Forgot password?
+        </button>
+        {showPasswordHelp ? (
+          <p className="border-2 border-library-ink bg-paper-muted px-3 py-2 text-left text-sm font-semibold text-library-ink shadow-[3px_3px_0_#1a1c1a]">
+            Please contact the IICT Library office to reset your password or recover account access.
+          </p>
+        ) : null}
+
+        {/* Institution-only deployment: /register remains available, but this UI link is intentionally hidden.
+        <div>
+          <span>New here? </span>
+          <Link to="/register" className="font-semibold text-library-forest hover:text-library-gold">
+            Create an account
+          </Link>
+        </div>
+        */}
       </div>
     </Card>
   );
