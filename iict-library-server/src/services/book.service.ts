@@ -97,7 +97,9 @@ class BookService {
             { title: { contains: query.q } },
             { author: { contains: query.q } },
             { accessionNumber: { contains: query.q } },
+            { isbn: { contains: query.q } },
             { callNumber: { contains: query.q } },
+            { barcode: { contains: query.q } },
             { subjectCategory: { contains: query.q } },
           ]
         : undefined,
@@ -449,6 +451,63 @@ class BookService {
     }
 
     return book;
+  }
+
+
+  async deleteBook(actorId: string, id: string) {
+    const book = await prisma.book.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        accessionNumber: true,
+      },
+    });
+
+    if (!book) {
+      throw new AppError('Book not found', 404);
+    }
+
+    const [loanCount, reservationCount] = await Promise.all([
+      prisma.loan.count({ where: { bookId: id } }),
+      prisma.reservation.count({ where: { bookId: id } }),
+    ]);
+
+    if (loanCount > 0) {
+      throw new AppError(
+        'This book has loan history. Archive the book instead of deleting it permanently.',
+        409
+      );
+    }
+
+    if (reservationCount > 0) {
+      throw new AppError(
+        'This book has reservation history. Archive the book instead of deleting it permanently.',
+        409
+      );
+    }
+
+    const deleted = await prisma.book.delete({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        accessionNumber: true,
+      },
+    });
+
+    logAuditEvent({
+      action: 'book.delete',
+      actorId,
+      entity: 'Book',
+      entityId: id,
+      details: {
+        title: deleted.title,
+        accessionNumber: deleted.accessionNumber,
+      },
+    });
+
+    return deleted;
   }
 
   async setArchiveStatus(actorId: string, id: string, isArchived: boolean) {

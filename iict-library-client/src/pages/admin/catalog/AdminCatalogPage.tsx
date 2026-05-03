@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useListBooksQuery, useSetBookArchiveStatusMutation } from '../../../services/library.api';
+import { toast } from 'react-hot-toast';
+import { useDeleteBookMutation, useListBooksQuery, useSetBookArchiveStatusMutation } from '../../../services/library.api';
 import { Card } from '../../../components/shared/Card';
 import { Button } from '../../../components/shared/Button';
 import { Input } from '../../../components/shared/Input';
@@ -8,12 +9,21 @@ import { Badge } from '../../../components/shared/Badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../../components/shared/Table';
 import { ErrorState, LoadingState } from '../../../components/shared/FeedbackState';
 import { getBookThumbnailSrc } from '../../../utils/bookImage';
+import { getApiErrorMessage } from '../../../utils/apiError';
+
+type DeleteTarget = {
+  id: string;
+  title: string;
+  accessionNumber: string;
+};
 
 const AdminCatalogPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [queryTerm, setQueryTerm] = useState('');
   const [includeArchived, setIncludeArchived] = useState(true);
   const [page, setPage] = useState(1);
+  const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState('');
   const pageSize = 20;
 
   const { data, isLoading, isError, refetch } = useListBooksQuery({
@@ -24,6 +34,7 @@ const AdminCatalogPage = () => {
   });
 
   const [setArchiveStatus] = useSetBookArchiveStatusMutation();
+  const [deleteBook, { isLoading: isDeleting }] = useDeleteBookMutation();
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -37,6 +48,35 @@ const AdminCatalogPage = () => {
     setQueryTerm('');
     setIncludeArchived(true);
     setPage(1);
+  };
+
+  const openDeleteDialog = (book: DeleteTarget) => {
+    setDeleteTarget(book);
+    setDeleteConfirmation('');
+  };
+
+  const closeDeleteDialog = () => {
+    if (isDeleting) {
+      return;
+    }
+
+    setDeleteTarget(null);
+    setDeleteConfirmation('');
+  };
+
+  const handleDeleteBook = async () => {
+    if (!deleteTarget || deleteConfirmation.trim().toLowerCase() !== 'confirm') {
+      return;
+    }
+
+    try {
+      await deleteBook(deleteTarget.id).unwrap();
+      toast.success('Book deleted permanently');
+      closeDeleteDialog();
+    } catch (error: unknown) {
+      const message = getApiErrorMessage(error, 'Failed to delete book');
+      toast.error(message);
+    }
   };
 
   const handleToggleArchive = async (id: string, currentStatus: boolean) => {
@@ -55,7 +95,7 @@ const AdminCatalogPage = () => {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-dark-brown">Manage Books</h1>
-          <p className="text-sm text-warm-taupe">Add, edit, or archive books in the library catalog.</p>
+          <p className="text-sm text-warm-taupe">Add, edit, archive, restore, or permanently delete books in the library catalog.</p>
         </div>
         <Link to="/dashboard/admin/catalog/new">
           <Button variant="primary">Add New Book</Button>
@@ -157,6 +197,18 @@ const AdminCatalogPage = () => {
                         >
                           {book.isArchived ? 'Restore' : 'Archive'}
                         </Button>
+                        <Button
+                          variant="outline"
+                          className="border-red-950 bg-red-50 text-red-800 hover:bg-red-100"
+                          size="sm"
+                          onClick={() => openDeleteDialog({
+                            id: book.id,
+                            title: book.title,
+                            accessionNumber: book.accessionNumber,
+                          })}
+                        >
+                          Delete
+                        </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -193,6 +245,44 @@ const AdminCatalogPage = () => {
           </>
         )}
       </Card>
+
+      {deleteTarget ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-library-ink/60 px-4">
+          <div className="w-full max-w-md border-2 border-library-ink bg-pale-cream p-5 shadow-[6px_6px_0_#1a1c1a]">
+            <h2 className="text-xl font-bold text-red-900">Delete book permanently?</h2>
+            <p className="mt-2 text-sm text-library-ink">
+              This will delete the book record from the database. This action cannot be undone.
+            </p>
+            <div className="mt-4 border-2 border-library-ink bg-paper-muted p-3 text-sm text-library-ink">
+              <p><span className="font-bold">Title:</span> {deleteTarget.title}</p>
+              <p><span className="font-bold">Accession:</span> {deleteTarget.accessionNumber}</p>
+            </div>
+            <label htmlFor="delete-confirmation" className="mt-4 block text-sm font-semibold text-warm-taupe">
+              Type <span className="font-extrabold text-red-900">confirm</span> to delete this book
+            </label>
+            <Input
+              id="delete-confirmation"
+              value={deleteConfirmation}
+              onChange={(event) => setDeleteConfirmation(event.target.value)}
+              placeholder="confirm"
+              disabled={isDeleting}
+            />
+            <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
+              <Button variant="outline" onClick={closeDeleteDialog} disabled={isDeleting}>
+                Cancel
+              </Button>
+              <Button
+                variant="outline"
+                className="border-red-950 bg-red-700 text-white hover:bg-red-800"
+                onClick={handleDeleteBook}
+                disabled={isDeleting || deleteConfirmation.trim().toLowerCase() !== 'confirm'}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Permanently'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };

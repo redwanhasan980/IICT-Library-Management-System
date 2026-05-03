@@ -116,6 +116,21 @@ class BookController {
     }
   }
 
+
+  async deleteBook(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const actorId = req.user?.id;
+      if (!actorId) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const deleted = await bookService.deleteBook(actorId, req.params.id);
+      return res.status(200).json(successResponse(deleted, 'Book permanently deleted'));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
   async setArchiveStatus(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const actorId = req.user?.id;

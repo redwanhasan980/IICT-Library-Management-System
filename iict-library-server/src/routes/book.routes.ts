@@ -52,5 +52,6 @@ router.patch(
 );
 router.put('/:id', restrictTo(Role.ADMIN), validate(updateBookSchema), bookController.updateBook);
 router.patch('/:id/archive', restrictTo(Role.ADMIN), validate(archiveBookSchema), bookController.setArchiveStatus);
+router.delete('/:id', restrictTo(Role.ADMIN), validate(bookIdParamSchema), bookController.deleteBook);
 
 export default router;

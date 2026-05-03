@@ -130,6 +130,14 @@ export const libraryApi = api.injectEndpoints({
       transformResponse: (response: ApiResponse<Book>) => response.data,
       invalidatesTags: ['Books'],
     }),
+    deleteBook: builder.mutation<{ id: string; title: string; accessionNumber: string }, string>({
+      query: (id) => ({
+        url: `/books/${id}`,
+        method: 'DELETE',
+      }),
+      transformResponse: (response: ApiResponse<{ id: string; title: string; accessionNumber: string }>) => response.data,
+      invalidatesTags: ['Books', 'Dashboard', 'Reservations'],
+    }),
     uploadBookImages: builder.mutation<BookImage[], { bookId: string; files: File[] }>({
       query: ({ bookId, files }) => {
         const formData = new FormData();
@@ -427,6 +435,7 @@ export const {
   useCreateBookMutation,
   useUpdateBookMutation,
   useSetBookArchiveStatusMutation,
+  useDeleteBookMutation,
   useUploadBookImagesMutation,
   useDeleteBookImageMutation,
   useReorderBookImagesMutation,

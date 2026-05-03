@@ -24,7 +24,10 @@ const studentLinks: NavItem[] = [
   { to: '/dashboard/student', label: 'Dashboard', end: true },
   { to: '/dashboard/books', label: 'Catalog' },
   { to: '/dashboard/student/borrowing', label: 'My Borrowing' },
+  { to: '/dashboard/student/reservations', label: 'My Reservations' },
+  { to: '/dashboard/student/fines', label: 'My Fines' },
   { to: '/dashboard/add-outside-book', label: 'Outside Book Entry' },
+  { to: '/dashboard/my-outside-books', label: 'My Outside Books' },
   { to: '/dashboard/profile', label: 'Profile' },
 ];
 
@@ -32,6 +35,8 @@ const teacherLinks: NavItem[] = [
   { to: '/dashboard/teacher', label: 'Dashboard', end: true },
   { to: '/dashboard/books', label: 'Catalog' },
   { to: '/dashboard/teacher/borrowing', label: 'My Borrowing' },
+  { to: '/dashboard/teacher/reservations', label: 'My Reservations' },
+  { to: '/dashboard/teacher/fines', label: 'My Fines' },
   { to: '/dashboard/profile', label: 'Profile' },
 ];
 
