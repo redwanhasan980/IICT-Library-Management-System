@@ -166,6 +166,11 @@ textarea:focus {
   background:
     linear-gradient(180deg, rgba(253, 255, 245, 0.96), rgba(252, 252, 227, 0.92)),
     var(--paper);
+  box-shadow:
+    8px 10px 0 rgba(26, 28, 26, 0.96),
+    18px 22px 24px rgba(26, 28, 26, 0.24);
+  transform: translate(0, 0);
+  transition: box-shadow 150ms ease, transform 150ms ease;
 }
 
 .book-cover-frame img {
@@ -181,6 +186,13 @@ textarea:focus {
 
 .book-cover-frame--thumb {
   width: 100%;
+}
+
+.book-card-paper:hover .book-cover-frame {
+  box-shadow:
+    11px 14px 0 rgba(26, 28, 26, 0.98),
+    24px 30px 30px rgba(26, 28, 26, 0.28);
+  transform: translate(-3px, -4px);
 }
 
 .header-menu-panel {
