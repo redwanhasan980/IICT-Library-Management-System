@@ -180,8 +180,10 @@ class BookService {
             { title: { contains: query.q } },
             { author: { contains: query.q } },
             { accessionNumber: { contains: query.q } },
+            { isbn: { contains: query.q } },
             { callNumber: { contains: query.q } },
             { barcode: { contains: query.q } },
+            { subjectCategory: { contains: query.q } },
           ]
         : undefined,
     };

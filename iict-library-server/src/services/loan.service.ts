@@ -202,16 +202,17 @@ class LoanService {
       throw new AppError('Book is currently unavailable', 400);
     }
 
-    const activeBookLoan = await prisma.loan.findFirst({
+    const borrowerAlreadyHasBook = await prisma.loan.findFirst({
       where: {
         bookId: book.id,
+        userId: user.id,
         status: LoanStatus.ACTIVE,
       },
       select: { id: true },
     });
 
-    if (activeBookLoan) {
-      throw new AppError('This accession number is already issued', 409);
+    if (borrowerAlreadyHasBook) {
+      throw new AppError('This borrower already has an active loan for this book', 409);
     }
 
     if (activeLoansCount >= maxActiveLoans) {
@@ -253,16 +254,17 @@ class LoanService {
         throw new AppError('Book is currently unavailable', 409);
       }
 
-      const activeLoanInTx = await tx.loan.findFirst({
+      const borrowerAlreadyHasBookInTx = await tx.loan.findFirst({
         where: {
           bookId: book.id,
+          userId: user.id,
           status: LoanStatus.ACTIVE,
         },
         select: { id: true },
       });
 
-      if (activeLoanInTx) {
-        throw new AppError('This accession number is already issued', 409);
+      if (borrowerAlreadyHasBookInTx) {
+        throw new AppError('This borrower already has an active loan for this book', 409);
       }
 
       const reservationHoldInTx = await this.findReservationHold(tx, book.id, issueDate);
