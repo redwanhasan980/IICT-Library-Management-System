@@ -131,11 +131,12 @@ const BookImageManager = ({
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {previews.map((preview, index) => (
               <div key={`${preview.file.name}-${index}`} className="border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
-                <img
-                  src={preview.url}
-                  alt={`Selected ${preview.file.name}`}
-                  className="aspect-[9/13] w-full border-2 border-library-ink bg-library-mist object-cover"
-                />
+                <div className="book-cover-frame">
+                  <img
+                    src={preview.url}
+                    alt={`Selected ${preview.file.name}`}
+                  />
+                </div>
                 <p className="mt-2 truncate text-xs font-semibold text-library-ink">{preview.file.name}</p>
                 <Button
                   type="button"
@@ -160,11 +161,12 @@ const BookImageManager = ({
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {images.map((image, index) => (
                 <div key={image.id} className="border-2 border-library-ink bg-pale-cream p-3 shadow-[3px_3px_0_#1a1c1a]">
-                  <img
-                    src={image.thumbnailUrl}
-                    alt={`Book image ${index + 1}`}
-                    className="aspect-[9/13] w-full border-2 border-library-ink bg-library-mist object-cover"
-                  />
+                  <div className="book-cover-frame">
+                    <img
+                      src={image.thumbnailUrl}
+                      alt={`Book image ${index + 1}`}
+                    />
+                  </div>
                   <div className="mt-2 flex items-center justify-between gap-2">
                     <span className="text-xs font-semibold text-library-ink">
                       {image.isPrimary ? 'Primary' : `Image ${index + 1}`}

@@ -30,11 +30,12 @@ const BookCatalogPage = () => {
               const unavailable = book.availableCopies < 1;
               return (
                 <article key={book.id} className="book-card-paper border-2 border-library-ink bg-pale-cream p-4 shadow-[3px_3px_0_#1a1c1a]">
-                  <img
-                    src={getBookCoverSrc(book)}
-                    alt={`Cover for ${book.title}`}
-                    className="mb-3 h-44 w-full border-2 border-library-ink bg-library-mist object-cover"
-                  />
+                  <div className="book-cover-frame mb-3">
+                    <img
+                      src={getBookCoverSrc(book)}
+                      alt={`Cover for ${book.title}`}
+                    />
+                  </div>
                   <div className="mb-3 flex items-center justify-between gap-2">
                     <h2 className="text-base font-semibold text-dark-brown">{book.title}</h2>
                     {unavailable ? <Badge variant="warning">Unavailable</Badge> : <Badge variant="success">Available</Badge>}

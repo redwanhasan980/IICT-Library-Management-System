@@ -60,13 +60,14 @@ const BookDetailsPage = () => {
       {!isLoading && !isError && book && (
         <>
           <Card className="space-y-4">
-            <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
+            <div className="grid gap-8 lg:grid-cols-[360px_1fr]">
               <div className="space-y-3">
-                <img
-                  src={activeGalleryImage?.detailUrl || getBookCoverSrc(book)}
-                  alt={`Cover for ${book.title}`}
-                  className="aspect-[9/13] w-full border-2 border-library-ink bg-library-mist object-cover shadow-[4px_4px_0_#1a1c1a]"
-                />
+                <div className="book-cover-frame book-cover-frame--detail shadow-[4px_4px_0_#1a1c1a]">
+                  <img
+                    src={activeGalleryImage?.detailUrl || getBookCoverSrc(book)}
+                    alt={`Cover for ${book.title}`}
+                  />
+                </div>
                 {book.images && book.images.length > 1 ? (
                   <div className="flex items-center justify-between gap-2">
                     <Button
@@ -104,11 +105,12 @@ const BookDetailsPage = () => {
                         }`}
                         aria-label={`Show book image ${index + 1}`}
                       >
-                        <img
-                          src={image.thumbnailUrl}
-                          alt={`Thumbnail ${index + 1} for ${book.title}`}
-                          className="aspect-[9/13] w-full border border-library-ink object-cover"
-                        />
+                        <span className="book-cover-frame book-cover-frame--thumb border border-library-ink">
+                          <img
+                            src={image.thumbnailUrl}
+                            alt={`Thumbnail ${index + 1} for ${book.title}`}
+                          />
+                        </span>
                       </button>
                     ))}
                   </div>

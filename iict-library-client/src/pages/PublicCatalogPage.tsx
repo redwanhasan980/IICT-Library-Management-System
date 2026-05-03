@@ -55,11 +55,12 @@ const PublicCatalogPage = () => {
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {data.items.map((book) => (
               <Card key={book.id} className="book-card-paper flex h-full flex-col gap-4">
-                <img
-                  src={getBookCoverSrc(book)}
-                  alt={`Cover for ${book.title}`}
-                  className="h-44 w-full border-2 border-library-ink bg-library-mist object-cover"
-                />
+                <div className="book-cover-frame">
+                  <img
+                    src={getBookCoverSrc(book)}
+                    alt={`Cover for ${book.title}`}
+                  />
+                </div>
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="text-lg font-semibold text-library-ink">{book.title}</h2>

@@ -62,8 +62,8 @@ describe('bookImageService', () => {
   it('maps Cloudinary delivery transformations for display sizes', () => {
     const mapped = mapBookImage(uploadedImage);
 
-    expect(mapped.thumbnailUrl).toContain('/upload/c_fill,w_180,h_260,g_auto,f_auto,q_auto/');
-    expect(mapped.coverUrl).toContain('/upload/c_fill,w_360,h_520,g_auto,f_auto,q_auto/');
+    expect(mapped.thumbnailUrl).toContain('/upload/c_fit,w_180,h_270,f_auto,q_auto/');
+    expect(mapped.coverUrl).toContain('/upload/c_fit,w_420,h_630,f_auto,q_auto/');
     expect(mapped.detailUrl).toContain('/upload/c_fit,w_1200,h_1400,f_auto,q_auto/');
   });
 
