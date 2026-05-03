@@ -4,7 +4,6 @@ import { LoanStatus, OutsideBookEntryStatus, ProcurementStatus, Role } from '@pr
 const mocks = vi.hoisted(() => ({
   prisma: {
     book: {
-      count: vi.fn(),
       aggregate: vi.fn(),
       findMany: vi.fn(),
     },
@@ -37,8 +36,9 @@ const { default: dashboardService } = await import('./dashboard.service');
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mocks.prisma.book.count.mockResolvedValue(10);
-  mocks.prisma.book.aggregate.mockResolvedValue({ _sum: { availableCopies: 7 } });
+  mocks.prisma.book.aggregate
+    .mockResolvedValueOnce({ _sum: { totalCopies: 10 } })
+    .mockResolvedValueOnce({ _sum: { availableCopies: 7 } });
   mocks.prisma.loan.count.mockResolvedValueOnce(2).mockResolvedValueOnce(1);
   mocks.prisma.outsideBookEntry.count.mockResolvedValue(3);
   mocks.bookService.listRecentBooks.mockResolvedValue([]);
@@ -58,6 +58,14 @@ describe('dashboardService', () => {
       activeOutsideBookEntries: 3,
     });
     expect(result.stats).not.toHaveProperty('totalStudents');
+    expect(mocks.prisma.book.aggregate).toHaveBeenCalledWith({
+      where: { isArchived: false },
+      _sum: { totalCopies: true },
+    });
+    expect(mocks.prisma.book.aggregate).toHaveBeenCalledWith({
+      where: { isArchived: false },
+      _sum: { availableCopies: true },
+    });
     expect(mocks.bookService.listRecentBooks).toHaveBeenCalledWith({ limit: 6 });
   });
 

@@ -35,6 +35,16 @@ interface BootstrapAdminInput {
   password: string;
 }
 
+interface UpdateProfileInput {
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  department?: Department;
+  currentSemester?: number;
+  designation?: string;
+  signatureData?: string;
+}
+
 interface AuditRequestContext {
   ipAddress?: string;
   userAgent?: string;
@@ -241,6 +251,133 @@ class AuthService {
 
     const { password: _password, ...safeUser } = user;
     return safeUser;
+  }
+
+  async updateCurrentUser(userId: string, payload: UpdateProfileInput) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        student: true,
+        teacher: true,
+        admin: true,
+      },
+    });
+
+    if (!user || !user.isActive) {
+      throw new AppError('User not found', 404);
+    }
+
+    const nextEmail = payload.email?.trim().toLowerCase();
+    if (nextEmail && nextEmail !== user.email) {
+      const existingUser = await prisma.user.findUnique({
+        where: { email: nextEmail },
+        select: { id: true },
+      });
+      if (existingUser && existingUser.id !== user.id) {
+        throw new AppError('A user already exists with this email', 409);
+      }
+    }
+
+    await prisma.$transaction(async (tx) => {
+      const userData: { name?: string; email?: string } = {};
+      if (payload.name !== undefined) {
+        userData.name = payload.name.trim();
+      }
+      if (nextEmail) {
+        userData.email = nextEmail;
+      }
+
+      if (Object.keys(userData).length > 0) {
+        await tx.user.update({
+          where: { id: user.id },
+          data: userData,
+        });
+      }
+
+      if (user.role === Role.STUDENT) {
+        const studentData: { phoneNumber?: string; department?: Department; currentSemester?: number } = {};
+        if (payload.phoneNumber !== undefined) {
+          studentData.phoneNumber = payload.phoneNumber.trim();
+        }
+        if (payload.department !== undefined) {
+          studentData.department = payload.department;
+        }
+        if (payload.currentSemester !== undefined) {
+          studentData.currentSemester = payload.currentSemester;
+        }
+
+        if (Object.keys(studentData).length > 0) {
+          if (!user.student) {
+            throw new AppError('Student profile not found', 404);
+          }
+          await tx.studentProfile.update({
+            where: { userId: user.id },
+            data: studentData,
+          });
+        }
+      }
+
+      if (user.role === Role.TEACHER) {
+        const teacherData: { department?: Department; designation?: string; signatureData?: string } = {};
+        if (payload.department !== undefined) {
+          teacherData.department = payload.department;
+        }
+        if (payload.designation !== undefined) {
+          teacherData.designation = payload.designation.trim();
+        }
+        if (payload.signatureData !== undefined) {
+          teacherData.signatureData = payload.signatureData.trim();
+        }
+
+        if (Object.keys(teacherData).length > 0) {
+          if (!user.teacher) {
+            throw new AppError('Teacher profile not found', 404);
+          }
+          await tx.teacherProfile.update({
+            where: { userId: user.id },
+            data: teacherData,
+          });
+        }
+      }
+    });
+
+    logAuditEvent({
+      action: 'auth.profile_update',
+      actorId: user.id,
+      actorRole: user.role,
+      entity: 'User',
+      entityId: user.id,
+      details: { updatedFields: Object.keys(payload) },
+    });
+
+    return this.getCurrentUser(user.id);
+  }
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.isActive) {
+      throw new AppError('User not found', 404);
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      throw new AppError('Current password is incorrect', 400);
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password: passwordHash },
+    });
+
+    logAuditEvent({
+      action: 'auth.password_change',
+      actorId: user.id,
+      actorRole: user.role,
+      entity: 'User',
+      entityId: user.id,
+      details: { changed: true },
+    });
   }
 }
 

@@ -1,7 +1,6 @@
 import HeroCarousel from '../components/home/HeroCarousel';
 import StatsGrid from '../components/home/StatsGrid';
 import BookSection from '../components/home/BookSection';
-import { Card } from '../components/shared/Card';
 import { ErrorState, LoadingState } from '../components/shared/FeedbackState';
 import { useAppSelector } from '../store';
 import { selectCurrentUser } from '../services/auth.slice';
@@ -98,30 +97,6 @@ const HomePage = () => {
           </>
         ) : null}
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {[
-            ['Book Catalog Search', 'Search active catalog records by title, author, accession number, and classification.'],
-            ['Borrowing and Return Tracking', 'Maintain current loans, due dates, return history, and overdue status.'],
-            ['Outside Book Entry', 'Students can register personal books before entering the library.'],
-            ['DDC Classification and Spine Label', 'Support classification fields and spine-label generation for cataloged books.'],
-            ['Reports and Monitoring', 'Admins can review database-backed circulation and operational reports.'],
-            ['Procurement and Inventory', 'Track procurement workflows and inventory audit sessions where configured.'],
-          ].map(([title, description]) => (
-            <Card key={title}>
-              <h2 className="text-lg font-semibold text-library-ink">{title}</h2>
-              <p className="mt-2 text-sm leading-6 text-warm-taupe">{description}</p>
-            </Card>
-          ))}
-        </section>
-
-        <Card className="bg-library-mist">
-          <h2 className="text-2xl font-semibold text-library-ink">Help and Library Rules</h2>
-          <div className="mt-4 grid gap-4 md:grid-cols-3">
-            <p className="text-sm leading-6 text-warm-taupe">Borrowing limits and due dates are controlled by library policy.</p>
-            <p className="text-sm leading-6 text-warm-taupe">Return books on time to keep records clear.</p>
-            <p className="text-sm leading-6 text-warm-taupe">Students must register personal books before entering the library.</p>
-          </div>
-        </Card>
       </div>
     </div>
   );

@@ -14,11 +14,7 @@ vi.mock('../../services/auth.api', () => ({
   useLogoutMutation: () => [mocks.logout, { isLoading: false }],
 }));
 
-const renderHeader = (
-  role?: 'ADMIN' | 'STUDENT' | 'TEACHER',
-  onOpenModules?: () => void,
-  initialPath = '/'
-) => {
+const renderHeader = (role?: 'ADMIN' | 'STUDENT' | 'TEACHER', initialPath = '/') => {
   const store = configureStore({
     reducer: { auth: authReducer },
     preloadedState: {
@@ -34,7 +30,7 @@ const renderHeader = (
   return render(
     <Provider store={store}>
       <MemoryRouter initialEntries={[initialPath]}>
-        <Header onOpenModules={onOpenModules} />
+        <Header />
       </MemoryRouter>
     </Provider>
   );
@@ -53,25 +49,13 @@ describe('Header', () => {
     expect(screen.getByText('Catalog')).toBeInTheDocument();
     expect(screen.getByText('About Library')).toBeInTheDocument();
     expect(screen.getByText('Login')).toBeInTheDocument();
-    expect(screen.getByText('Register')).toBeInTheDocument();
+    expect(screen.queryByText('Register')).not.toBeInTheDocument();
   });
 
   it('links the IICT brand to the public home page', () => {
     renderHeader('ADMIN');
 
     expect(screen.getByText('IICT Library').closest('a')).toHaveAttribute('href', '/');
-  });
-
-  it('renders the dashboard module trigger on the right when provided', () => {
-    const onOpenModules = vi.fn();
-    renderHeader('ADMIN', onOpenModules);
-
-    fireEvent.click(screen.getByRole('button', { name: 'Open all dashboard modules' }));
-
-    expect(onOpenModules).toHaveBeenCalledTimes(1);
-    expect(screen.getByText('IICT Library').compareDocumentPosition(screen.getByRole('button', { name: 'Open all dashboard modules' }))).toBe(
-      Node.DOCUMENT_POSITION_FOLLOWING
-    );
   });
 
   it('renders admin links only for admins', () => {
@@ -84,7 +68,7 @@ describe('Header', () => {
   });
 
   it('does not keep the root dashboard link active on nested pages', () => {
-    renderHeader('ADMIN', undefined, '/dashboard/admin/circulation');
+    renderHeader('ADMIN', '/dashboard/admin/circulation');
 
     expect(screen.getByRole('link', { name: 'Admin' })).not.toHaveClass('bg-library-ink');
     expect(screen.getByRole('link', { name: 'Circulation' })).toHaveClass('bg-library-ink');

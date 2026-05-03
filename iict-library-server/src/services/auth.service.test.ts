@@ -3,16 +3,17 @@ import { Role } from '@prisma/client';
 
 const mocks = vi.hoisted(() => ({
   prisma: {
-    user: { findUnique: vi.fn() },
+    user: { findUnique: vi.fn(), update: vi.fn() },
   },
   bcryptCompare: vi.fn(),
+  bcryptHash: vi.fn(),
   jwtSign: vi.fn(),
   logAuditEvent: vi.fn(),
 }));
 
 vi.mock('../config/database', () => ({ default: mocks.prisma }));
 vi.mock('bcryptjs', () => ({
-  default: { compare: mocks.bcryptCompare, hash: vi.fn() },
+  default: { compare: mocks.bcryptCompare, hash: mocks.bcryptHash },
 }));
 vi.mock('jsonwebtoken', () => ({
   default: { sign: mocks.jwtSign },
@@ -69,5 +70,25 @@ describe('authService audit logging', () => {
       details: { email: 'admin@example.com', reason: 'invalid_password' },
     }));
     expect(JSON.stringify(mocks.logAuditEvent.mock.calls[0][0])).not.toContain('wrong-password');
+  });
+
+  it('changes passwords with current password verification', async () => {
+    mocks.prisma.user.findUnique.mockResolvedValue(activeAdmin);
+    mocks.bcryptCompare.mockResolvedValue(true);
+    mocks.bcryptHash.mockResolvedValue('new-hashed-password');
+    mocks.prisma.user.update.mockResolvedValue({ ...activeAdmin, password: 'new-hashed-password' });
+
+    await authService.changePassword(activeAdmin.id, 'old-password', 'new-password');
+
+    expect(mocks.bcryptCompare).toHaveBeenCalledWith('old-password', activeAdmin.password);
+    expect(mocks.prisma.user.update).toHaveBeenCalledWith({
+      where: { id: activeAdmin.id },
+      data: { password: 'new-hashed-password' },
+    });
+    expect(mocks.logAuditEvent).toHaveBeenCalledWith(expect.objectContaining({
+      action: 'auth.password_change',
+      actorId: activeAdmin.id,
+    }));
+    expect(JSON.stringify(mocks.logAuditEvent.mock.calls[0][0])).not.toContain('new-password');
   });
 });

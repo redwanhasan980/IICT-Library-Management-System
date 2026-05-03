@@ -1,7 +1,7 @@
 import { api } from '../config/api';
 import type { ApiResponse } from '../types/api.types';
 import type { Role, User } from '../types/user.types';
-import { logOut, setCredentials } from './auth.slice';
+import { logOut, setCredentials, updateCurrentUser } from './auth.slice';
 
 interface AuthResponse {
   user: User;
@@ -17,6 +17,16 @@ interface RegisterPayload {
   phoneNumber?: string;
   teacherId?: string;
   department: 'CSE' | 'SWE' | 'EEE';
+  currentSemester?: number;
+  designation?: string;
+  signatureData?: string;
+}
+
+interface UpdateProfilePayload {
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  department?: 'CSE' | 'SWE' | 'EEE';
   currentSemester?: number;
   designation?: string;
   signatureData?: string;
@@ -77,6 +87,31 @@ export const authApi = api.injectEndpoints({
       transformResponse: (response: ApiResponse<User>) => response.data,
       providesTags: ['Users'],
     }),
+    updateProfile: builder.mutation<User, UpdateProfilePayload>({
+      query: (body) => ({
+        url: '/auth/me',
+        method: 'PATCH',
+        body,
+      }),
+      transformResponse: (response: ApiResponse<User>) => response.data,
+      invalidatesTags: ['Users'],
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(updateCurrentUser(data));
+        } catch {
+          // update error is surfaced to UI through RTK Query state
+        }
+      },
+    }),
+    changePassword: builder.mutation<null, { currentPassword: string; newPassword: string }>({
+      query: (body) => ({
+        url: '/auth/me/password',
+        method: 'PATCH',
+        body,
+      }),
+      transformResponse: (response: ApiResponse<null>) => response.data,
+    }),
     logout: builder.mutation<null, void>({
       query: () => ({
         url: '/auth/logout',
@@ -100,5 +135,7 @@ export const {
   useRegisterMutation,
   useBootstrapAdminMutation,
   useGetMeQuery,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
   useLogoutMutation,
 } = authApi;

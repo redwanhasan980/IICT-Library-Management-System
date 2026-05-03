@@ -44,3 +44,22 @@ export const bootstrapAdminSchema = z.object({
     password: passwordSchema,
   }),
 });
+
+export const updateProfileSchema = z.object({
+  body: z.object({
+    name: z.string().min(1, 'Name is required').optional(),
+    email: z.string().email('Valid email is required').optional(),
+    phoneNumber: z.string().min(1, 'Phone number is required').optional(),
+    department: z.nativeEnum(Department).optional(),
+    currentSemester: z.coerce.number().int().positive().optional(),
+    designation: z.string().optional(),
+    signatureData: z.string().optional(),
+  }),
+});
+
+export const changePasswordSchema = z.object({
+  body: z.object({
+    currentPassword: z.string({ required_error: 'Current password is required' }).min(1, 'Current password is required'),
+    newPassword: passwordSchema,
+  }),
+});

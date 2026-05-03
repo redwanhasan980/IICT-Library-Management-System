@@ -64,7 +64,7 @@ describe('HomePage', () => {
     cleanup();
   });
 
-  it('renders dashboard stats, featured books, new arrivals, popular books, and service sections', () => {
+  it('renders dashboard stats, featured books, new arrivals, and popular books', () => {
     renderHome();
 
     expect(screen.getByText('Total Books')).toBeInTheDocument();
@@ -73,7 +73,8 @@ describe('HomePage', () => {
     expect(screen.getByText('Popular Books')).toBeInTheDocument();
     expect(screen.getAllByText('Database Systems').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Software Engineering').length).toBeGreaterThan(0);
-    expect(screen.getByText('Book Catalog Search')).toBeInTheDocument();
+    expect(screen.queryByText('Book Catalog Search')).not.toBeInTheDocument();
+    expect(screen.queryByText('Help and Library Rules')).not.toBeInTheDocument();
     expect(screen.getAllByText('Login').length).toBeGreaterThan(0);
   });
 });

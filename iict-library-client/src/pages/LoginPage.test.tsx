@@ -44,4 +44,17 @@ describe('LoginPage', () => {
       expect(screen.getByRole('alert')).toHaveTextContent('Invalid email or password');
     });
   });
+
+  it('hides self-registration and shows institutional password recovery guidance', () => {
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByText('Create an account')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Forgot password?' }));
+
+    expect(screen.getByText(/Please contact the IICT Library office/i)).toBeInTheDocument();
+  });
 });

@@ -1,6 +1,7 @@
 import type { Book } from '../types/book.types';
+import bookPagePlaceholder from '../../assets/book_page.jpg';
 
-export const BOOK_IMAGE_PLACEHOLDER = '/images/book-cover-placeholder.svg';
+export const BOOK_IMAGE_PLACEHOLDER = bookPagePlaceholder;
 
 export const getBookCoverSrc = (book: Pick<Book, 'primaryImage' | 'coverImageUrl'>) =>
   book.primaryImage?.coverUrl || book.coverImageUrl || BOOK_IMAGE_PLACEHOLDER;

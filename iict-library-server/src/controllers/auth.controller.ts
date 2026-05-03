@@ -57,6 +57,34 @@ class AuthController {
     }
   }
 
+  async updateMe(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const user = await authService.updateCurrentUser(userId, req.body);
+      return res.status(200).json(successResponse(user, 'Profile updated'));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async changePassword(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+
+      await authService.changePassword(userId, req.body.currentPassword, req.body.newPassword);
+      return res.status(200).json(successResponse(null, 'Password changed'));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
   async logout(_req: AuthenticatedRequest, res: Response) {
     res.clearCookie('auth_token', cookieOptions);
     return res.status(200).json(successResponse(null, 'Logged out'));
