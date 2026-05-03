@@ -11,11 +11,12 @@ import {
   useGetBookCirculationHistoryQuery,
   useGetBorrowerHistoryQuery,
   useIssueLoanMutation,
+  useListBooksQuery,
   useListLoansQuery,
   useLookupByAccessionQuery,
   useReturnLoanMutation,
 } from '../../services/library.api';
-import type { Loan, LoanStatus } from '../../types/book.types';
+import type { Book, Loan, LoanStatus } from '../../types/book.types';
 import { getApiErrorMessage } from '../../utils/apiError';
 
 const statusVariantMap: Record<LoanStatus, 'success' | 'info' | 'warning' | 'danger'> = {
@@ -57,17 +58,38 @@ const AdminCirculationPage = () => {
   const [facultySignature, setFacultySignature] = useState('');
   const [overrideReservation, setOverrideReservation] = useState(false);
   const [reservationOverrideReason, setReservationOverrideReason] = useState('');
+  const [bookSearchInput, setBookSearchInput] = useState('');
+  const [bookSearch, setBookSearch] = useState('');
+  const [bookSearchPage, setBookSearchPage] = useState(1);
   const [loanSearchInput, setLoanSearchInput] = useState('');
   const [loanSearch, setLoanSearch] = useState('');
   const [overdueOnly, setOverdueOnly] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 10;
+  const bookSearchPageSize = 6;
   const [selectedBorrowerId, setSelectedBorrowerId] = useState('');
   const [selectedBookId, setSelectedBookId] = useState('');
 
   const { data: lookupData, isFetching } = useLookupByAccessionQuery(activeAccession, {
     skip: !activeAccession,
   });
+
+
+  const {
+    data: bookSearchResults,
+    isFetching: isSearchingBooks,
+    isError: isBookSearchError,
+    refetch: refetchBookSearch,
+  } = useListBooksQuery(
+    {
+      q: bookSearch || undefined,
+      page: bookSearchPage,
+      pageSize: bookSearchPageSize,
+    },
+    {
+      skip: !bookSearch,
+    }
+  );
 
   const {
     data: loans,
@@ -176,6 +198,31 @@ const AdminCirculationPage = () => {
     setPage(1);
   };
 
+
+  const applyBookSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+    const term = bookSearchInput.trim();
+    if (!term) {
+      toast.error('Type a title, author, ISBN, accession number, call number, or barcode to search');
+      return;
+    }
+    setBookSearch(term);
+    setBookSearchPage(1);
+  };
+
+  const clearBookSearch = () => {
+    setBookSearchInput('');
+    setBookSearch('');
+    setBookSearchPage(1);
+  };
+
+  const selectBookForIssue = (book: Book) => {
+    setAccessionInput(book.accessionNumber);
+    setActiveAccession(book.accessionNumber);
+    setSelectedBookId(book.id);
+    toast.success(`${book.title} added to circulation form`);
+  };
+
   const renderLoanRows = (items: Loan[]) => (
     <Table>
       <TableHeader>
@@ -233,7 +280,115 @@ const AdminCirculationPage = () => {
       <Card className="space-y-4">
         <p className="text-sm text-warm-taupe">
           Scanner-friendly input: click the accession field and scan using keyboard-wedge barcode/QR scanner.
+          You can also search the catalog below and select a book to fill the accession automatically.
         </p>
+
+        <div className="border-2 border-library-ink bg-paper-muted p-4 shadow-[3px_3px_0_#1a1c1a]">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-dark-brown">Search Book for Issue</h2>
+              <p className="text-sm text-warm-taupe">Search by title, author, ISBN, accession number, call number, or barcode.</p>
+            </div>
+
+            <form onSubmit={applyBookSearch} className="flex flex-wrap items-end gap-2">
+              <div>
+                <label className="text-sm text-warm-taupe">Book Search</label>
+                <Input
+                  value={bookSearchInput}
+                  onChange={(e) => setBookSearchInput(e.target.value)}
+                  placeholder="Search catalog"
+                />
+              </div>
+              <Button type="submit" variant="secondary">Search</Button>
+              <Button type="button" variant="ghost" onClick={clearBookSearch}>Clear</Button>
+            </form>
+          </div>
+
+          {isSearchingBooks && <LoadingState message="Searching books..." />}
+          {isBookSearchError && <ErrorState message="Failed to search books." onRetry={refetchBookSearch} />}
+          {!isSearchingBooks && !isBookSearchError && bookSearch && bookSearchResults?.items.length === 0 && (
+            <EmptyState message="No books matched your search." />
+          )}
+
+          {!isSearchingBooks && !isBookSearchError && bookSearchResults && bookSearchResults.items.length > 0 && (
+            <div className="mt-4 space-y-3">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Accession</TableHead>
+                    <TableHead>Book</TableHead>
+                    <TableHead>ISBN</TableHead>
+                    <TableHead>Available</TableHead>
+                    <TableHead>Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {bookSearchResults.items.map((book) => {
+                    const cannotIssue = book.isArchived || book.availableCopies < 1;
+                    const isSelected = accessionInput.trim() === book.accessionNumber;
+
+                    return (
+                      <TableRow key={book.id}>
+                        <TableCell className="font-mono text-xs">{book.accessionNumber}</TableCell>
+                        <TableCell>
+                          <div>
+                            <p className="font-semibold text-library-ink">{book.title}</p>
+                            <p className="text-xs text-warm-taupe">{book.author}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-mono text-xs">{book.isbn || '-'}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant={cannotIssue ? 'warning' : 'success'}>
+                              {book.isArchived ? 'Archived' : book.availableCopies > 0 ? `${book.availableCopies} available` : 'Unavailable'}
+                            </Badge>
+                            {isSelected && <Badge variant="info">Selected</Badge>}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            disabled={cannotIssue}
+                            onClick={() => selectBookForIssue(book)}
+                          >
+                            Select
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+
+              {bookSearchResults.totalPages > 1 && (
+                <div className="flex items-center justify-between border-t-2 border-library-ink pt-4">
+                  <span className="text-sm text-warm-taupe">
+                    Page {bookSearchResults.page} of {bookSearchResults.totalPages}
+                  </span>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      disabled={bookSearchResults.page === 1}
+                      onClick={() => setBookSearchPage((prev) => Math.max(1, prev - 1))}
+                    >
+                      Prev
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      disabled={bookSearchResults.page === bookSearchResults.totalPages}
+                      onClick={() => setBookSearchPage((prev) => Math.min(bookSearchResults.totalPages, prev + 1))}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div>
