@@ -239,6 +239,15 @@ export const libraryApi = api.injectEndpoints({
       transformResponse: (response: ApiResponse<Loan>) => response.data,
       invalidatesTags: ['Loans', 'Books', 'Reservations'],
     }),
+    updateLoanDueDate: builder.mutation<Loan, { id: string; dueAt: string }>({
+      query: ({ id, dueAt }) => ({
+        url: `/loans/${id}/due-date`,
+        method: 'PATCH',
+        body: { dueAt },
+      }),
+      transformResponse: (response: ApiResponse<Loan>) => response.data,
+      invalidatesTags: ['Loans', 'Fines'],
+    }),
     listMyLoans: builder.query<Loan[], void>({
       query: () => '/loans/my',
       transformResponse: (response: ApiResponse<Loan[]>) => response.data,
@@ -447,6 +456,7 @@ export const {
   useUpdateReservationStatusMutation,
   useIssueLoanMutation,
   useReturnLoanMutation,
+  useUpdateLoanDueDateMutation,
   useListMyLoansQuery,
   useListMyLoanHistoryQuery,
   useListLoansQuery,
