@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import heroImage1 from '../../assets/1.jpeg';
+import heroImage2 from '../../assets/2.jpeg';
+import heroImage3 from '../../assets/3.jpeg';
+import heroImage4 from '../../assets/4.jpeg';
+import heroImage5 from '../../assets/5.jpeg';
 export interface HeroAction {
   to: string;
   label: string;
@@ -20,17 +25,25 @@ interface HeroCarouselProps {
 
 const slides: HeroSlide[] = [
   {
-    src: '/images/library-hero-reading.svg',
-    alt: 'Students reading in the IICT library',
+    src: heroImage1,
+    alt: 'IICT library reading area',
   },
   {
-    src: '/images/library-hero-catalog.svg',
-    alt: 'Digital catalog search desk',
+    src: heroImage2,
+    alt: 'IICT library book shelves',
   },
   {
-    src: '/images/library-hero-study.svg',
-    alt: 'Quiet study space with open books',
+    src: heroImage3,
+    alt: 'Students studying in IICT library',
   },
+  {
+    src: heroImage4,
+    alt: 'IICT library study rooms',
+  },
+  {
+    src: heroImage5,
+    alt: 'IICT library computer lab',
+  }
 ];
 
 const HeroCarousel = ({ title, subtitle, actions }: HeroCarouselProps) => {
@@ -76,13 +89,23 @@ const HeroCarousel = ({ title, subtitle, actions }: HeroCarouselProps) => {
           }`}
         />
       ))}
+
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(26,28,26,0.94),rgba(26,28,26,0.72),rgba(26,28,26,0.32))]" />
 
       <div className="relative z-10 mx-auto flex min-h-[520px] max-w-7xl flex-col justify-center px-4 py-16 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
-          <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-library-gold">IICT Library</p>
-          <h1 className="mt-4 text-4xl font-bold leading-tight text-pale-cream sm:text-5xl lg:text-6xl">{title}</h1>
-          <p className="mt-5 max-w-2xl text-lg font-semibold leading-8 text-pale-cream/85">{subtitle}</p>
+          <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-library-gold">
+            IICT Library
+          </p>
+
+          <h1 className="mt-4 text-4xl font-bold leading-tight text-pale-cream sm:text-5xl lg:text-6xl">
+            {title}
+          </h1>
+
+          <p className="mt-5 max-w-2xl text-lg font-semibold leading-8 text-pale-cream/85">
+            {subtitle}
+          </p>
+
           <div className="mt-8 flex flex-wrap gap-3">
             {actions.map((action) => (
               <Link
@@ -123,6 +146,7 @@ const HeroCarousel = ({ title, subtitle, actions }: HeroCarouselProps) => {
         >
           Prev
         </button>
+
         <button
           type="button"
           className="border-2 border-pale-cream bg-library-ink/70 px-3 py-2 text-xs font-extrabold uppercase text-pale-cream transition hover:bg-library-ink"
