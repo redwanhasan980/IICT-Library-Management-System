@@ -11,6 +11,7 @@ import {
   listLoansSchema,
   loanIdParamSchema,
   returnLoanSchema,
+  updateLoanDueDateSchema,
 } from '../validators/loan.validator';
 
 const router = Router();
@@ -27,5 +28,6 @@ router.get('/:id', restrictTo(Role.ADMIN, Role.STUDENT, Role.TEACHER), validate(
 
 router.post('/issue', restrictTo(Role.ADMIN), validate(issueLoanSchema), loanController.issue);
 router.patch('/:id/return', restrictTo(Role.ADMIN), validate(returnLoanSchema), loanController.returnLoan);
+router.patch('/:id/due-date', restrictTo(Role.ADMIN), validate(updateLoanDueDateSchema), loanController.updateDueDate);
 
 export default router;

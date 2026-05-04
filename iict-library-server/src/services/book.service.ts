@@ -1,4 +1,4 @@
-import type { BookImage } from '@prisma/client';
+import { LoanStatus, type BookImage } from '@prisma/client';
 import prisma from '../config/database';
 import AppError from '../utils/AppError';
 import { logAuditEvent } from '../utils/auditLog';
@@ -32,6 +32,7 @@ interface CreateBookInput {
   coverImageUrl?: string;
   procurementId?: string;
   totalCopies?: number;
+  availableCopies?: number;
 }
 
 interface ListBooksQuery {
@@ -97,7 +98,9 @@ class BookService {
             { title: { contains: query.q } },
             { author: { contains: query.q } },
             { accessionNumber: { contains: query.q } },
+            { isbn: { contains: query.q } },
             { callNumber: { contains: query.q } },
+            { barcode: { contains: query.q } },
             { subjectCategory: { contains: query.q } },
           ]
         : undefined,
@@ -125,6 +128,11 @@ class BookService {
     }
 
     const totalCopies = payload.totalCopies ?? 1;
+    const availableCopies = payload.availableCopies ?? totalCopies;
+
+    if (availableCopies > totalCopies) {
+      throw new AppError('Available copies cannot be greater than total copies', 400);
+    }
 
     const created = await prisma.book.create({
       data: {
@@ -155,7 +163,7 @@ class BookService {
         coverImageUrl: payload.coverImageUrl,
         procurementId: payload.procurementId,
         totalCopies,
-        availableCopies: totalCopies,
+        availableCopies,
       },
     });
 
@@ -395,6 +403,37 @@ class BookService {
       }
     }
 
+    const activeLoanCount = await prisma.loan.count({
+      where: {
+        bookId: id,
+        status: { in: [LoanStatus.ACTIVE, LoanStatus.OVERDUE] },
+      },
+    });
+
+    const nextTotalCopies = payload.totalCopies ?? book.totalCopies;
+    const nextAvailableCopies = payload.availableCopies ?? book.availableCopies;
+    const maxAvailableCopies = nextTotalCopies - activeLoanCount;
+
+    if (nextTotalCopies < 1) {
+      throw new AppError('Total copies must be at least 1', 400);
+    }
+
+    if (nextTotalCopies < activeLoanCount) {
+      throw new AppError('Total copies cannot be less than copies currently on loan', 400);
+    }
+
+    if (nextAvailableCopies < 0) {
+      throw new AppError('Available copies cannot be negative', 400);
+    }
+
+    if (nextAvailableCopies > nextTotalCopies) {
+      throw new AppError('Available copies cannot be greater than total copies', 400);
+    }
+
+    if (nextAvailableCopies > maxAvailableCopies) {
+      throw new AppError('Available copies cannot be greater than total copies minus active loans', 400);
+    }
+
     const updated = await prisma.book.update({
       where: { id },
       data: {
@@ -425,7 +464,7 @@ class BookService {
         coverImageUrl: payload.coverImageUrl,
         procurementId: payload.procurementId,
         totalCopies: payload.totalCopies,
-        availableCopies: payload.totalCopies, // We might need to handle this more intelligently if loans are active, but for basic single-copy modeling this works
+        availableCopies: payload.availableCopies
       },
     });
 
@@ -449,6 +488,63 @@ class BookService {
     }
 
     return book;
+  }
+
+
+  async deleteBook(actorId: string, id: string) {
+    const book = await prisma.book.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        accessionNumber: true,
+      },
+    });
+
+    if (!book) {
+      throw new AppError('Book not found', 404);
+    }
+
+    const [loanCount, reservationCount] = await Promise.all([
+      prisma.loan.count({ where: { bookId: id } }),
+      prisma.reservation.count({ where: { bookId: id } }),
+    ]);
+
+    if (loanCount > 0) {
+      throw new AppError(
+        'This book has loan history. Archive the book instead of deleting it permanently.',
+        409
+      );
+    }
+
+    if (reservationCount > 0) {
+      throw new AppError(
+        'This book has reservation history. Archive the book instead of deleting it permanently.',
+        409
+      );
+    }
+
+    const deleted = await prisma.book.delete({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        accessionNumber: true,
+      },
+    });
+
+    logAuditEvent({
+      action: 'book.delete',
+      actorId,
+      entity: 'Book',
+      entityId: id,
+      details: {
+        title: deleted.title,
+        accessionNumber: deleted.accessionNumber,
+      },
+    });
+
+    return deleted;
   }
 
   async setArchiveStatus(actorId: string, id: string, isArchived: boolean) {

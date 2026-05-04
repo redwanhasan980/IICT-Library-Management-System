@@ -130,6 +130,14 @@ export const libraryApi = api.injectEndpoints({
       transformResponse: (response: ApiResponse<Book>) => response.data,
       invalidatesTags: ['Books'],
     }),
+    deleteBook: builder.mutation<{ id: string; title: string; accessionNumber: string }, string>({
+      query: (id) => ({
+        url: `/books/${id}`,
+        method: 'DELETE',
+      }),
+      transformResponse: (response: ApiResponse<{ id: string; title: string; accessionNumber: string }>) => response.data,
+      invalidatesTags: ['Books', 'Dashboard', 'Reservations'],
+    }),
     uploadBookImages: builder.mutation<BookImage[], { bookId: string; files: File[] }>({
       query: ({ bookId, files }) => {
         const formData = new FormData();
@@ -230,6 +238,15 @@ export const libraryApi = api.injectEndpoints({
       }),
       transformResponse: (response: ApiResponse<Loan>) => response.data,
       invalidatesTags: ['Loans', 'Books', 'Reservations'],
+    }),
+    updateLoanDueDate: builder.mutation<Loan, { id: string; dueAt: string }>({
+      query: ({ id, dueAt }) => ({
+        url: `/loans/${id}/due-date`,
+        method: 'PATCH',
+        body: { dueAt },
+      }),
+      transformResponse: (response: ApiResponse<Loan>) => response.data,
+      invalidatesTags: ['Loans', 'Fines'],
     }),
     listMyLoans: builder.query<Loan[], void>({
       query: () => '/loans/my',
@@ -427,6 +444,7 @@ export const {
   useCreateBookMutation,
   useUpdateBookMutation,
   useSetBookArchiveStatusMutation,
+  useDeleteBookMutation,
   useUploadBookImagesMutation,
   useDeleteBookImageMutation,
   useReorderBookImagesMutation,
@@ -438,6 +456,7 @@ export const {
   useUpdateReservationStatusMutation,
   useIssueLoanMutation,
   useReturnLoanMutation,
+  useUpdateLoanDueDateMutation,
   useListMyLoansQuery,
   useListMyLoanHistoryQuery,
   useListLoansQuery,

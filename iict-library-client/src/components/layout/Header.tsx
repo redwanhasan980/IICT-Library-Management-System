@@ -24,7 +24,10 @@ const studentLinks: NavItem[] = [
   { to: '/dashboard/student', label: 'Dashboard', end: true },
   { to: '/dashboard/books', label: 'Catalog' },
   { to: '/dashboard/student/borrowing', label: 'My Borrowing' },
+  { to: '/dashboard/student/reservations', label: 'My Reservations' },
+  { to: '/dashboard/student/fines', label: 'My Fines' },
   { to: '/dashboard/add-outside-book', label: 'Outside Book Entry' },
+  { to: '/dashboard/my-outside-books', label: 'My Outside Books' },
   { to: '/dashboard/profile', label: 'Profile' },
 ];
 
@@ -32,6 +35,8 @@ const teacherLinks: NavItem[] = [
   { to: '/dashboard/teacher', label: 'Dashboard', end: true },
   { to: '/dashboard/books', label: 'Catalog' },
   { to: '/dashboard/teacher/borrowing', label: 'My Borrowing' },
+  { to: '/dashboard/teacher/reservations', label: 'My Reservations' },
+  { to: '/dashboard/teacher/fines', label: 'My Fines' },
   { to: '/dashboard/profile', label: 'Profile' },
 ];
 
@@ -39,6 +44,12 @@ const adminLinks: NavItem[] = [
   { to: '/dashboard/admin', label: 'Admin', end: true },
   { to: '/dashboard/admin/catalog', label: 'Books' },
   { to: '/dashboard/admin/circulation', label: 'Circulation' },
+  { to: '/dashboard/admin/reservations', label: 'Reservations' },
+  { to: '/dashboard/admin/fines', label: 'Fine Management' },
+  { to: '/dashboard/admin/analytics', label: 'Analytics' },
+  { to: '/dashboard/admin/settings', label: 'System Settings' },
+  { to: '/dashboard/admin/bulk-tools', label: 'Bulk Tools' },
+  { to: '/dashboard/spine-label-generator', label: 'Spine Labels' },
   { to: '/dashboard/admin/outside-book-logs', label: 'Outside Logs' },
   { to: '/dashboard/admin/reports', label: 'Reports' },
   { to: '/dashboard/admin/procurement', label: 'Procurement' },

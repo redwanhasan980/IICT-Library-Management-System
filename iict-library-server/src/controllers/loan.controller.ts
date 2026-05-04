@@ -53,6 +53,21 @@ class LoanController {
     }
   }
 
+
+  async updateDueDate(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const actorId = req.user?.id;
+      if (!actorId) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const loan = await loanService.updateLoanDueDate(req.params.id, actorId, req.body.dueAt);
+      return res.status(200).json(successResponse(loan, 'Loan due date updated'));
+    } catch (error) {
+      return next(error);
+    }
+  }
+
   async listMyLoans(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const userId = req.user?.id;

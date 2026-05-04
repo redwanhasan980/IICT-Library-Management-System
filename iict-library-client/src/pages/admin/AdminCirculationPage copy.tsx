@@ -15,7 +15,6 @@ import {
   useListLoansQuery,
   useLookupByAccessionQuery,
   useReturnLoanMutation,
-  useUpdateLoanDueDateMutation,
 } from '../../services/library.api';
 import type { Book, Loan, LoanStatus } from '../../types/book.types';
 import { getApiErrorMessage } from '../../utils/apiError';
@@ -36,13 +35,6 @@ const reservationStatusVariantMap: Record<string, 'success' | 'info' | 'warning'
 const displayStatus = (loan: Loan) => loan.effectiveStatus ?? loan.status;
 
 const formatDate = (value?: string) => (value ? format(new Date(value), 'PPp') : '-');
-
-const formatForDateTimeLocal = (date: Date) => {
-  const offsetMs = date.getTimezoneOffset() * 60 * 1000;
-  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
-};
-
-const daysAgoDateTimeLocal = (days: number) => formatForDateTimeLocal(new Date(Date.now() - days * 24 * 60 * 60 * 1000));
 
 const selectClass =
   'mt-1 w-full border-2 border-library-ink bg-paper-soft px-3 py-2 text-sm font-semibold text-library-ink shadow-[2px_2px_0_#1a1c1a] focus:outline-none focus:ring-2 focus:ring-library-forest/40';
@@ -77,7 +69,6 @@ const AdminCirculationPage = () => {
   const bookSearchPageSize = 6;
   const [selectedBorrowerId, setSelectedBorrowerId] = useState('');
   const [selectedBookId, setSelectedBookId] = useState('');
-  const [dueDateEdits, setDueDateEdits] = useState<Record<string, string>>({});
 
   const { data: lookupData, isFetching } = useLookupByAccessionQuery(activeAccession, {
     skip: !activeAccession,
@@ -122,7 +113,6 @@ const AdminCirculationPage = () => {
 
   const [issueLoan, { isLoading: isIssuing }] = useIssueLoanMutation();
   const [returnLoan, { isLoading: isReturning }] = useReturnLoanMutation();
-  const [updateLoanDueDate, { isLoading: isUpdatingDueDate }] = useUpdateLoanDueDateMutation();
 
   useEffect(() => {
     const trim = accessionInput.trim();
@@ -202,44 +192,6 @@ const AdminCirculationPage = () => {
     }
   };
 
-
-  const handleDueDateInputChange = (loanId: string, value: string) => {
-    setDueDateEdits((current) => ({
-      ...current,
-      [loanId]: value,
-    }));
-  };
-
-  const handleSetLoanDueDate = async (loan: Loan, value?: string) => {
-    const inputValue = value ?? dueDateEdits[loan.id];
-
-    if (!inputValue) {
-      toast.error('Choose a due date first');
-      return;
-    }
-
-    try {
-      await updateLoanDueDate({
-        id: loan.id,
-        dueAt: new Date(inputValue).toISOString(),
-      }).unwrap();
-
-      toast.success('Loan due date updated. Fine will be recalculated automatically.');
-      setDueDateEdits((current) => {
-        const next = { ...current };
-        delete next[loan.id];
-        return next;
-      });
-      refetchLoans();
-    } catch (error: unknown) {
-      toast.error(getApiErrorMessage(error, 'Failed to update due date'));
-    }
-  };
-
-  const handleMakeLoanOverdue = async (loan: Loan, daysAgo: number) => {
-    await handleSetLoanDueDate(loan, daysAgoDateTimeLocal(daysAgo));
-  };
-
   const applyLoanSearch = (event: React.FormEvent) => {
     event.preventDefault();
     setLoanSearch(loanSearchInput.trim());
@@ -282,7 +234,6 @@ const AdminCirculationPage = () => {
           <TableHead>Due</TableHead>
           <TableHead>Returned</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Test Due Date</TableHead>
           <TableHead>Action</TableHead>
         </TableRow>
       </TableHeader>
@@ -301,58 +252,18 @@ const AdminCirculationPage = () => {
                 <Badge variant={statusVariantMap[status]}>{status}</Badge>
               </TableCell>
               <TableCell>
-                {loan.status === 'ACTIVE' ? (
-                  <div className="min-w-[230px] space-y-2">
-                    <Input
-                      type="datetime-local"
-                      value={dueDateEdits[loan.id] ?? ''}
-                      onChange={(e) => handleDueDateInputChange(loan.id, e.target.value)}
-                      disabled={isUpdatingDueDate}
-                    />
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        disabled={isUpdatingDueDate || !dueDateEdits[loan.id]}
-                        onClick={() => handleSetLoanDueDate(loan)}
-                      >
-                        Set Due
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        disabled={isUpdatingDueDate}
-                        onClick={() => handleMakeLoanOverdue(loan, 1)}
-                      >
-                        1 day overdue
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        disabled={isUpdatingDueDate}
-                        onClick={() => handleMakeLoanOverdue(loan, 7)}
-                      >
-                        7 days overdue
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <span className="text-xs text-warm-taupe">Returned</span>
-                )}
-              </TableCell>
-              <TableCell>
                 <div className="flex flex-wrap gap-2">
-                  {loan.status === 'ACTIVE' && (
-                    <Button size="sm" variant="secondary" disabled={isReturning} onClick={() => handleReturn(loan.id)}>
-                      Return
-                    </Button>
-                  )}
-                  <Button size="sm" variant="ghost" onClick={() => setSelectedBorrowerId(loan.userId)}>
-                    Borrower
+                {loan.status === 'ACTIVE' && (
+                  <Button size="sm" variant="secondary" disabled={isReturning} onClick={() => handleReturn(loan.id)}>
+                    Return
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setSelectedBookId(loan.bookId)}>
-                    Book
-                  </Button>
+                )}
+                <Button size="sm" variant="ghost" onClick={() => setSelectedBorrowerId(loan.userId)}>
+                  Borrower
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setSelectedBookId(loan.bookId)}>
+                  Book
+                </Button>
                 </div>
               </TableCell>
             </TableRow>
@@ -601,7 +512,7 @@ const AdminCirculationPage = () => {
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h2 className="text-lg font-semibold text-dark-brown">Active Loans</h2>
-            <p className="text-sm text-warm-taupe">Search by borrower, accession, title, student reg number, or teacher ID. Use Test Due Date to simulate overdue fines during testing.</p>
+            <p className="text-sm text-warm-taupe">Search by borrower, accession, title, student reg number, or teacher ID.</p>
           </div>
           <form onSubmit={applyLoanSearch} className="flex flex-wrap items-center gap-2">
             <Input value={loanSearchInput} onChange={(e) => setLoanSearchInput(e.target.value)} placeholder="Search loans" />
