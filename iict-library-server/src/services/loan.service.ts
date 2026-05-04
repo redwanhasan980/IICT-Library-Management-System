@@ -410,6 +410,71 @@ class LoanService {
     return this.withComputedStatus(updatedLoan);
   }
 
+
+  async updateLoanDueDate(loanId: string, adminId: string, dueAt: string) {
+    const parsedDueAt = new Date(dueAt);
+
+    if (Number.isNaN(parsedDueAt.getTime())) {
+      throw new AppError('Invalid due date', 400);
+    }
+
+    const loan = await prisma.loan.findUnique({
+      where: { id: loanId },
+      include: {
+        book: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            student: { select: { studentRegNumber: true, department: true, currentSemester: true } },
+            teacher: { select: { teacherId: true, department: true, designation: true } },
+          },
+        },
+      },
+    });
+
+    if (!loan) {
+      throw new AppError('Loan not found', 404);
+    }
+
+    const updatedLoan = await prisma.loan.update({
+      where: { id: loanId },
+      data: {
+        dueAt: parsedDueAt,
+      },
+      include: {
+        book: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            student: { select: { studentRegNumber: true, department: true, currentSemester: true } },
+            teacher: { select: { teacherId: true, department: true, designation: true } },
+          },
+        },
+      },
+    });
+
+    logAuditEvent({
+      action: 'loan.due_date_updated',
+      actorId: adminId,
+      entity: 'Loan',
+      entityId: loanId,
+      details: {
+        bookId: loan.bookId,
+        userId: loan.userId,
+        previousDueAt: loan.dueAt.toISOString(),
+        newDueAt: parsedDueAt.toISOString(),
+      },
+    });
+
+    return this.withComputedStatus(updatedLoan);
+  }
+
   async getLoanById(loanId: string, actor: { id: string; role: Role }) {
     const loan = await prisma.loan.findUnique({
       where: { id: loanId },

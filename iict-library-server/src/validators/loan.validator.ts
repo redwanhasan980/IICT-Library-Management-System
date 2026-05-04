@@ -34,6 +34,15 @@ export const returnLoanSchema = z.object({
   }),
 });
 
+export const updateLoanDueDateSchema = z.object({
+  params: z.object({
+    id: z.string().min(1, 'Loan ID is required'),
+  }),
+  body: z.object({
+    dueAt: z.string().datetime('Due date must be a valid ISO datetime'),
+  }),
+});
+
 export const loanIdParamSchema = z.object({
   params: z.object({
     id: z.string().min(1, 'Loan ID is required'),
