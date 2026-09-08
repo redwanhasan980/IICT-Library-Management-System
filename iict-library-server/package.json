@@ -13,7 +13,8 @@
     "prisma:migrate:deploy": "node scripts/with-database-url.cjs prisma migrate deploy",
     "prisma:generate": "node scripts/with-database-url.cjs prisma generate",
     "prisma:studio": "node scripts/with-database-url.cjs prisma studio",
-    "seed:demo": "node scripts/with-database-url.cjs tsx prisma/seed-demo-data.ts"
+    "seed:demo": "node scripts/with-database-url.cjs tsx prisma/seed-demo-data.ts",
+    "vercel-build": "npm run prisma:generate"
   },
   "keywords": [],
   "author": "",
