@@ -1,0 +1,72 @@
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import authRouter from './routes/auth.routes';
+import userRouter from './routes/user.routes';
+import outsideBookRouter from './routes/outsideBook.routes';
+import spineLabelRouter from './routes/spineLabel.routes';
+import bookRouter from './routes/book.routes';
+import reservationRouter from './routes/reservation.routes';
+import loanRouter from './routes/loan.routes';
+import policyRouter from './routes/policy.routes';
+import bulkRouter from './routes/bulk.routes';
+import analyticsRouter from './routes/analytics.routes';
+import inventoryAuditRouter from './routes/inventoryAudit.routes';
+import fineRouter from './routes/fine.routes';
+import procurementRouter from './routes/procurement.routes';
+import reportRouter from './routes/report.routes';
+import auditLogRouter from './routes/auditLog.routes';
+import dashboardRouter from './routes/dashboard.routes';
+import { errorHandler, notFoundHandler } from './middleware/error.middleware';
+import { successResponse } from './utils/apiResponse';
+import { isCorsOriginAllowed, resolveAllowedCorsOrigins } from './config/cors';
+
+dotenv.config();
+
+const app = express();
+const allowedCorsOrigins = resolveAllowedCorsOrigins();
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (isCorsOriginAllowed(origin, allowedCorsOrigins)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(null, false);
+  },
+  credentials: true,
+}));
+app.use(express.json());
+app.use(cookieParser());
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json(successResponse({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+  }, 'IICT Library Management Server is running'));
+});
+
+// API Routes
+app.use('/api/auth', authRouter);
+app.use('/api/dashboard', dashboardRouter);
+app.use('/api/users', userRouter);
+app.use('/api/outside-books', outsideBookRouter);
+app.use('/api/spine-labels', spineLabelRouter);
+app.use('/api/books', bookRouter);
+app.use('/api/reservations', reservationRouter);
+app.use('/api/loans', loanRouter);
+app.use('/api/policies', policyRouter);
+app.use('/api/admin/tools', bulkRouter);
+app.use('/api/analytics', analyticsRouter);
+app.use('/api/inventory-audits', inventoryAuditRouter);
+app.use('/api/fines', fineRouter);
+app.use('/api/procurements', procurementRouter);
+app.use('/api/reports', reportRouter);
+app.use('/api/audit-logs', auditLogRouter);
+
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+export default app;

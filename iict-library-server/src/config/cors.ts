@@ -13,7 +13,22 @@ const parseOrigins = (value?: string) =>
 export const resolveAllowedCorsOrigins = (configuredOrigins = process.env.CORS_ORIGIN) =>
   Array.from(new Set([...STANDARD_CORS_ORIGINS, ...parseOrigins(configuredOrigins)]));
 
+// Entries may use "*" as a wildcard for one or more characters, so a single
+// CORS_ORIGIN entry like https://*.vercel.app can cover preview deployments.
+const matchesOrigin = (origin: string, allowedOrigin: string) => {
+  if (!allowedOrigin.includes('*')) {
+    return origin === allowedOrigin;
+  }
+
+  const pattern = allowedOrigin
+    .split('*')
+    .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('[^.]*');
+
+  return new RegExp(`^${pattern}$`).test(origin);
+};
+
 export const isCorsOriginAllowed = (
   origin: string | undefined,
   allowedOrigins = resolveAllowedCorsOrigins(),
-) => !origin || allowedOrigins.includes(origin);
+) => !origin || allowedOrigins.some((allowedOrigin) => matchesOrigin(origin, allowedOrigin));
